@@ -38,6 +38,15 @@ function coco_theme_setup() {
 		)
 	);
 
+	// Habilitar gestión de Menús clásicos y ubicaciones en Apariencia > Menús y Personalizador.
+	add_theme_support( 'menus' );
+	register_nav_menus(
+		array(
+			'primary' => __( 'Menú Principal (Cabecera)', 'coco-theme' ),
+			'footer'  => __( 'Menú de Pie de Página (Footer)', 'coco-theme' ),
+		)
+	);
+
 	// Soporte completo para WooCommerce.
 	add_theme_support(
 		'woocommerce',
@@ -85,6 +94,22 @@ function coco_theme_fix_svg_filetype( $data, $file, $filename, $mimes ) {
 	return $data;
 }
 add_filter( 'wp_check_filetype_and_ext', 'coco_theme_fix_svg_filetype', 10, 4 );
+
+/**
+ * Asignar dimensiones intrínsecas a archivos SVG en la biblioteca de medios
+ * para que WordPress, el Personalizador y Gutenberg los rendericen correctamente.
+ */
+function coco_theme_fix_svg_size_attributes( $image, $attachment_id, $size, $icon ) {
+	if ( is_array( $image ) && ( empty( $image[1] ) || empty( $image[2] ) || $image[1] <= 1 || $image[2] <= 1 ) ) {
+		$mime = get_post_mime_type( $attachment_id );
+		if ( 'image/svg+xml' === $mime || ( ! empty( $image[0] ) && false !== strpos( strtolower( $image[0] ), '.svg' ) ) ) {
+			$image[1] = 1046;
+			$image[2] = 515;
+		}
+	}
+	return $image;
+}
+add_filter( 'wp_get_attachment_image_src', 'coco_theme_fix_svg_size_attributes', 10, 4 );
 
 /**
  * Auto-detectar y sincronizar el logo de Coco Cherry Store (incluyendo COCO-NEW-LOGO.svg)
@@ -162,14 +187,11 @@ function coco_theme_ensure_site_logo() {
 add_action( 'after_setup_theme', 'coco_theme_ensure_site_logo', 20 );
 
 /**
- * Asegurar que el bloque Gutenberg core/site-logo devuelva la imagen del logo si existe.
+ * Asegurar que el bloque Gutenberg core/site-logo renderice siempre con dimensiones explícitas
+ * (especialmente para archivos SVG con width="100%" que sin ancho fijo en px colapsan a 0x0).
  */
 function coco_theme_fallback_site_logo_render( $block_content, $block ) {
 	if ( 'core/site-logo' !== $block['blockName'] ) {
-		return $block_content;
-	}
-
-	if ( false !== strpos( $block_content, '<img' ) ) {
 		return $block_content;
 	}
 
@@ -184,7 +206,7 @@ function coco_theme_fallback_site_logo_render( $block_content, $block ) {
 			$alt = get_post_meta( $logo_id, '_wp_attachment_image_alt', true );
 			$alt = $alt ? $alt : get_bloginfo( 'name' );
 			return sprintf(
-				'<div class="wp-block-site-logo"><a href="%s" class="custom-logo-link" rel="home"><img src="%s" class="custom-logo" alt="%s" style="max-height:52px;width:auto;" /></a></div>',
+				'<div class="wp-block-site-logo"><a href="%s" class="custom-logo-link" rel="home"><img src="%s" class="custom-logo" width="115" height="56" alt="%s" style="width:115px;height:56px;max-height:56px;object-fit:contain;display:block;" /></a></div>',
 				esc_url( home_url( '/' ) ),
 				esc_url( $logo_url ),
 				esc_attr( $alt )
@@ -195,7 +217,7 @@ function coco_theme_fallback_site_logo_render( $block_content, $block ) {
 	// Fallback garantizado: si aún no se configuró en medios, servir el logo oficial del tema (COCO-NEW-LOGO.svg).
 	$theme_logo = get_template_directory_uri() . '/assets/images/coco-logo.svg';
 	return sprintf(
-		'<div class="wp-block-site-logo"><a href="%s" class="custom-logo-link" rel="home"><img src="%s" class="custom-logo" alt="%s" style="max-height:52px;width:auto;" /></a></div>',
+		'<div class="wp-block-site-logo"><a href="%s" class="custom-logo-link" rel="home"><img src="%s" class="custom-logo" width="115" height="56" alt="%s" style="width:115px;height:56px;max-height:56px;object-fit:contain;display:block;" /></a></div>',
 		esc_url( home_url( '/' ) ),
 		esc_url( $theme_logo ),
 		esc_attr( get_bloginfo( 'name' ) )
@@ -204,13 +226,32 @@ function coco_theme_fallback_site_logo_render( $block_content, $block ) {
 add_filter( 'render_block', 'coco_theme_fallback_site_logo_render', 10, 2 );
 
 /**
- * Filtro get_custom_logo para garantizar la visualización en llamadas clásicas del tema.
+ * Filtro get_custom_logo para garantizar la visualización en llamadas clásicas y en el Personalizador.
  */
 function coco_theme_fallback_custom_logo_html( $html ) {
+	$logo_id = get_theme_mod( 'custom_logo' );
+	if ( ! $logo_id ) {
+		$logo_id = get_option( 'site_logo' );
+	}
+
+	if ( $logo_id ) {
+		$logo_url = wp_get_attachment_url( $logo_id );
+		if ( $logo_url ) {
+			$alt = get_post_meta( $logo_id, '_wp_attachment_image_alt', true );
+			$alt = $alt ? $alt : get_bloginfo( 'name' );
+			return sprintf(
+				'<a href="%s" class="custom-logo-link" rel="home"><img src="%s" class="custom-logo" width="115" height="56" alt="%s" style="width:115px;height:56px;max-height:56px;object-fit:contain;display:block;" /></a>',
+				esc_url( home_url( '/' ) ),
+				esc_url( $logo_url ),
+				esc_attr( $alt )
+			);
+		}
+	}
+
 	if ( empty( $html ) ) {
 		$theme_logo = get_template_directory_uri() . '/assets/images/coco-logo.svg';
 		return sprintf(
-			'<a href="%s" class="custom-logo-link" rel="home"><img src="%s" class="custom-logo" alt="%s" style="max-height:52px;width:auto;" /></a>',
+			'<a href="%s" class="custom-logo-link" rel="home"><img src="%s" class="custom-logo" width="115" height="56" alt="%s" style="width:115px;height:56px;max-height:56px;object-fit:contain;display:block;" /></a>',
 			esc_url( home_url( '/' ) ),
 			esc_url( $theme_logo ),
 			esc_attr( get_bloginfo( 'name' ) )
@@ -219,6 +260,45 @@ function coco_theme_fallback_custom_logo_html( $html ) {
 	return $html;
 }
 add_filter( 'get_custom_logo', 'coco_theme_fallback_custom_logo_html' );
+
+/**
+ * Conectar el bloque de navegación de la cabecera con los menús de WordPress
+ * seleccionados en Apariencia > Menús o en Personalizar > Menús / Opciones Coco Cherry.
+ */
+function coco_theme_render_header_navigation( $block_content, $block ) {
+	if ( 'core/navigation' !== $block['blockName'] ) {
+		return $block_content;
+	}
+
+	$selected_menu = intval( get_theme_mod( 'coco_theme_header_menu', 0 ) );
+	$locations     = get_nav_menu_locations();
+	$primary_loc   = ( ! empty( $locations['primary'] ) ) ? intval( $locations['primary'] ) : 0;
+
+	$menu_id = $selected_menu ? $selected_menu : $primary_loc;
+
+	if ( $menu_id > 0 && is_nav_menu( $menu_id ) ) {
+		$menu_html = wp_nav_menu(
+			array(
+				'menu'        => $menu_id,
+				'container'   => false,
+				'menu_class'  => 'coco-classic-menu-list',
+				'echo'        => false,
+				'fallback_cb' => false,
+				'depth'       => 2,
+			)
+		);
+
+		if ( ! empty( $menu_html ) ) {
+			return sprintf(
+				'<nav class="coco-main-nav coco-classic-nav" aria-label="Menú Principal"><button type="button" class="coco-mobile-menu-btn" aria-label="Menú" onclick="this.parentElement.classList.toggle(\'is-open\')">☰</button>%s</nav>',
+				$menu_html
+			);
+		}
+	}
+
+	return $block_content;
+}
+add_filter( 'render_block', 'coco_theme_render_header_navigation', 10, 2 );
 
 /**
  * Encolar hoja de estilos principal (style.css) y fuentes optimizadas.
@@ -495,7 +575,7 @@ function coco_theme_render_floating_whatsapp() {
 add_action( 'wp_footer', 'coco_theme_render_floating_whatsapp', 30 );
 
 /**
- * Panel de Personalización para prender o apagar el botón flotante de WhatsApp.
+ * Panel de Personalización para elegir Menú Principal y prender o apagar el botón flotante de WhatsApp.
  */
 function coco_theme_customize_register( $wp_customize ) {
 	$wp_customize->add_section(
@@ -503,6 +583,38 @@ function coco_theme_customize_register( $wp_customize ) {
 		array(
 			'title'    => __( 'Opciones Coco Cherry Store', 'coco-theme' ),
 			'priority' => 30,
+		)
+	);
+
+	// Selector de Menú Principal para la cabecera.
+	$menus        = wp_get_nav_menus();
+	$menu_choices = array(
+		0 => __( '— Usar ubicación Menú Principal o por defecto —', 'coco-theme' ),
+	);
+	if ( ! empty( $menus ) && ! is_wp_error( $menus ) ) {
+		foreach ( $menus as $menu_obj ) {
+			$menu_choices[ $menu_obj->term_id ] = $menu_obj->name;
+		}
+	}
+
+	$wp_customize->add_setting(
+		'coco_theme_header_menu',
+		array(
+			'default'           => 0,
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'absint',
+			'transport'         => 'refresh',
+		)
+	);
+
+	$wp_customize->add_control(
+		'coco_theme_header_menu',
+		array(
+			'label'       => __( 'Seleccionar Menú de Cabecera', 'coco-theme' ),
+			'description' => __( 'Elige cuál de tus menús creados en WordPress deseas mostrar en la barra superior.', 'coco-theme' ),
+			'section'     => 'coco_theme_options',
+			'type'        => 'select',
+			'choices'     => $menu_choices,
 		)
 	);
 

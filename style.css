@@ -7,7 +7,7 @@ Description: Tema WordPress Full Site Editing (FSE) ultraligero y de alta conver
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 7.4
-Version: 1.0.4
+Version: 1.0.5
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: coco-theme
@@ -40,6 +40,12 @@ Tags: full-site-editing, e-commerce, block-patterns, custom-colors, wide-blocks
 	--coco-shadow-md: 0 10px 28px rgba(31, 41, 51, 0.07);
 	--coco-shadow-lg: 0 18px 40px rgba(31, 41, 51, 0.12);
 	--coco-transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
 }
 
 html {
@@ -181,12 +187,13 @@ body {
 .coco-header-logo img,
 .wp-block-site-logo img,
 .custom-logo {
-	max-height: 52px;
-	height: auto;
-	width: auto;
-	max-width: 220px;
-	object-fit: contain;
-	display: block;
+	height: 54px !important;
+	width: 115px !important;
+	min-width: 110px !important;
+	max-height: 56px !important;
+	max-width: 220px !important;
+	object-fit: contain !important;
+	display: block !important;
 }
 
 /* Ocultar el título de texto cuando el logo con imagen está presente para evitar duplicidad */
@@ -194,17 +201,83 @@ body {
 	display: none;
 }
 
-.coco-main-nav .wp-block-navigation-item__content {
+.coco-main-nav .wp-block-navigation-item__content,
+.coco-classic-menu-list li a {
 	font-weight: 600;
 	font-size: 0.95rem;
-	padding: 0.4rem 0.6rem;
+	color: var(--coco-dark);
+	text-decoration: none;
+	padding: 0.4rem 0.65rem;
 	border-radius: 6px;
 	transition: var(--coco-transition);
+	display: inline-block;
 }
 
-.coco-main-nav .wp-block-navigation-item__content:hover {
+.coco-main-nav .wp-block-navigation-item__content:hover,
+.coco-classic-menu-list li a:hover,
+.coco-classic-menu-list li.current-menu-item > a {
 	color: var(--coco-primary);
 	background-color: var(--coco-primary-soft);
+}
+
+/* Estilos para Menú Clásico de WordPress (Apariencia > Menús / Personalizador) */
+.coco-classic-nav {
+	position: relative;
+	display: flex;
+	align-items: center;
+}
+
+.coco-classic-menu-list {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.coco-classic-menu-list li {
+	position: relative;
+	margin: 0;
+}
+
+.coco-classic-menu-list .sub-menu {
+	display: none;
+	position: absolute;
+	top: 100%;
+	left: 0;
+	min-width: 210px;
+	background: var(--coco-white);
+	border: 1px solid var(--coco-border);
+	border-radius: var(--coco-radius-sm);
+	box-shadow: var(--coco-shadow-md);
+	list-style: none;
+	padding: 0.5rem;
+	margin: 0;
+	z-index: 999;
+}
+
+.coco-classic-menu-list li:hover > .sub-menu {
+	display: block;
+}
+
+.coco-classic-menu-list .sub-menu li a {
+	display: block;
+	width: 100%;
+	padding: 0.5rem 0.75rem;
+}
+
+.coco-mobile-menu-btn {
+	display: none;
+	background: var(--coco-surface);
+	border: 1px solid var(--coco-border);
+	border-radius: 8px;
+	padding: 0.45rem 0.75rem;
+	font-size: 1.25rem;
+	line-height: 1;
+	color: var(--coco-dark);
+	cursor: pointer;
 }
 
 .coco-header-wa-btn .wp-block-button__link {
@@ -575,9 +648,46 @@ body {
 /* ==========================================================================
    6. CATÁLOGO Y PRODUCTOS WOOCOMMERCE (MODO EXCLUSIVO 1-CLIC COD)
    ========================================================================== */
+/* Eliminar pseudo-elementos clearfix de WooCommerce que ocupan celdas vacías en CSS Grid */
+.woocommerce ul.products::before,
+.woocommerce ul.products::after,
+.woocommerce-page ul.products::before,
+.woocommerce-page ul.products::after,
+ul.products::before,
+ul.products::after,
+.woocommerce div.product::before,
+.woocommerce div.product::after,
+.single-product div.product::before,
+.single-product div.product::after {
+	display: none !important;
+	content: none !important;
+}
+
+/* Grilla global de productos con separación limpia entre tarjetas */
+.woocommerce ul.products,
+.woocommerce-page ul.products {
+	display: grid !important;
+	grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+	gap: 1.75rem !important;
+	column-gap: 1.75rem !important;
+	row-gap: 2rem !important;
+	padding: 0 !important;
+	margin: 0 0 2rem 0 !important;
+	list-style: none !important;
+	width: 100% !important;
+	clear: both !important;
+}
+
 .woocommerce ul.products li.product,
+.woocommerce-page ul.products li.product,
 .wp-block-post-template li.wc-block-product,
 .wc-block-grid__product {
+	box-sizing: border-box !important;
+	width: 100% !important;
+	max-width: 100% !important;
+	margin: 0 !important;
+	float: none !important;
+	clear: none !important;
 	background: var(--coco-white);
 	border: 1px solid var(--coco-border);
 	border-radius: var(--coco-radius-md);
@@ -623,6 +733,7 @@ body {
 	aspect-ratio: 1 / 1;
 	object-fit: cover;
 	width: 100%;
+	display: block;
 	transition: var(--coco-transition);
 }
 
@@ -676,17 +787,20 @@ body {
 	border: 1px solid #E2E8F0;
 }
 
-/* Botón en tarjetas de catálogo: anclado al pie y lleva directo a la ficha */
+/* Botón en tarjetas de catálogo: anclado al pie y contenido 100% dentro de la card */
 .woocommerce ul.products li.product .button,
 .wp-block-button.wc-block-components-product-button .wc-block-components-product-button__button {
-	width: 100%;
+	box-sizing: border-box !important;
+	width: 100% !important;
+	max-width: 100% !important;
+	display: block !important;
 	text-align: center;
 	background-color: var(--coco-cod-green) !important;
 	color: var(--coco-white) !important;
 	font-weight: 700 !important;
 	border-radius: var(--coco-radius-sm) !important;
 	padding: 0.75rem 1rem !important;
-	margin-top: auto !important;
+	margin: auto 0 0 0 !important;
 	box-shadow: 0 4px 12px rgba(22, 163, 74, 0.2);
 	transition: var(--coco-transition);
 }
@@ -722,7 +836,9 @@ body {
 	grid-column: 1 / 2 !important;
 	width: 100% !important;
 	max-width: 100% !important;
-	position: relative;
+	position: relative !important;
+	float: none !important;
+	margin: 0 !important;
 }
 
 /* Imagen de producto estilizada con medida uniforme estándar */
@@ -774,13 +890,14 @@ body {
 	border-color: var(--coco-primary) !important;
 }
 
-/* Columna derecha resumen (Sticky en Desktop para alta conversión) */
+/* Columna derecha resumen (Flujo estático normal para no superponerse al hacer scroll) */
 .single-product div.product .summary.entry-summary {
 	grid-column: 2 / 3 !important;
 	width: 100% !important;
 	max-width: 100% !important;
-	position: sticky !important;
-	top: 90px !important;
+	position: static !important;
+	float: none !important;
+	margin: 0 !important;
 }
 
 /* Ocultar marquesina interna redondeada si existiera, ya que ahora es sticky superior */
@@ -1011,6 +1128,8 @@ body {
 	grid-column: 1 / -1 !important;
 	width: 100% !important;
 	margin-top: 3.5rem !important;
+	padding-top: 2.5rem !important;
+	border-top: 1px solid var(--coco-border) !important;
 	clear: both !important;
 	display: block !important;
 }
@@ -1021,16 +1140,20 @@ body {
 	font-size: 1.6rem !important;
 	font-weight: 800 !important;
 	color: var(--coco-dark);
-	margin-bottom: 1.75rem !important;
+	margin: 0 0 1.75rem 0 !important;
 	letter-spacing: -0.01em;
+	width: 100% !important;
+	display: block !important;
 }
 
 /* Grilla equilibrada de 4 columnas para productos relacionados */
 .single-product .related.products ul.products,
 .single-product .upsells.products ul.products {
 	display: grid !important;
-	grid-template-columns: repeat(4, 1fr) !important;
-	gap: 1.5rem !important;
+	grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+	gap: 1.75rem !important;
+	column-gap: 1.75rem !important;
+	row-gap: 2rem !important;
 	padding: 0 !important;
 	margin: 0 !important;
 	list-style: none !important;
@@ -1039,9 +1162,12 @@ body {
 
 .single-product .related.products ul.products li.product,
 .single-product .upsells.products ul.products li.product {
+	box-sizing: border-box !important;
 	width: 100% !important;
+	max-width: 100% !important;
 	margin: 0 !important;
 	float: none !important;
+	clear: none !important;
 	display: flex !important;
 	flex-direction: column !important;
 	justify-content: flex-start !important;
@@ -1293,10 +1419,12 @@ body {
 		gap: 0.85rem !important;
 	}
 
+	.woocommerce ul.products,
+	.woocommerce-page ul.products,
 	.single-product .related.products ul.products,
 	.single-product .upsells.products ul.products {
-		grid-template-columns: repeat(2, 1fr) !important;
-		gap: 1rem !important;
+		grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+		gap: 1.15rem !important;
 	}
 }
 
@@ -1312,6 +1440,38 @@ body {
 }
 
 @media (max-width: 781px) {
+	.coco-mobile-menu-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.coco-classic-menu-list {
+		display: none;
+		position: absolute;
+		top: calc(100% + 10px);
+		right: 0;
+		min-width: 240px;
+		background: var(--coco-white);
+		border: 1px solid var(--coco-border);
+		border-radius: var(--coco-radius-md);
+		box-shadow: var(--coco-shadow-lg);
+		flex-direction: column;
+		align-items: stretch;
+		padding: 0.75rem;
+		z-index: 1000;
+	}
+
+	.coco-classic-nav.is-open .coco-classic-menu-list {
+		display: flex;
+	}
+
+	.coco-classic-menu-list li a {
+		display: block;
+		width: 100%;
+		padding: 0.65rem 0.85rem;
+	}
+
 	.coco-sticky-top-marquee {
 		height: 32px;
 	}
