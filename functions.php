@@ -98,12 +98,27 @@ function coco_theme_setup() {
 }
 add_action( 'after_setup_theme', 'coco_theme_setup' );
 
-function coco_theme_disable_wc_zoom_script() {
+/**
+ * Desactivar de forma segura el zoom de WooCommerce sin romper el script del slider ni la galería.
+ */
+add_action( 'after_setup_theme', function() {
 	remove_theme_support( 'wc-product-gallery-zoom' );
-	wp_dequeue_script( 'zoom' );
-}
-add_action( 'wp', 'coco_theme_disable_wc_zoom_script', 99 );
-add_action( 'wp_enqueue_scripts', 'coco_theme_disable_wc_zoom_script', 99 );
+}, 100 );
+
+add_filter( 'woocommerce_single_product_zoom_enabled', '__return_false' );
+
+add_filter( 'woocommerce_single_product_params', function( $params ) {
+	if ( is_array( $params ) ) {
+		$params['zoom_enabled'] = false;
+	}
+	return $params;
+}, 99 );
+
+add_action( 'wp_enqueue_scripts', function() {
+	// Shim defensivo para jQuery.fn.zoom para garantizar que ningún script de WooCommerce falle
+	$dummy_zoom = "if(window.jQuery && !jQuery.fn.zoom){ jQuery.fn.zoom = function(){ return this; }; }";
+	wp_add_inline_script( 'wc-single-product', $dummy_zoom, 'before' );
+}, 20 );
 
 /**
  * Habilitar soporte para subir y previsualizar imágenes SVG en la biblioteca de medios.
