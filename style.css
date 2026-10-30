@@ -7,7 +7,7 @@ Description: Tema WordPress Full Site Editing (FSE) ultraligero y de alta conver
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 7.4
-Version: 1.0.1
+Version: 1.0.2
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: coco-theme
@@ -186,10 +186,33 @@ body {
 }
 
 .coco-hero-image-card {
+	position: relative;
 	border-radius: var(--coco-radius-lg);
 	overflow: hidden;
 	box-shadow: var(--coco-shadow-lg);
-	border: 4px solid var(--coco-white);
+	border: 1px solid var(--coco-border);
+	background: #FFFFFF;
+	transition: var(--coco-transition);
+}
+
+.coco-hero-image-card:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 22px 48px rgba(31, 41, 51, 0.16);
+}
+
+.coco-hero-star-tag {
+	position: absolute;
+	top: 16px;
+	left: 16px;
+	z-index: 10;
+	background: linear-gradient(135deg, #E47B02 0%, #B45309 100%);
+	color: #FFFFFF;
+	font-weight: 800;
+	font-size: 0.78rem;
+	padding: 0.38rem 0.85rem;
+	border-radius: 999px;
+	box-shadow: 0 4px 14px rgba(228, 123, 2, 0.4);
+	letter-spacing: 0.03em;
 }
 
 .coco-hero-image-card img {
@@ -197,6 +220,39 @@ body {
 	height: auto;
 	display: block;
 	object-fit: cover;
+}
+
+.coco-hero-card-meta {
+	padding: 1.15rem 1.4rem;
+	background: #FFFFFF;
+	border-top: 1px solid var(--coco-border);
+}
+
+.coco-hero-card-title {
+	margin: 0 0 0.35rem 0;
+	font-weight: 800;
+	font-size: 1.05rem;
+	color: var(--coco-dark);
+}
+
+.coco-hero-card-price {
+	margin: 0;
+	font-weight: 800;
+	font-size: 1.25rem;
+	color: var(--coco-primary);
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+}
+
+.coco-hero-card-badge {
+	font-size: 0.76rem;
+	font-weight: 700;
+	background-color: #F0FDF4;
+	color: #15803D;
+	padding: 0.22rem 0.6rem;
+	border-radius: 6px;
+	border: 1px solid #BBF7D0;
 }
 
 .coco-btn-primary .wp-block-button__link {
@@ -251,6 +307,181 @@ body {
 }
 
 /* ==========================================================================
+   4. SECCIÓN PRODUCTOS ESTRELLA (ENFOQUE DE ALTA CONVERSIÓN)
+   ========================================================================== */
+.coco-section-pill {
+	display: inline-block;
+	background-color: #FEF3C7;
+	color: #B45309;
+	font-weight: 800;
+	font-size: 0.78rem;
+	letter-spacing: 0.05em;
+	padding: 0.35rem 0.95rem;
+	border-radius: 999px;
+	border: 1px solid #FDE68A;
+	text-transform: uppercase;
+}
+
+.coco-star-spotlight-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 2rem;
+	width: 100%;
+}
+
+.coco-star-spotlight-card {
+	background: #FFFFFF;
+	border: 1px solid var(--coco-border);
+	border-radius: var(--coco-radius-lg);
+	padding: 1.85rem;
+	box-shadow: var(--coco-shadow-sm);
+	transition: var(--coco-transition);
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	overflow: hidden;
+}
+
+.coco-star-spotlight-card:hover {
+	transform: translateY(-5px);
+	box-shadow: var(--coco-shadow-md);
+	border-color: var(--coco-primary);
+}
+
+.coco-spotlight-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 1.15rem;
+	gap: 0.5rem;
+}
+
+.coco-spotlight-badge {
+	background: linear-gradient(135deg, #E47B02 0%, #B45309 100%);
+	color: #FFFFFF;
+	font-size: 0.72rem;
+	font-weight: 800;
+	padding: 0.35rem 0.8rem;
+	border-radius: 999px;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	box-shadow: 0 4px 10px rgba(228, 123, 2, 0.3);
+}
+
+.coco-spotlight-rating {
+	color: #F59E0B;
+	font-weight: 700;
+	font-size: 0.88rem;
+	letter-spacing: 1px;
+}
+
+.coco-spotlight-img-link {
+	display: block;
+	border-radius: var(--coco-radius-md);
+	overflow: hidden;
+	margin-bottom: 1.25rem;
+	background: #F9F9FB;
+}
+
+.coco-spotlight-img-link img {
+	width: 100%;
+	height: 300px;
+	object-fit: cover;
+	display: block;
+	transition: var(--coco-transition);
+}
+
+.coco-star-spotlight-card:hover .coco-spotlight-img-link img {
+	transform: scale(1.03);
+}
+
+.coco-spotlight-title {
+	font-size: 1.25rem;
+	font-weight: 800;
+	line-height: 1.35;
+	margin: 0 0 1rem 0;
+	color: var(--coco-dark);
+}
+
+.coco-spotlight-title a {
+	color: var(--coco-dark) !important;
+	text-decoration: none !important;
+	transition: var(--coco-transition);
+}
+
+.coco-spotlight-title a:hover {
+	color: var(--coco-primary) !important;
+}
+
+.coco-spotlight-features {
+	list-style: none !important;
+	padding: 0 !important;
+	margin: 0 0 1.25rem 0 !important;
+	flex-grow: 1;
+}
+
+.coco-spotlight-features li {
+	font-size: 0.9rem;
+	color: var(--coco-slate);
+	margin-bottom: 0.5rem;
+	line-height: 1.45;
+	list-style: none !important;
+	padding: 0 !important;
+}
+
+.coco-spotlight-price-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0.9rem 0;
+	border-top: 1px solid var(--coco-border);
+	margin-bottom: 1.15rem;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+
+.coco-spotlight-price {
+	font-size: 1.45rem;
+	font-weight: 800;
+	color: var(--coco-primary);
+}
+
+.coco-spotlight-cod {
+	background-color: #F0FDF4;
+	color: #15803D;
+	font-size: 0.78rem;
+	font-weight: 700;
+	padding: 0.25rem 0.65rem;
+	border-radius: 6px;
+	border: 1px solid #BBF7D0;
+}
+
+.coco-spotlight-action {
+	width: 100%;
+}
+
+.coco-spotlight-btn {
+	display: block;
+	width: 100%;
+	text-align: center;
+	background-color: var(--coco-cod-green) !important;
+	color: #FFFFFF !important;
+	font-weight: 800;
+	font-size: 1rem;
+	padding: 0.85rem 1.25rem;
+	border-radius: var(--coco-radius-md);
+	text-decoration: none !important;
+	box-shadow: 0 6px 18px rgba(22, 163, 74, 0.25);
+	transition: var(--coco-transition);
+}
+
+.coco-spotlight-btn:hover {
+	background-color: var(--coco-cod-green-dark) !important;
+	transform: translateY(-2px);
+	box-shadow: 0 10px 24px rgba(22, 163, 74, 0.35);
+}
+
+/* ==========================================================================
    5. GRID DE CATEGORÍAS PRINCIPALES
    ========================================================================== */
 .coco-category-card {
@@ -284,12 +515,15 @@ body {
 	background: var(--coco-white);
 	border: 1px solid var(--coco-border);
 	border-radius: var(--coco-radius-md);
-	padding: 1rem !important;
+	padding: 1.15rem !important;
 	box-shadow: var(--coco-shadow-sm);
 	transition: var(--coco-transition);
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
+	display: flex !important;
+	flex-direction: column !important;
+	justify-content: flex-start !important;
+	height: 100% !important;
+	position: relative !important;
+	overflow: hidden;
 }
 
 .woocommerce ul.products li.product:hover,
@@ -300,12 +534,34 @@ body {
 	border-color: var(--coco-primary);
 }
 
+/* Badge flotante MÁS VENDIDO en productos estrella del catálogo */
+.coco-star-product-badge {
+	position: absolute;
+	top: 14px;
+	left: 14px;
+	z-index: 5;
+	background: linear-gradient(135deg, #E47B02 0%, #B45309 100%);
+	color: #FFFFFF !important;
+	font-weight: 800;
+	font-size: 0.72rem;
+	letter-spacing: 0.04em;
+	padding: 0.32rem 0.75rem;
+	border-radius: 999px;
+	box-shadow: 0 4px 10px rgba(228, 123, 2, 0.35);
+	text-transform: uppercase;
+}
+
 .woocommerce ul.products li.product a img,
 .wp-block-woocommerce-product-image img {
 	border-radius: var(--coco-radius-sm);
 	aspect-ratio: 1 / 1;
 	object-fit: cover;
 	width: 100%;
+	transition: var(--coco-transition);
+}
+
+.woocommerce ul.products li.product:hover a img {
+	transform: scale(1.02);
 }
 
 .woocommerce ul.products li.product .woocommerce-loop-product__title,
@@ -314,18 +570,47 @@ body {
 	font-weight: 700;
 	color: var(--coco-dark);
 	line-height: 1.35;
-	margin-top: 0.5rem;
+	margin-top: 0.65rem;
+	margin-bottom: 0.4rem;
 }
 
 .woocommerce ul.products li.product .price,
 .wp-block-woocommerce-product-price {
 	color: var(--coco-primary) !important;
 	font-weight: 800 !important;
-	font-size: 1.15rem !important;
-	margin-bottom: 0.75rem !important;
+	font-size: 1.2rem !important;
+	margin-bottom: 0.4rem !important;
 }
 
-/* Botón en tarjetas de catálogo: lleva directo a la ficha de producto para pedir contra entrega */
+/* Micro-etiquetas de confianza en las tarjetas de producto del catálogo */
+.coco-product-cod-badge {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.35rem;
+	margin: 0.25rem 0 0.85rem 0;
+}
+
+.coco-cod-pill {
+	background-color: #F0FDF4;
+	color: #15803D;
+	font-size: 0.72rem;
+	font-weight: 700;
+	padding: 0.2rem 0.5rem;
+	border-radius: 6px;
+	border: 1px solid #BBF7D0;
+}
+
+.coco-delivery-pill {
+	background-color: #F8FAFC;
+	color: #475569;
+	font-size: 0.7rem;
+	font-weight: 600;
+	padding: 0.2rem 0.45rem;
+	border-radius: 6px;
+	border: 1px solid #E2E8F0;
+}
+
+/* Botón en tarjetas de catálogo: anclado al pie y lleva directo a la ficha */
 .woocommerce ul.products li.product .button,
 .wp-block-button.wc-block-components-product-button .wc-block-components-product-button__button {
 	width: 100%;
@@ -334,7 +619,9 @@ body {
 	color: var(--coco-white) !important;
 	font-weight: 700 !important;
 	border-radius: var(--coco-radius-sm) !important;
-	padding: 0.7rem 1rem !important;
+	padding: 0.75rem 1rem !important;
+	margin-top: auto !important;
+	box-shadow: 0 4px 12px rgba(22, 163, 74, 0.2);
 	transition: var(--coco-transition);
 }
 
@@ -342,6 +629,7 @@ body {
 .wp-block-button.wc-block-components-product-button .wc-block-components-product-button__button:hover {
 	background-color: var(--coco-cod-green-dark) !important;
 	transform: translateY(-1px);
+	box-shadow: 0 6px 16px rgba(22, 163, 74, 0.3);
 }
 
 /* ==========================================================================
@@ -614,6 +902,15 @@ body {
 
 	.coco-single-product-wrap {
 		padding: 1.15rem;
+	}
+
+	.coco-star-spotlight-grid {
+		grid-template-columns: 1fr !important;
+		gap: 1.5rem !important;
+	}
+
+	.coco-spotlight-img-link img {
+		height: 230px !important;
 	}
 
 	.coco-site-footer {

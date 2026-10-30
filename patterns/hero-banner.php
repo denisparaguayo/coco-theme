@@ -23,14 +23,10 @@
 			<p class="has-slate-color has-text-color has-lg-font-size">Comprá con total tranquilidad desde tu celular: hacés tu pedido en <strong>1 clic</strong> y abonás en <strong>efectivo o QR recién al recibir</strong> tu paquete en Asunción, Gran Asunción y todo el país.</p>
 			<!-- /wp:paragraph -->
 
-			<!-- wp:buttons {"style":{"spacing":{"margin":{"top":"1.75rem"},"blockGap":"1rem"}}} -->
+			<!-- wp:buttons {"style":{"spacing":{"margin":{"top":"1.75rem"}}}} -->
 			<div class="wp-block-buttons" style="margin-top:1.75rem">
 				<!-- wp:button {"className":"coco-btn-primary"} -->
-				<div class="wp-block-button coco-btn-primary"><a class="wp-block-button__link wp-element-button" href="/shop/">🛍️ Explorar Catálogo</a></div>
-				<!-- /wp:button -->
-
-				<!-- wp:button {"className":"coco-btn-whatsapp"} -->
-				<div class="wp-block-button coco-btn-whatsapp"><a class="wp-block-button__link wp-element-button" href="https://wa.me/595981531503?text=Hola%20Coco%20Cherry%20Store!%20Quiero%20hacer%20un%20pedido" target="_blank" rel="noreferrer noopener">📲 Pedir por WhatsApp</a></div>
+				<div class="wp-block-button coco-btn-primary"><a class="wp-block-button__link wp-element-button" href="/shop/">🛍️ Ver Catálogo Completo</a></div>
 				<!-- /wp:button -->
 			</div>
 			<!-- /wp:buttons -->
@@ -41,9 +37,14 @@
 		<div class="wp-block-column is-vertically-aligned-center" style="flex-basis:45%">
 			<!-- wp:group {"className":"coco-hero-image-card","backgroundColor":"white","layout":{"type":"constrained"}} -->
 			<div class="wp-block-group coco-hero-image-card has-white-background-color has-background">
+				<span class="coco-hero-star-tag">⭐ Top #1 Más Vendido</span>
 				<!-- wp:image {"sizeSlug":"large","linkDestination":"none"} -->
-				<figure class="wp-block-image size-large"><img src="https://cococherrypy.com/wp-content/uploads/2026/10/Sunscreen_bottle_on_tropical_beach_2K_20261027014224-scaled.jpg" alt="Coco Cherry Store - Productos destacados"/></figure>
+				<figure class="wp-block-image size-large"><img src="https://cococherrypy.com/wp-content/uploads/2026/10/Sunscreen_bottle_on_tropical_beach_2K_20261027014224-scaled.jpg" alt="Protector Solar Oro 24K FPS 90+ - Coco Cherry Store"/></figure>
 				<!-- /wp:image -->
+				<div class="coco-hero-card-meta">
+					<p class="coco-hero-card-title">Protector Solar Oro 24K FPS 90+</p>
+					<p class="coco-hero-card-price">120.000 Gs. <span class="coco-hero-card-badge">💵 Pago al Recibir</span></p>
+				</div>
 			</div>
 			<!-- /wp:group -->
 		</div>

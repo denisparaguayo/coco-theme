@@ -250,6 +250,152 @@ function coco_theme_product_cod_guarantees() {
 add_action( 'woocommerce_after_add_to_cart_form', 'coco_theme_product_cod_guarantees', 25 );
 
 /**
+ * Añadir insignia de producto estrella (Más Vendido) en las tarjetas del catálogo WooCommerce.
+ */
+function coco_theme_loop_star_badge() {
+	global $product;
+	if ( ! $product instanceof \WC_Product ) {
+		return;
+	}
+	$name    = mb_strtolower( $product->get_name(), 'UTF-8' );
+	$is_star = $product->is_featured() || false !== strpos( $name, 'protector solar' ) || false !== strpos( $name, 'rizador' );
+
+	if ( $is_star ) {
+		echo '<span class="coco-star-product-badge">⭐ MÁS VENDIDO</span>';
+	}
+}
+add_action( 'woocommerce_before_shop_loop_item_title', 'coco_theme_loop_star_badge', 5 );
+
+/**
+ * Añadir etiquetas de confianza (Pago al Recibir y Envíos) en las tarjetas del catálogo WooCommerce.
+ */
+function coco_theme_loop_cod_tag() {
+	echo '<div class="coco-product-cod-badge"><span class="coco-cod-pill">💵 Pago al Recibir</span><span class="coco-delivery-pill">🚚 Envíos a todo Paraguay</span></div>';
+}
+add_action( 'woocommerce_after_shop_loop_item_title', 'coco_theme_loop_cod_tag', 15 );
+
+/**
+ * Shortcode [coco_star_products]: Muestra los 2 productos estrella destacados con diseño de alta conversión.
+ */
+function coco_theme_star_products_shortcode() {
+	if ( ! function_exists( 'wc_get_products' ) ) {
+		return '';
+	}
+
+	$products = array();
+
+	// 1. Protector Solar Oro 24K
+	$query_sun = wc_get_products(
+		array(
+			'limit'  => 1,
+			'status' => 'publish',
+			's'      => 'Protector Solar',
+		)
+	);
+	if ( ! empty( $query_sun ) ) {
+		$products[] = array(
+			'product' => $query_sun[0],
+			'badge'   => '🔥 #1 MÁS VENDIDO EN BELLEZA',
+			'rating'  => '★★★★★ 4.9 (Más de 350 clientas)',
+			'bullets' => array(
+				'Máxima protección solar FPS 90+ de amplio espectro',
+				'Fórmula antiedad enriquecida con partículas de Oro 24K',
+				'Textura ultraligera, acabado mate sin brillo ni efecto graso',
+			),
+		);
+	}
+
+	// 2. Rizador de Pestañas Térmico y Perfilador de Cejas 2 en 1
+	$query_riz = wc_get_products(
+		array(
+			'limit'  => 1,
+			'status' => 'publish',
+			's'      => 'Rizador',
+		)
+	);
+	if ( ! empty( $query_riz ) ) {
+		$products[] = array(
+			'product' => $query_riz[0],
+			'badge'   => '✨ TENDENCIA VIRAL 2 EN 1',
+			'rating'  => '★★★★★ 5.0 (Novedad destacada)',
+			'bullets' => array(
+				'Rizado térmico rápido, natural y de larga duración sin quebrar',
+				'Perfilador eléctrico de alta precisión integrado para cejas perfectas',
+				'Batería recargable USB de larga duración para llevar a cualquier parte',
+			),
+		);
+	}
+
+	// Respaldo dinámico si no coinciden por nombre exacto
+	if ( count( $products ) < 2 ) {
+		$fallback = wc_get_products(
+			array(
+				'limit'   => 2 - count( $products ),
+				'status'  => 'publish',
+				'orderby' => 'popularity',
+			)
+		);
+		foreach ( $fallback as $fb_prod ) {
+			$products[] = array(
+				'product' => $fb_prod,
+				'badge'   => '⭐ PRODUCTO DESTACADO',
+				'rating'  => '★★★★★ 4.9',
+				'bullets' => array(
+					'Calidad premium seleccionada por Coco Cherry Store',
+					'Abonás en efectivo o QR recién al recibir tu paquete',
+					'Envíos rápidos y seguros a todo Paraguay',
+				),
+			);
+		}
+	}
+
+	if ( empty( $products ) ) {
+		return '';
+	}
+
+	ob_start();
+	?>
+	<div class="coco-star-spotlight-grid">
+		<?php foreach ( $products as $item ) :
+			$p = $item['product'];
+			$img_id = $p->get_image_id();
+			$img_url = $img_id ? wp_get_attachment_image_url( $img_id, 'large' ) : wc_placeholder_img_src();
+			$link = get_permalink( $p->get_id() );
+			?>
+			<div class="coco-star-spotlight-card">
+				<div class="coco-spotlight-header">
+					<span class="coco-spotlight-badge"><?php echo esc_html( $item['badge'] ); ?></span>
+					<span class="coco-spotlight-rating"><?php echo esc_html( $item['rating'] ); ?></span>
+				</div>
+				<a href="<?php echo esc_url( $link ); ?>" class="coco-spotlight-img-link" title="<?php echo esc_attr( $p->get_name() ); ?>">
+					<img src="<?php echo esc_url( $img_url ); ?>" alt="<?php echo esc_attr( $p->get_name() ); ?>" loading="lazy" />
+				</a>
+				<h3 class="coco-spotlight-title">
+					<a href="<?php echo esc_url( $link ); ?>"><?php echo esc_html( $p->get_name() ); ?></a>
+				</h3>
+				<ul class="coco-spotlight-features">
+					<?php foreach ( $item['bullets'] as $b ) : ?>
+						<li>✓ <?php echo esc_html( $b ); ?></li>
+					<?php endforeach; ?>
+				</ul>
+				<div class="coco-spotlight-price-row">
+					<span class="coco-spotlight-price"><?php echo $p->get_price_html(); ?></span>
+					<span class="coco-spotlight-cod">💵 Pago al Recibir en Puerta</span>
+				</div>
+				<div class="coco-spotlight-action">
+					<a href="<?php echo esc_url( $link ); ?>" class="coco-spotlight-btn">
+						Pedir con Pago Contra Entrega &rarr;
+					</a>
+				</div>
+			</div>
+		<?php endforeach; ?>
+	</div>
+	<?php
+	return ob_get_clean();
+}
+add_shortcode( 'coco_star_products', 'coco_theme_star_products_shortcode' );
+
+/**
  * Botón flotante de WhatsApp con mensaje dinámico según la página o producto actual.
  */
 function coco_theme_render_floating_whatsapp() {
