@@ -62,11 +62,19 @@ function coco_theme_setup() {
 			),
 		)
 	);
-	// Desactivamos zoom agresivo para mantener una navegación limpia y estilizada.
+	// Desactivamos zoom agresivo dejando el aspecto natural por defecto de WooCommerce.
+	remove_theme_support( 'wc-product-gallery-zoom' );
 	add_theme_support( 'wc-product-gallery-lightbox' );
 	add_theme_support( 'wc-product-gallery-slider' );
 }
 add_action( 'after_setup_theme', 'coco_theme_setup' );
+
+function coco_theme_disable_wc_zoom_script() {
+	remove_theme_support( 'wc-product-gallery-zoom' );
+	wp_dequeue_script( 'zoom' );
+}
+add_action( 'wp', 'coco_theme_disable_wc_zoom_script', 99 );
+add_action( 'wp_enqueue_scripts', 'coco_theme_disable_wc_zoom_script', 99 );
 
 /**
  * Habilitar soporte para subir y previsualizar imágenes SVG en la biblioteca de medios.

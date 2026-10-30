@@ -7,7 +7,7 @@ Description: Tema WordPress Full Site Editing (FSE) ultraligero y de alta conver
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 7.4
-Version: 1.0.6
+Version: 1.0.7
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: coco-theme
@@ -870,17 +870,15 @@ ul.products::after,
 	margin: 0 !important;
 }
 
-/* Imagen de producto estilizada con medida uniforme estándar */
+/* Imagen de producto con proporción natural por defecto de WooCommerce (sin recorte ni zoom) */
 .woocommerce-product-gallery__image img,
 .woocommerce-product-gallery .wp-post-image,
 .woocommerce-product-gallery figure img {
 	width: 100% !important;
-	height: 500px !important;
-	max-height: 500px !important;
-	object-fit: cover !important;
+	height: auto !important;
+	max-height: none !important;
+	object-fit: initial !important;
 	border-radius: var(--coco-radius-md) !important;
-	box-shadow: 0 4px 20px rgba(31, 41, 51, 0.06);
-	border: 1px solid var(--coco-border);
 	display: block !important;
 }
 
@@ -1617,13 +1615,6 @@ ul.products::after,
 		max-width: 100% !important;
 		width: 100% !important;
 		position: static !important;
-	}
-
-	.woocommerce-product-gallery__image img,
-	.woocommerce-product-gallery .wp-post-image,
-	.woocommerce-product-gallery figure img {
-		height: 380px !important;
-		max-height: 380px !important;
 	}
 
 	.single-product .coco-single-product-wrap {
