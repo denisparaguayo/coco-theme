@@ -1,10 +1,44 @@
-<!-- wp:group {"className":"coco-top-bar","style":{"spacing":{"padding":{"top":"0.55rem","bottom":"0.55rem","left":"1.25rem","right":"1.25rem"}}},"backgroundColor":"dark","textColor":"white","layout":{"type":"constrained"}} -->
-<div class="wp-block-group coco-top-bar has-white-color has-dark-background-color has-text-color has-background" style="padding-top:0.55rem;padding-right:1.25rem;padding-bottom:0.55rem;padding-left:1.25rem">
-	<!-- wp:paragraph {"align":"center"} -->
-	<p class="has-text-align-center">📦 Envíos seguros a todo Paraguay &bull; 💵 <strong>Pago Contra Entrega</strong> (Efectivo o QR al recibir en puerta) &bull; 📲 WhatsApp: <a href="https://wa.me/595981531503" target="_blank" rel="noreferrer noopener"><strong>0981 531503</strong></a></p>
-	<!-- /wp:paragraph -->
+<!-- wp:html -->
+<div id="coco-sticky-marquee-top" class="coco-sticky-top-marquee">
+	<div class="coco-top-marquee-container">
+		<div class="coco-top-marquee-track">
+			<span>💵 Pago Contra Entrega, transferencia, efectivo</span>
+			<span class="coco-marquee-dot">•</span>
+			<span>🚚 Envíos a todo Paraguay</span>
+			<span class="coco-marquee-dot">•</span>
+			<span>📲 WhatsApp: <a href="https://wa.me/595981531503" target="_blank" rel="noreferrer noopener">0981 531503</a></span>
+			<span class="coco-marquee-dot">•</span>
+			<span>🛡️ 100% Compra Segura</span>
+			<span class="coco-marquee-dot">•</span>
+			<span>💵 Pago Contra Entrega, transferencia, efectivo</span>
+			<span class="coco-marquee-dot">•</span>
+			<span>🚚 Envíos a todo Paraguay</span>
+			<span class="coco-marquee-dot">•</span>
+			<span>📲 WhatsApp: <a href="https://wa.me/595981531503" target="_blank" rel="noreferrer noopener">0981 531503</a></span>
+			<span class="coco-marquee-dot">•</span>
+			<span>🛡️ 100% Compra Segura</span>
+		</div>
+	</div>
+	<button type="button" class="coco-top-marquee-close" aria-label="Cerrar aviso" onclick="cocoDismissTopBar()">✕</button>
 </div>
-<!-- /wp:group -->
+<script>
+(function(){
+	try {
+		if (sessionStorage.getItem('coco_topbar_dismissed') === '1') {
+			var m = document.getElementById('coco-sticky-marquee-top');
+			if (m) m.style.display = 'none';
+		}
+	} catch(e){}
+})();
+function cocoDismissTopBar(){
+	var m = document.getElementById('coco-sticky-marquee-top');
+	if (m) {
+		m.style.display = 'none';
+		try { sessionStorage.setItem('coco_topbar_dismissed', '1'); } catch(e){}
+	}
+}
+</script>
+<!-- /wp:html -->
 
 <!-- wp:group {"className":"coco-site-header","style":{"spacing":{"padding":{"top":"0.9rem","bottom":"0.9rem","left":"1.25rem","right":"1.25rem"}}},"backgroundColor":"white","layout":{"type":"constrained"}} -->
 <div class="wp-block-group coco-site-header has-white-background-color has-background" style="padding-top:0.9rem;padding-right:1.25rem;padding-bottom:0.9rem;padding-left:1.25rem">
@@ -17,7 +51,7 @@
 		</div>
 		<!-- /wp:group -->
 
-		<!-- wp:navigation {"className":"coco-main-nav","overlayMenu":"mobile","layout":{"type":"flex","justifyContent":"center","orientation":"horizontal"},"style":{"spacing":{"blockGap":"1rem"}}} -->
+		<!-- wp:navigation {"className":"coco-main-nav","overlayMenu":"mobile","layout":{"type":"flex","justifyContent":"right","orientation":"horizontal"},"style":{"spacing":{"blockGap":"1rem"}}} -->
 			<!-- wp:navigation-link {"label":"Inicio","url":"/","kind":"custom","isTopLevelLink":true} /-->
 			<!-- wp:navigation-link {"label":"Catálogo","url":"/shop/","kind":"custom","isTopLevelLink":true} /-->
 			<!-- wp:navigation-link {"label":"Moda","url":"/product-category/moda/","kind":"custom","isTopLevelLink":true} /-->
@@ -26,16 +60,7 @@
 			<!-- wp:navigation-link {"label":"Hogar & Tecnología","url":"/product-category/tecnologia/","kind":"custom","isTopLevelLink":true} /-->
 			<!-- wp:navigation-link {"label":"Preguntas Frecuentes","url":"/faq/","kind":"custom","isTopLevelLink":true} /-->
 		<!-- /wp:navigation -->
-
-		<!-- wp:buttons {"layout":{"type":"flex","justifyContent":"right"}} -->
-		<div class="wp-block-buttons">
-			<!-- wp:button {"className":"coco-header-wa-btn"} -->
-			<div class="wp-block-button coco-header-wa-btn"><a class="wp-block-button__link wp-element-button" href="https://wa.me/595981531503?text=Hola%20Coco%20Cherry%20Store!%20Quiero%20hacer%20una%20consulta" target="_blank" rel="noreferrer noopener">📲 Pedidos: 0981 531503</a></div>
-			<!-- /wp:button -->
-		</div>
-		<!-- /wp:buttons -->
 	</div>
 	<!-- /wp:group -->
 </div>
 <!-- /wp:group -->
-

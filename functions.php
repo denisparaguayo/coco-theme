@@ -53,7 +53,7 @@ function coco_theme_setup() {
 			),
 		)
 	);
-	add_theme_support( 'wc-product-gallery-zoom' );
+	// Desactivamos zoom agresivo para mantener una navegación limpia y estilizada.
 	add_theme_support( 'wc-product-gallery-lightbox' );
 	add_theme_support( 'wc-product-gallery-slider' );
 }
@@ -192,9 +192,33 @@ function coco_theme_fallback_site_logo_render( $block_content, $block ) {
 		}
 	}
 
-	return $block_content;
+	// Fallback garantizado: si aún no se configuró en medios, servir el logo oficial del tema (COCO-NEW-LOGO.svg).
+	$theme_logo = get_template_directory_uri() . '/assets/images/coco-logo.svg';
+	return sprintf(
+		'<div class="wp-block-site-logo"><a href="%s" class="custom-logo-link" rel="home"><img src="%s" class="custom-logo" alt="%s" style="max-height:52px;width:auto;" /></a></div>',
+		esc_url( home_url( '/' ) ),
+		esc_url( $theme_logo ),
+		esc_attr( get_bloginfo( 'name' ) )
+	);
 }
 add_filter( 'render_block', 'coco_theme_fallback_site_logo_render', 10, 2 );
+
+/**
+ * Filtro get_custom_logo para garantizar la visualización en llamadas clásicas del tema.
+ */
+function coco_theme_fallback_custom_logo_html( $html ) {
+	if ( empty( $html ) ) {
+		$theme_logo = get_template_directory_uri() . '/assets/images/coco-logo.svg';
+		return sprintf(
+			'<a href="%s" class="custom-logo-link" rel="home"><img src="%s" class="custom-logo" alt="%s" style="max-height:52px;width:auto;" /></a>',
+			esc_url( home_url( '/' ) ),
+			esc_url( $theme_logo ),
+			esc_attr( get_bloginfo( 'name' ) )
+		);
+	}
+	return $html;
+}
+add_filter( 'get_custom_logo', 'coco_theme_fallback_custom_logo_html' );
 
 /**
  * Encolar hoja de estilos principal (style.css) y fuentes optimizadas.
@@ -233,40 +257,6 @@ function coco_theme_register_pattern_categories() {
 add_action( 'init', 'coco_theme_register_pattern_categories' );
 
 /**
- * Marquesina animada estilo Ecomus en la columna derecha de la ficha de producto.
- */
-function coco_theme_single_product_marquee() {
-	?>
-	<div class="coco-product-marquee-wrap">
-		<div class="coco-product-marquee">
-			<div class="coco-product-marquee-track">
-				<span>🔥 OFERTA DE TEMPORADA</span>
-				<span class="coco-marquee-sep">•</span>
-				<span>💵 PAGO CONTRA ENTREGA (EFECTIVO O QR)</span>
-				<span class="coco-marquee-sep">•</span>
-				<span>🚚 ENVÍOS A TODO PARAGUAY</span>
-				<span class="coco-marquee-sep">•</span>
-				<span>📲 PEDIDOS DIRECTOS: 0981 531503</span>
-				<span class="coco-marquee-sep">•</span>
-				<span>🛡️ 100% COMPRA SEGURA Y SIN RIESGO</span>
-				<span class="coco-marquee-sep">•</span>
-				<span>🔥 OFERTA DE TEMPORADA</span>
-				<span class="coco-marquee-sep">•</span>
-				<span>💵 PAGO CONTRA ENTREGA (EFECTIVO O QR)</span>
-				<span class="coco-marquee-sep">•</span>
-				<span>🚚 ENVÍOS A TODO PARAGUAY</span>
-				<span class="coco-marquee-sep">•</span>
-				<span>📲 PEDIDOS DIRECTOS: 0981 531503</span>
-				<span class="coco-marquee-sep">•</span>
-				<span>🛡️ 100% COMPRA SEGURA Y SIN RIESGO</span>
-			</div>
-		</div>
-	</div>
-	<?php
-}
-add_action( 'woocommerce_single_product_summary', 'coco_theme_single_product_marquee', 3 );
-
-/**
  * Barra de urgencia y demanda estilo Ecomus bajo el precio en la ficha de producto.
  */
 function coco_theme_single_product_urgency_bar() {
@@ -294,14 +284,14 @@ function coco_theme_product_cod_guarantees() {
 			<div class="coco-trust-item-icon">💵</div>
 			<div class="coco-trust-item-content">
 				<strong>Pago Contra Entrega</strong>
-				<span>Abonás en efectivo o QR recién al recibir tu paquete en puerta</span>
+				<span>Abonás en efectivo o transferencia recién al recibir tu paquete en puerta</span>
 			</div>
 		</div>
 		<div class="coco-trust-item">
 			<div class="coco-trust-item-icon">🚚</div>
 			<div class="coco-trust-item-content">
 				<strong>Envíos a Todo Paraguay</strong>
-				<span>Delivery express en Asunción, Gran Asunción e interior</span>
+				<span>Delivery express en Asunción, Gran Asunción e interior del país</span>
 			</div>
 		</div>
 		<div class="coco-trust-item">
@@ -341,10 +331,10 @@ function coco_theme_loop_star_badge() {
 add_action( 'woocommerce_before_shop_loop_item_title', 'coco_theme_loop_star_badge', 5 );
 
 /**
- * Añadir etiquetas de confianza (Pago al Recibir y Envíos) en las tarjetas del catálogo WooCommerce.
+ * Añadir etiquetas universales de pago y entrega en las tarjetas del catálogo WooCommerce.
  */
 function coco_theme_loop_cod_tag() {
-	echo '<div class="coco-product-cod-badge"><span class="coco-cod-pill">💵 Pago al Recibir</span><span class="coco-delivery-pill">🚚 Envíos a todo Paraguay</span></div>';
+	echo '<div class="coco-product-cod-badge"><span class="coco-cod-pill">💵 Pago Contra Entrega, transferencia, efectivo</span><span class="coco-delivery-pill">🚚 Envíos a todo Paraguay</span></div>';
 }
 add_action( 'woocommerce_after_shop_loop_item_title', 'coco_theme_loop_cod_tag', 15 );
 
@@ -470,9 +460,14 @@ function coco_theme_star_products_shortcode() {
 add_shortcode( 'coco_star_products', 'coco_theme_star_products_shortcode' );
 
 /**
- * Botón flotante de WhatsApp con mensaje dinámico según la página o producto actual.
+ * Botón flotante de WhatsApp: desactivado por defecto para no obstruir pantalla móvil ni fichas de producto.
+ * Puede encenderse o apagarse cuando se desee desde Apariencia > Personalizar > Opciones Coco Cherry.
  */
 function coco_theme_render_floating_whatsapp() {
+	if ( 'yes' !== get_option( 'coco_theme_show_floating_wa', 'no' ) ) {
+		return;
+	}
+
 	$phone = '595981531503';
 	$text  = 'Hola Coco Cherry Store! Quiero hacer una consulta sobre sus productos con pago al recibir.';
 
@@ -498,4 +493,37 @@ function coco_theme_render_floating_whatsapp() {
 	<?php
 }
 add_action( 'wp_footer', 'coco_theme_render_floating_whatsapp', 30 );
+
+/**
+ * Panel de Personalización para prender o apagar el botón flotante de WhatsApp.
+ */
+function coco_theme_customize_register( $wp_customize ) {
+	$wp_customize->add_section(
+		'coco_theme_options',
+		array(
+			'title'    => __( 'Opciones Coco Cherry Store', 'coco-theme' ),
+			'priority' => 30,
+		)
+	);
+
+	$wp_customize->add_setting(
+		'coco_theme_show_floating_wa',
+		array(
+			'default'   => 'no',
+			'type'      => 'option',
+			'transport' => 'refresh',
+		)
+	);
+
+	$wp_customize->add_control(
+		'coco_theme_show_floating_wa',
+		array(
+			'label'       => __( 'Activar botón flotante sticky de WhatsApp', 'coco-theme' ),
+			'description' => __( 'Por defecto está apagado para no tapar los productos en móviles. Marque esta casilla si desea encenderlo.', 'coco-theme' ),
+			'section'     => 'coco_theme_options',
+			'type'        => 'checkbox',
+		)
+	);
+}
+add_action( 'customize_register', 'coco_theme_customize_register' );
 

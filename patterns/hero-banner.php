@@ -20,7 +20,7 @@
 			<!-- /wp:heading -->
 
 			<!-- wp:paragraph {"textColor":"slate","fontSize":"lg"} -->
-			<p class="has-slate-color has-text-color has-lg-font-size">Comprá con total tranquilidad desde tu celular: hacés tu pedido en <strong>1 clic</strong> y abonás en <strong>efectivo o QR recién al recibir</strong> tu paquete en Asunción, Gran Asunción y todo el país.</p>
+			<p class="has-slate-color has-text-color has-lg-font-size">Comprá con total tranquilidad desde tu celular: hacés tu pedido en <strong>1 clic</strong> y abonás con <strong>Pago Contra Entrega, transferencia o efectivo</strong> al recibir tu paquete en Asunción, Gran Asunción e interior.</p>
 			<!-- /wp:paragraph -->
 
 			<!-- wp:buttons {"style":{"spacing":{"margin":{"top":"1.75rem"}}}} -->

@@ -7,7 +7,7 @@ Description: Tema WordPress Full Site Editing (FSE) ultraligero y de alta conver
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 7.4
-Version: 1.0.3
+Version: 1.0.4
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: coco-theme
@@ -18,9 +18,12 @@ Tags: full-site-editing, e-commerce, block-patterns, custom-colors, wide-blocks
    1. VARIABLES BASE Y RESET GENERAL
    ========================================================================== */
 :root {
-	--coco-primary: #E47B02;
-	--coco-primary-hover: #ED8F0C;
-	--coco-primary-soft: #FFF7ED;
+	--coco-primary: #CE1322;
+	--coco-primary-hover: #B9101E;
+	--coco-primary-soft: #FFF1F2;
+	--coco-gold: #D19711;
+	--coco-gold-hover: #B8820B;
+	--coco-gold-soft: #FEF9EE;
 	--coco-cod-green: #16A34A;
 	--coco-cod-green-dark: #15803D;
 	--coco-whatsapp: #25D366;
@@ -60,32 +63,95 @@ body {
 }
 
 /* ==========================================================================
-   2. TOP BAR & CABECERA PRINCIPAL (HEADER)
+   2. MARQUESINA STICKY SUPERIOR (ANCHO COMPLETO Y BOTÓN CERRAR) & HEADER
    ========================================================================== */
-.coco-top-bar {
-	font-size: 0.85rem;
-	font-weight: 600;
-	letter-spacing: 0.01em;
-	border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.coco-top-bar p {
+.coco-sticky-top-marquee {
+	position: sticky;
+	top: 0;
+	z-index: 999;
+	width: 100%;
+	background: #111827;
+	color: #FFFFFF;
+	display: flex;
+	align-items: center;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+	overflow: hidden;
+	height: 36px;
 	margin: 0;
+	padding: 0;
+	border-radius: 0 !important;
 }
 
-.coco-top-bar a {
+.coco-top-marquee-container {
+	flex: 1;
+	overflow: hidden;
+	display: flex;
+	white-space: nowrap;
+	user-select: none;
+}
+
+.coco-top-marquee-track {
+	display: flex;
+	align-items: center;
+	gap: 1.5rem;
+	white-space: nowrap;
+	animation: cocoTopMarqueeAnim 26s linear infinite;
+	font-size: 0.8rem;
+	font-weight: 700;
+	letter-spacing: 0.02em;
+	padding-left: 1rem;
+}
+
+.coco-top-marquee-container:hover .coco-top-marquee-track {
+	animation-play-state: paused;
+}
+
+.coco-top-marquee-track a {
 	color: #4ade80 !important;
 	text-decoration: underline !important;
-	transition: var(--coco-transition);
+	font-weight: 800;
 }
 
-.coco-top-bar a:hover {
-	color: var(--coco-white) !important;
+.coco-marquee-dot {
+	color: var(--coco-primary);
+	font-weight: 800;
+	opacity: 0.8;
+}
+
+.coco-top-marquee-close {
+	background: transparent;
+	border: none;
+	color: #9CA3AF;
+	font-size: 0.95rem;
+	line-height: 1;
+	cursor: pointer;
+	padding: 0 0.85rem;
+	height: 100%;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	transition: var(--coco-transition);
+	z-index: 10;
+}
+
+.coco-top-marquee-close:hover {
+	color: #FFFFFF;
+	background: rgba(255, 255, 255, 0.1);
+}
+
+@keyframes cocoTopMarqueeAnim {
+	0% {
+		transform: translateX(0);
+	}
+	100% {
+		transform: translateX(-50%);
+	}
 }
 
 .coco-site-header {
 	position: sticky;
-	top: 0;
+	top: 36px;
 	z-index: 990;
 	background-color: rgba(255, 255, 255, 0.98);
 	backdrop-filter: blur(10px);
@@ -164,14 +230,14 @@ body {
 .coco-hero-section {
 	position: relative;
 	overflow: hidden;
-	background: linear-gradient(135deg, #FFF7ED 0%, #FFFFFF 55%, #F0FDF4 100%);
+	background: linear-gradient(135deg, #FFF1F2 0%, #FFFFFF 55%, #FEF9EE 100%);
 	border-bottom: 1px solid var(--coco-border);
 }
 
 .coco-hero-badge {
 	display: inline-block;
-	background-color: #FEF3C7;
-	color: #B45309;
+	background-color: var(--coco-gold-soft);
+	color: #9A6F09;
 	font-weight: 700;
 	font-size: 0.82rem;
 	text-transform: uppercase;
@@ -205,13 +271,13 @@ body {
 	top: 16px;
 	left: 16px;
 	z-index: 10;
-	background: linear-gradient(135deg, #E47B02 0%, #B45309 100%);
+	background: linear-gradient(135deg, #CE1322 0%, #D19711 100%);
 	color: #FFFFFF;
 	font-weight: 800;
 	font-size: 0.78rem;
 	padding: 0.38rem 0.85rem;
 	border-radius: 999px;
-	box-shadow: 0 4px 14px rgba(228, 123, 2, 0.4);
+	box-shadow: 0 4px 14px rgba(206, 19, 34, 0.35);
 	letter-spacing: 0.03em;
 }
 
@@ -311,8 +377,8 @@ body {
    ========================================================================== */
 .coco-section-pill {
 	display: inline-block;
-	background-color: #FEF3C7;
-	color: #B45309;
+	background-color: var(--coco-gold-soft);
+	color: #9A6F09;
 	font-weight: 800;
 	font-size: 0.78rem;
 	letter-spacing: 0.05em;
@@ -357,7 +423,7 @@ body {
 }
 
 .coco-spotlight-badge {
-	background: linear-gradient(135deg, #E47B02 0%, #B45309 100%);
+	background: linear-gradient(135deg, #CE1322 0%, #D19711 100%);
 	color: #FFFFFF;
 	font-size: 0.72rem;
 	font-weight: 800;
@@ -365,7 +431,7 @@ body {
 	border-radius: 999px;
 	letter-spacing: 0.04em;
 	text-transform: uppercase;
-	box-shadow: 0 4px 10px rgba(228, 123, 2, 0.3);
+	box-shadow: 0 4px 10px rgba(206, 19, 34, 0.25);
 }
 
 .coco-spotlight-rating {
@@ -540,14 +606,14 @@ body {
 	top: 14px;
 	left: 14px;
 	z-index: 5;
-	background: linear-gradient(135deg, #E47B02 0%, #B45309 100%);
+	background: linear-gradient(135deg, #CE1322 0%, #D19711 100%);
 	color: #FFFFFF !important;
 	font-weight: 800;
 	font-size: 0.72rem;
 	letter-spacing: 0.04em;
 	padding: 0.32rem 0.75rem;
 	border-radius: 999px;
-	box-shadow: 0 4px 10px rgba(228, 123, 2, 0.35);
+	box-shadow: 0 4px 10px rgba(206, 19, 34, 0.3);
 	text-transform: uppercase;
 }
 
@@ -643,26 +709,42 @@ body {
 	box-shadow: var(--coco-shadow-sm);
 }
 
-/* Grilla moderna de 2 columnas estilo Ecomus */
+/* Grilla moderna Ecomus: 2 columnas superiores (Galería + Resumen) y filas inferiores independientes */
 .single-product div.product {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 3.5rem;
-	align-items: flex-start;
+	display: grid !important;
+	grid-template-columns: 52% 44% !important;
+	column-gap: 4% !important;
+	row-gap: 2.5rem !important;
+	align-items: start !important;
 }
 
 .single-product div.product .woocommerce-product-gallery {
-	flex: 1 1 52%;
-	max-width: calc(54% - 1.75rem);
+	grid-column: 1 / 2 !important;
+	width: 100% !important;
+	max-width: 100% !important;
 	position: relative;
 }
 
-.single-product div.product .woocommerce-product-gallery img {
-	border-radius: var(--coco-radius-md);
-	width: 100%;
-	height: auto;
+/* Imagen de producto estilizada con medida uniforme estándar */
+.woocommerce-product-gallery__image img,
+.woocommerce-product-gallery .wp-post-image,
+.woocommerce-product-gallery figure img {
+	width: 100% !important;
+	height: 500px !important;
+	max-height: 500px !important;
+	object-fit: cover !important;
+	border-radius: var(--coco-radius-md) !important;
 	box-shadow: 0 4px 20px rgba(31, 41, 51, 0.06);
 	border: 1px solid var(--coco-border);
+	display: block !important;
+}
+
+/* Desactivar cualquier lupa o zoom flotante agresivo */
+.woocommerce-product-gallery__trigger,
+.zoomImg {
+	display: none !important;
+	pointer-events: none !important;
+	visibility: hidden !important;
 }
 
 .single-product div.product .woocommerce-product-gallery .flex-control-thumbs {
@@ -679,72 +761,31 @@ body {
 }
 
 .single-product div.product .woocommerce-product-gallery .flex-control-thumbs li img {
-	border-radius: 8px;
-	border: 2px solid transparent;
+	width: 76px !important;
+	height: 76px !important;
+	object-fit: cover !important;
+	border-radius: 8px !important;
+	border: 2px solid transparent !important;
 	transition: var(--coco-transition);
 }
 
 .single-product div.product .woocommerce-product-gallery .flex-control-thumbs li img.flex-active,
 .single-product div.product .woocommerce-product-gallery .flex-control-thumbs li img:hover {
-	border-color: var(--coco-primary);
+	border-color: var(--coco-primary) !important;
 }
 
-/* Columna derecha resumen (Sticky en Desktop) */
+/* Columna derecha resumen (Sticky en Desktop para alta conversión) */
 .single-product div.product .summary.entry-summary {
-	flex: 1 1 40%;
-	max-width: calc(46% - 1.75rem);
-	position: sticky;
-	top: 90px;
+	grid-column: 2 / 3 !important;
+	width: 100% !important;
+	max-width: 100% !important;
+	position: sticky !important;
+	top: 90px !important;
 }
 
-/* Marquesina animada estilo Ecomus arriba a la derecha */
+/* Ocultar marquesina interna redondeada si existiera, ya que ahora es sticky superior */
 .coco-product-marquee-wrap {
-	overflow: hidden;
-	background: linear-gradient(135deg, #FFF7ED 0%, #FEF3C7 50%, #F0FDF4 100%);
-	border: 1px solid #FED7AA;
-	border-radius: 999px;
-	padding: 0.45rem 0.85rem;
-	margin-bottom: 1.15rem;
-	box-shadow: 0 2px 8px rgba(228, 123, 2, 0.08);
-	width: 100%;
-}
-
-.coco-product-marquee {
-	display: flex;
-	overflow: hidden;
-	user-select: none;
-	width: 100%;
-}
-
-.coco-product-marquee-track {
-	display: flex;
-	align-items: center;
-	gap: 1.25rem;
-	white-space: nowrap;
-	animation: cocoMarqueeScroll 22s linear infinite;
-	font-size: 0.76rem;
-	font-weight: 800;
-	letter-spacing: 0.04em;
-	color: #B45309;
-	text-transform: uppercase;
-}
-
-.coco-product-marquee-wrap:hover .coco-product-marquee-track {
-	animation-play-state: paused;
-}
-
-.coco-marquee-sep {
-	color: #F59E0B;
-	opacity: 0.7;
-}
-
-@keyframes cocoMarqueeScroll {
-	0% {
-		transform: translateX(0);
-	}
-	100% {
-		transform: translateX(-50%);
-	}
+	display: none !important;
 }
 
 .single-product .product_title {
@@ -794,8 +835,8 @@ body {
 
 /* Barra de urgencia y demanda estilo Ecomus */
 .coco-stock-urgency-bar {
-	background-color: #FFF7ED;
-	border: 1px solid #FFEDD5;
+	background-color: var(--coco-primary-soft);
+	border: 1px solid #FFE4E6;
 	border-radius: var(--coco-radius-sm);
 	padding: 0.75rem 1rem;
 	margin: 0.85rem 0 1.25rem 0;
@@ -803,7 +844,7 @@ body {
 
 .coco-urgency-text {
 	font-size: 0.85rem;
-	color: #9A3412;
+	color: #9F1239;
 	font-weight: 600;
 	display: flex;
 	align-items: center;
@@ -812,13 +853,13 @@ body {
 }
 
 .coco-urgency-text strong {
-	color: #C2410C;
+	color: var(--coco-primary);
 	font-weight: 800;
 }
 
 .coco-urgency-progress {
 	height: 6px;
-	background-color: #FED7AA;
+	background-color: #FECDD3;
 	border-radius: 999px;
 	overflow: hidden;
 }
@@ -826,7 +867,7 @@ body {
 .coco-urgency-fill {
 	height: 100%;
 	width: 78%;
-	background: linear-gradient(90deg, #E47B02, #16A34A);
+	background: linear-gradient(90deg, #CE1322, #D19711);
 	border-radius: 999px;
 	animation: cocoPulseUrgency 2s ease-in-out infinite alternate;
 }
@@ -922,12 +963,13 @@ body {
 	margin-top: 0.15rem;
 }
 
-/* Pestañas / Tabs estilo moderno Ecomus */
-.woocommerce-tabs {
-	margin-top: 3.5rem;
-	border-top: 1px solid var(--coco-border);
-	padding-top: 2.5rem;
-	width: 100%;
+/* Pestañas / Tabs estilo moderno Ecomus (100% ancho inferior) */
+.single-product div.product .woocommerce-tabs {
+	grid-column: 1 / -1 !important;
+	width: 100% !important;
+	margin-top: 2rem !important;
+	border-top: 1px solid var(--coco-border) !important;
+	padding-top: 2rem !important;
 }
 
 .woocommerce-tabs ul.tabs {
@@ -961,6 +1003,48 @@ body {
 	color: var(--coco-slate);
 	line-height: 1.7;
 	font-size: 0.98rem;
+}
+
+/* Productos relacionados y Upsells: siempre abajo en ancho completo sin superposición */
+.single-product div.product .related.products,
+.single-product div.product .upsells.products {
+	grid-column: 1 / -1 !important;
+	width: 100% !important;
+	margin-top: 3.5rem !important;
+	clear: both !important;
+	display: block !important;
+}
+
+.single-product .related.products > h2,
+.single-product .upsells.products > h2 {
+	font-family: var(--wp--preset--font-family--heading);
+	font-size: 1.6rem !important;
+	font-weight: 800 !important;
+	color: var(--coco-dark);
+	margin-bottom: 1.75rem !important;
+	letter-spacing: -0.01em;
+}
+
+/* Grilla equilibrada de 4 columnas para productos relacionados */
+.single-product .related.products ul.products,
+.single-product .upsells.products ul.products {
+	display: grid !important;
+	grid-template-columns: repeat(4, 1fr) !important;
+	gap: 1.5rem !important;
+	padding: 0 !important;
+	margin: 0 !important;
+	list-style: none !important;
+	width: 100% !important;
+}
+
+.single-product .related.products ul.products li.product,
+.single-product .upsells.products ul.products li.product {
+	width: 100% !important;
+	margin: 0 !important;
+	float: none !important;
+	display: flex !important;
+	flex-direction: column !important;
+	justify-content: flex-start !important;
 }
 
 /* ==========================================================================
@@ -1180,24 +1264,39 @@ body {
    ========================================================================== */
 @media (max-width: 991px) {
 	.single-product div.product {
-		flex-direction: column !important;
+		display: grid !important;
+		grid-template-columns: 1fr !important;
 		gap: 2rem !important;
 	}
 
 	.single-product div.product .woocommerce-product-gallery,
 	.single-product div.product .summary.entry-summary {
+		grid-column: 1 / -1 !important;
 		max-width: 100% !important;
-		flex: 1 1 100% !important;
+		width: 100% !important;
 		position: static !important;
 	}
 
+	.woocommerce-product-gallery__image img,
+	.woocommerce-product-gallery .wp-post-image,
+	.woocommerce-product-gallery figure img {
+		height: 380px !important;
+		max-height: 380px !important;
+	}
+
 	.single-product .coco-single-product-wrap {
-		padding: 1.5rem !important;
+		padding: 1.25rem !important;
 	}
 
 	.coco-ecomus-trust-box {
 		grid-template-columns: 1fr !important;
 		gap: 0.85rem !important;
+	}
+
+	.single-product .related.products ul.products,
+	.single-product .upsells.products ul.products {
+		grid-template-columns: repeat(2, 1fr) !important;
+		gap: 1rem !important;
 	}
 }
 
@@ -1213,13 +1312,26 @@ body {
 }
 
 @media (max-width: 781px) {
-	.coco-top-bar {
-		font-size: 0.76rem;
-		text-align: center;
+	.coco-sticky-top-marquee {
+		height: 32px;
+	}
+
+	.coco-top-marquee-track {
+		font-size: 0.72rem;
+		gap: 1.15rem;
+	}
+
+	.single-product .product_title {
+		font-size: 1.45rem !important;
+	}
+
+	.single-product p.price,
+	.single-product span.price {
+		font-size: 1.45rem !important;
 	}
 
 	.coco-single-product-wrap {
-		padding: 1.15rem;
+		padding: 1rem !important;
 	}
 
 	.coco-star-spotlight-grid {

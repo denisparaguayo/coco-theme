@@ -14,19 +14,34 @@
 			"defaultGradients": false,
 			"palette": [
 				{
-					"name": "Cherry Orange (Primario)",
+					"name": "Coco Cherry Red (Primario)",
 					"slug": "primary",
-					"color": "#E47B02"
+					"color": "#CE1322"
 				},
 				{
-					"name": "Cherry Amber (Hover)",
+					"name": "Coco Cherry Hover",
 					"slug": "primary-hover",
-					"color": "#ED8F0C"
+					"color": "#B9101E"
 				},
 				{
-					"name": "Cherry Soft (Fondo Suave)",
+					"name": "Coco Cherry Soft (Fondo Suave)",
 					"slug": "primary-soft",
-					"color": "#FFF7ED"
+					"color": "#FFF1F2"
+				},
+				{
+					"name": "Coco Gold (Secundario)",
+					"slug": "gold",
+					"color": "#D19711"
+				},
+				{
+					"name": "Coco Gold Hover",
+					"slug": "gold-hover",
+					"color": "#B8820B"
+				},
+				{
+					"name": "Coco Gold Soft",
+					"slug": "gold-soft",
+					"color": "#FEF9EE"
 				},
 				{
 					"name": "Verde COD (Pago al Recibir)",
