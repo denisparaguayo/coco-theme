@@ -107,6 +107,13 @@ add_action( 'after_setup_theme', function() {
 
 add_filter( 'woocommerce_single_product_zoom_enabled', '__return_false' );
 
+add_filter( 'woocommerce_get_script_data', function( $params, $handle ) {
+	if ( 'wc-single-product' === $handle && is_array( $params ) ) {
+		$params['zoom_enabled'] = false;
+	}
+	return $params;
+}, 99, 2 );
+
 add_filter( 'woocommerce_single_product_params', function( $params ) {
 	if ( is_array( $params ) ) {
 		$params['zoom_enabled'] = false;
