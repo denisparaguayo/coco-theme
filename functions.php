@@ -602,6 +602,27 @@ function coco_theme_loop_star_badge() {
 add_action( 'woocommerce_before_shop_loop_item_title', 'coco_theme_loop_star_badge', 5 );
 
 /**
+ * En la sección de productos relacionados de la ficha, mantener solo imagen y título (sin precio, sin botón, sin badge).
+ */
+function coco_theme_minimal_related_products_hooks() {
+	if ( function_exists( 'is_product' ) && is_product() ) {
+		remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_price', 10 );
+		remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_rating', 5 );
+		remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_show_product_loop_sale_flash', 10 );
+		remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
+	}
+}
+add_action( 'wp', 'coco_theme_minimal_related_products_hooks', 20 );
+add_action( 'woocommerce_before_template_part', function( $template_name ) {
+	if ( false !== strpos( $template_name, 'related' ) || false !== strpos( $template_name, 'up-sells' ) ) {
+		remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_price', 10 );
+		remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_rating', 5 );
+		remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_show_product_loop_sale_flash', 10 );
+		remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
+	}
+} );
+
+/**
  * Añadir etiquetas universales de pago y entrega en las tarjetas del catálogo WooCommerce.
  */
 function coco_theme_loop_cod_tag() {

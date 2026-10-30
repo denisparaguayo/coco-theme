@@ -7,7 +7,7 @@ Description: Tema WordPress Full Site Editing (FSE) ultraligero y de alta conver
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 7.4
-Version: 1.1.1
+Version: 1.1.3
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: coco-theme
@@ -845,51 +845,60 @@ ul.products::after,
 /* ==========================================================================
    7. FICHA DE PRODUCTO ESTILO ECOMUS + INTEGRACIÓN COCO COD
    ========================================================================== */
+.single-product main,
+main.has-surface-background-color {
+	max-width: 1200px !important;
+	margin-left: auto !important;
+	margin-right: auto !important;
+	width: 100% !important;
+	box-sizing: border-box !important;
+}
+
 .single-product .coco-single-product-wrap {
 	background-color: var(--coco-white);
 	border: 1px solid var(--coco-border);
 	border-radius: var(--coco-radius-lg);
-	padding: 2.5rem;
+	padding: 2.25rem 2.5rem;
 	box-shadow: var(--coco-shadow-sm);
-	max-width: 100% !important;
+	max-width: 1140px !important;
+	width: 100% !important;
+	margin-left: auto !important;
+	margin-right: auto !important;
 	overflow: hidden !important;
 	box-sizing: border-box !important;
 }
 
-/* Grilla moderna Ecomus: 2 columnas superiores (Galería + Resumen) y filas inferiores independientes */
+/* Grilla estándar WooCommerce: 2 columnas superiores limpias (Galería 48% + Resumen 48%) */
 .single-product div.product {
-	display: grid !important;
-	grid-template-columns: minmax(0, 52%) minmax(0, 44%) !important;
-	column-gap: 4% !important;
-	row-gap: 2.5rem !important;
-	align-items: start !important;
+	display: flex !important;
+	flex-wrap: wrap !important;
+	justify-content: space-between !important;
+	align-items: flex-start !important;
 	width: 100% !important;
 	max-width: 100% !important;
 	min-width: 0 !important;
+	margin: 0 auto !important;
 	box-sizing: border-box !important;
 }
 
 .single-product div.product > * {
 	min-width: 0 !important;
-	max-width: 100% !important;
 	box-sizing: border-box !important;
 }
 
-/* Imagen de producto con altura máxima controlada y ajuste armónico (sin recorte ni scroll infinito) */
+/* Galería de producto estándar WooCommerce sin zoom */
 .single-product div.product .woocommerce-product-gallery {
-	grid-column: 1 / 2 !important;
-	width: 100% !important;
-	max-width: 100% !important;
+	flex: 0 0 48% !important;
+	width: 48% !important;
+	max-width: 48% !important;
 	min-width: 0 !important;
 	position: relative !important;
 	float: none !important;
-	margin: 0 !important;
-	overflow: hidden !important;
+	margin: 0 0 2rem 0 !important;
 	box-sizing: border-box !important;
-	background: #FAFAFA;
-	border: 1px solid var(--coco-border);
-	border-radius: var(--coco-radius-md);
-	padding: 0.75rem;
+	background: transparent !important;
+	border: none !important;
+	padding: 0 !important;
 }
 
 .woocommerce-product-gallery .flex-viewport,
@@ -899,15 +908,14 @@ ul.products::after,
 	max-width: 100% !important;
 	min-width: 0 !important;
 	box-sizing: border-box !important;
-	display: flex !important;
-	align-items: center !important;
-	justify-content: center !important;
+	display: block !important;
+	text-align: center !important;
 }
 
 .woocommerce-product-gallery__image img,
 .woocommerce-product-gallery .wp-post-image,
 .woocommerce-product-gallery figure img {
-	width: auto !important;
+	width: 100% !important;
 	max-width: 100% !important;
 	height: auto !important;
 	max-height: 480px !important;
@@ -918,7 +926,7 @@ ul.products::after,
 	box-sizing: border-box !important;
 }
 
-/* Desactivar cualquier lupa o zoom flotante agresivo */
+/* Desactivar cualquier lupa o zoom flotante */
 .woocommerce-product-gallery__trigger,
 .zoomImg {
 	display: none !important;
@@ -928,20 +936,13 @@ ul.products::after,
 
 .single-product div.product .woocommerce-product-gallery .flex-control-thumbs {
 	display: flex !important;
-	flex-wrap: nowrap !important;
-	overflow-x: auto !important;
-	-webkit-overflow-scrolling: touch !important;
-	max-width: 100% !important;
-	width: 100% !important;
-	gap: 0.65rem !important;
-	margin: 0.85rem 0 0 0 !important;
-	padding: 0.25rem 0 0.5rem 0 !important;
+	flex-wrap: wrap !important;
+	gap: 10px !important;
+	margin: 12px 0 0 0 !important;
+	padding: 0 !important;
 	list-style: none !important;
-	scrollbar-width: none;
-}
-
-.single-product div.product .woocommerce-product-gallery .flex-control-thumbs::-webkit-scrollbar {
-	display: none;
+	width: 100% !important;
+	box-sizing: border-box !important;
 }
 
 .single-product div.product .woocommerce-product-gallery .flex-control-thumbs li {
@@ -950,6 +951,7 @@ ul.products::after,
 	height: 68px !important;
 	cursor: pointer;
 	box-sizing: border-box !important;
+	margin: 0 !important;
 }
 
 .single-product div.product .woocommerce-product-gallery .flex-control-thumbs li img {
@@ -957,7 +959,7 @@ ul.products::after,
 	height: 68px !important;
 	object-fit: cover !important;
 	border-radius: 8px !important;
-	border: 2px solid transparent !important;
+	border: 2px solid #E2E8F0 !important;
 	transition: var(--coco-transition);
 	box-sizing: border-box !important;
 }
@@ -967,11 +969,11 @@ ul.products::after,
 	border-color: var(--coco-primary) !important;
 }
 
-/* Columna derecha resumen (Flujo estático normal para no superponerse al hacer scroll) */
+/* Columna derecha resumen estándar WooCommerce */
 .single-product div.product .summary.entry-summary {
-	grid-column: 2 / 3 !important;
-	width: 100% !important;
-	max-width: 100% !important;
+	flex: 0 0 48% !important;
+	width: 48% !important;
+	max-width: 48% !important;
 	min-width: 0 !important;
 	position: static !important;
 	float: none !important;
@@ -1500,10 +1502,14 @@ ul.products::after,
 
 /* Enlace expandido: al dar clic en cualquier parte de la tarjeta lleva al producto */
 .single-product .related.products ul.products li.product a.woocommerce-LoopProduct-link,
-.single-product .upsells.products ul.products li.product a.woocommerce-LoopProduct-link {
+.single-product .upsells.products ul.products li.product a.woocommerce-LoopProduct-link,
+.single-product .related.products ul.products li.product a,
+.single-product .upsells.products ul.products li.product a {
 	display: flex !important;
 	flex-direction: column !important;
+	align-items: center !important;
 	text-decoration: none !important;
+	width: 100% !important;
 	height: 100% !important;
 }
 
@@ -1512,7 +1518,7 @@ ul.products::after,
 	content: "" !important;
 	position: absolute !important;
 	inset: 0 !important;
-	z-index: 2 !important;
+	z-index: 5 !important;
 	cursor: pointer !important;
 }
 
@@ -1524,40 +1530,44 @@ ul.products::after,
 	border-radius: 8px !important;
 	width: 100% !important;
 	height: auto !important;
-	margin-bottom: 0.45rem !important;
+	margin-bottom: 0.5rem !important;
+	display: block !important;
 }
 
-/* Título minimalista (máx 2 líneas) */
+/* Título minimalista solo con el nombre del producto (máx 2 líneas) */
 .single-product .related.products ul.products li.product .woocommerce-loop-product__title,
 .single-product .upsells.products ul.products li.product .woocommerce-loop-product__title {
 	font-size: 0.88rem !important;
 	font-weight: 600 !important;
 	color: #111827 !important;
 	line-height: 1.35 !important;
-	margin: 0.35rem 0 0.3rem 0 !important;
+	margin: 0.35rem 0 0.2rem 0 !important;
+	text-align: center !important;
 	display: -webkit-box !important;
 	-webkit-line-clamp: 2 !important;
 	-webkit-box-orient: vertical !important;
 	overflow: hidden !important;
 }
 
-/* Precio limpio y destacado */
-.single-product .related.products ul.products li.product .price,
-.single-product .upsells.products ul.products li.product .price {
-	font-size: 0.95rem !important;
-	font-weight: 700 !important;
-	color: var(--coco-primary) !important;
-	margin: auto 0 0 0 !important;
-}
-
-/* Ocultar botones e insignias innecesarias para máxima limpieza */
-.single-product .related.products .coco-product-cod-badge,
-.single-product .related.products .coco-star-product-badge,
+/* Solo imagen y nombre: Ocultar estrictamente precio, botones, insignias y estrellas */
+.single-product .related.products .price,
+.single-product .upsells.products .price,
 .single-product .related.products .button,
+.single-product .upsells.products .button,
+.single-product .related.products .coco-product-cod-badge,
 .single-product .upsells.products .coco-product-cod-badge,
+.single-product .related.products .coco-star-product-badge,
 .single-product .upsells.products .coco-star-product-badge,
-.single-product .upsells.products .button {
+.single-product .related.products .star-rating,
+.single-product .upsells.products .star-rating,
+.single-product .related.products .onsale,
+.single-product .upsells.products .onsale {
 	display: none !important;
+	visibility: hidden !important;
+	height: 0 !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	pointer-events: none !important;
 }
 
 /* ==========================================================================
@@ -1993,8 +2003,9 @@ ul.products::after,
 	}
 
 	.single-product div.product .woocommerce-product-gallery {
-		padding: 0.5rem !important;
-		background: #FAFAFA !important;
+		padding: 0 !important;
+		background: transparent !important;
+		border: none !important;
 	}
 
 	.woocommerce-product-gallery__image img,
@@ -2026,7 +2037,7 @@ ul.products::after,
 
 	.single-product .related.products ul.products li.product .price,
 	.single-product .upsells.products ul.products li.product .price {
-		font-size: 0.88rem !important;
+		display: none !important;
 	}
 
 	.coco-sticky-top-marquee {
