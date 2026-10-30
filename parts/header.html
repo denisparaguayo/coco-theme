@@ -40,20 +40,30 @@ function cocoDismissTopBar(){
 </script>
 <!-- /wp:html -->
 
-<!-- wp:group {"className":"coco-site-header","style":{"spacing":{"padding":{"top":"0.9rem","bottom":"0.9rem","left":"1.25rem","right":"1.25rem"}}},"backgroundColor":"white","layout":{"type":"constrained"}} -->
-<div class="wp-block-group coco-site-header has-white-background-color has-background" style="padding-top:0.9rem;padding-right:1.25rem;padding-bottom:0.9rem;padding-left:1.25rem">
-	<!-- wp:group {"align":"wide","layout":{"type":"flex","flexWrap":"wrap","justifyContent":"space-between","verticalAlignment":"center"}} -->
-	<div class="wp-block-group alignwide">
-		<!-- wp:group {"className":"coco-header-logo","style":{"spacing":{"blockGap":"0.75rem"}},"layout":{"type":"flex","flexWrap":"nowrap","verticalAlignment":"center"}} -->
+<!-- wp:group {"className":"coco-site-header coco-ecomus-header","style":{"spacing":{"padding":{"top":"0","bottom":"0","left":"0","right":"0"}}},"backgroundColor":"white","layout":{"type":"default"}} -->
+<div class="wp-block-group coco-site-header coco-ecomus-header has-white-background-color has-background" style="padding-top:0;padding-right:0;padding-bottom:0;padding-left:0">
+	<!-- wp:group {"className":"coco-header-top-row","layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"center","verticalAlignment":"center"}} -->
+	<div class="wp-block-group coco-header-top-row">
+		<!-- wp:group {"className":"coco-header-logo","layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"center","verticalAlignment":"center"}} -->
 		<div class="wp-block-group coco-header-logo">
-			<!-- wp:site-logo {"width":135,"shouldSyncIcon":false} /-->
-			<!-- wp:site-title {"level":0,"style":{"typography":{"fontWeight":"800","fontSize":"1.25rem"}}} /-->
+			<!-- wp:site-logo {"width":140,"shouldSyncIcon":false} /-->
+			<!-- wp:site-title {"level":0,"style":{"typography":{"fontWeight":"800","fontSize":"1.35rem"}}} /-->
 		</div>
 		<!-- /wp:group -->
+	</div>
+	<!-- /wp:group -->
 
-		<!-- wp:navigation {"className":"coco-main-nav","overlayMenu":"mobile","layout":{"type":"flex","justifyContent":"right","orientation":"horizontal"},"style":{"spacing":{"blockGap":"1rem"}}} -->
+	<!-- wp:group {"className":"coco-header-nav-row","layout":{"type":"flex","flexWrap":"wrap","justifyContent":"center","verticalAlignment":"center"}} -->
+	<div class="wp-block-group coco-header-nav-row">
+		<!-- wp:navigation {"className":"coco-main-nav","overlayMenu":"mobile","layout":{"type":"flex","justifyContent":"center","orientation":"horizontal"},"style":{"spacing":{"blockGap":"1.75rem"}}} -->
 			<!-- wp:navigation-link {"label":"Inicio","url":"/","kind":"custom","isTopLevelLink":true} /-->
-			<!-- wp:navigation-link {"label":"Catálogo","url":"/shop/","kind":"custom","isTopLevelLink":true} /-->
+			<!-- wp:navigation-submenu {"label":"Catálogo","url":"/shop/","kind":"custom"} -->
+				<!-- wp:navigation-link {"label":"Ver Todo el Catálogo","url":"/shop/","kind":"custom"} /-->
+				<!-- wp:navigation-link {"label":"Moda & Indumentaria","url":"/product-category/moda/","kind":"custom"} /-->
+				<!-- wp:navigation-link {"label":"Bijouterie & Accesorios","url":"/product-category/bijouterie/","kind":"custom"} /-->
+				<!-- wp:navigation-link {"label":"Belleza & Cuidado Personal","url":"/product-category/belleza/","kind":"custom"} /-->
+				<!-- wp:navigation-link {"label":"Hogar & Tecnología","url":"/product-category/tecnologia/","kind":"custom"} /-->
+			<!-- /wp:navigation-submenu -->
 			<!-- wp:navigation-link {"label":"Moda","url":"/product-category/moda/","kind":"custom","isTopLevelLink":true} /-->
 			<!-- wp:navigation-link {"label":"Bijou & Aros","url":"/product-category/bijouterie/","kind":"custom","isTopLevelLink":true} /-->
 			<!-- wp:navigation-link {"label":"Belleza","url":"/product-category/belleza/","kind":"custom","isTopLevelLink":true} /-->

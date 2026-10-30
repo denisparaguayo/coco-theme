@@ -7,7 +7,7 @@ Description: Tema WordPress Full Site Editing (FSE) ultraligero y de alta conver
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 7.4
-Version: 1.0.5
+Version: 1.0.6
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: coco-theme
@@ -162,12 +162,32 @@ body {
 	background-color: rgba(255, 255, 255, 0.98);
 	backdrop-filter: blur(10px);
 	border-bottom: 1px solid var(--coco-border);
-	box-shadow: 0 2px 12px rgba(31, 41, 51, 0.04);
+	box-shadow: 0 2px 12px rgba(31, 41, 51, 0.03);
+	padding: 0 !important;
+}
+
+.coco-header-top-row {
+	display: flex !important;
+	justify-content: center !important;
+	align-items: center !important;
+	padding: 0.85rem 1.25rem !important;
+	border-bottom: 1px solid #F1F5F9;
+	width: 100%;
+}
+
+.coco-header-nav-row {
+	display: flex !important;
+	justify-content: center !important;
+	align-items: center !important;
+	padding: 0.55rem 1.25rem !important;
+	width: 100%;
+	background-color: #FFFFFF;
 }
 
 .coco-header-logo {
 	display: inline-flex;
 	align-items: center;
+	justify-content: center;
 	gap: 0.75rem;
 }
 
@@ -188,9 +208,9 @@ body {
 .wp-block-site-logo img,
 .custom-logo {
 	height: 54px !important;
-	width: 115px !important;
-	min-width: 110px !important;
-	max-height: 56px !important;
+	width: 118px !important;
+	min-width: 112px !important;
+	max-height: 58px !important;
 	max-width: 220px !important;
 	object-fit: contain !important;
 	display: block !important;
@@ -203,21 +223,30 @@ body {
 
 .coco-main-nav .wp-block-navigation-item__content,
 .coco-classic-menu-list li a {
-	font-weight: 600;
-	font-size: 0.95rem;
-	color: var(--coco-dark);
+	font-weight: 500;
+	font-size: 0.93rem;
+	color: #111827;
 	text-decoration: none;
-	padding: 0.4rem 0.65rem;
+	padding: 0.35rem 0.7rem;
 	border-radius: 6px;
 	transition: var(--coco-transition);
-	display: inline-block;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.3rem;
+}
+
+.coco-classic-menu-list li.menu-item-has-children > a::after {
+	content: "⌄";
+	font-size: 0.85rem;
+	line-height: 1;
+	margin-top: -3px;
+	opacity: 0.75;
 }
 
 .coco-main-nav .wp-block-navigation-item__content:hover,
 .coco-classic-menu-list li a:hover,
 .coco-classic-menu-list li.current-menu-item > a {
 	color: var(--coco-primary);
-	background-color: var(--coco-primary-soft);
 }
 
 /* Estilos para Menú Clásico de WordPress (Apariencia > Menús / Personalizador) */
@@ -905,21 +934,53 @@ ul.products::after,
 	display: none !important;
 }
 
+/* Meta superior estilo Ecomus (Marca + En Stock) */
+.coco-ecomus-meta-top {
+	font-size: 0.85rem;
+	color: var(--coco-muted);
+	margin-bottom: 0.4rem;
+}
+
+.coco-ecomus-meta-top strong {
+	color: var(--coco-primary);
+	font-weight: 600;
+}
+
 .single-product .product_title {
 	font-family: var(--wp--preset--font-family--heading);
-	font-size: 1.85rem !important;
-	font-weight: 800 !important;
-	color: var(--coco-dark);
+	font-size: 1.75rem !important;
+	font-weight: 600 !important;
+	color: #111827;
 	line-height: 1.25;
-	margin: 0 0 0.85rem 0 !important;
-	letter-spacing: -0.02em;
+	margin: 0 0 0.75rem 0 !important;
+	letter-spacing: -0.015em;
+}
+
+.coco-ecomus-stock-wrap {
+	margin-bottom: 0.85rem;
+}
+
+.coco-ecomus-stock-badge {
+	display: inline-block;
+	border: 1px solid #111827;
+	color: #111827;
+	font-size: 0.75rem;
+	font-weight: 600;
+	padding: 0.2rem 0.65rem;
+	border-radius: 4px;
+	background: #FFFFFF;
+}
+
+.coco-ecomus-stock-badge.is-out {
+	border-color: var(--coco-primary);
+	color: var(--coco-primary);
 }
 
 .single-product .woocommerce-product-rating {
 	display: flex;
 	align-items: center;
 	gap: 0.65rem;
-	margin-bottom: 1rem;
+	margin-bottom: 0.75rem;
 	font-size: 0.9rem;
 	color: #F59E0B;
 }
@@ -931,153 +992,308 @@ ul.products::after,
 
 .single-product p.price,
 .single-product span.price {
-	font-size: 1.75rem !important;
-	font-weight: 800 !important;
+	font-size: 1.65rem !important;
+	font-weight: 700 !important;
 	color: var(--coco-primary) !important;
 	display: flex;
 	align-items: center;
 	gap: 0.75rem;
-	margin-bottom: 0.85rem !important;
+	margin-bottom: 0.75rem !important;
 }
 
 .single-product p.price del {
 	font-size: 1.15rem;
 	color: #94A3B8;
-	font-weight: 600;
+	font-weight: 500;
 }
 
 .single-product p.price ins {
 	text-decoration: none;
 }
 
-/* Barra de urgencia y demanda estilo Ecomus */
-.coco-stock-urgency-bar {
-	background-color: var(--coco-primary-soft);
-	border: 1px solid #FFE4E6;
-	border-radius: var(--coco-radius-sm);
-	padding: 0.75rem 1rem;
-	margin: 0.85rem 0 1.25rem 0;
-}
-
-.coco-urgency-text {
-	font-size: 0.85rem;
-	color: #9F1239;
-	font-weight: 600;
+/* Contador en vivo estilo Ecomus: "X personas están viendo esto ahora mismo." */
+.coco-ecomus-live-viewers {
 	display: flex;
 	align-items: center;
-	gap: 0.4rem;
-	margin-bottom: 0.45rem;
+	gap: 0.6rem;
+	margin: 0.6rem 0 1.25rem 0;
+	font-size: 0.88rem;
+	color: #111827;
+	font-weight: 500;
 }
 
-.coco-urgency-text strong {
-	color: var(--coco-primary);
-	font-weight: 800;
-}
-
-.coco-urgency-progress {
-	height: 6px;
-	background-color: #FECDD3;
-	border-radius: 999px;
-	overflow: hidden;
-}
-
-.coco-urgency-fill {
-	height: 100%;
-	width: 78%;
-	background: linear-gradient(90deg, #CE1322, #D19711);
-	border-radius: 999px;
-	animation: cocoPulseUrgency 2s ease-in-out infinite alternate;
-}
-
-@keyframes cocoPulseUrgency {
-	0% { opacity: 0.85; }
-	100% { opacity: 1; }
+.coco-viewers-badge {
+	background-color: #111827;
+	color: #FFFFFF;
+	font-weight: 700;
+	font-size: 0.78rem;
+	padding: 0.22rem 0.55rem;
+	border-radius: 4px;
+	min-width: 28px;
+	text-align: center;
+	display: inline-block;
+	line-height: 1.2;
 }
 
 .single-product .woocommerce-product-details__short-description {
 	color: var(--coco-slate);
-	font-size: 0.96rem;
+	font-size: 0.95rem;
 	line-height: 1.6;
 	margin-bottom: 1.25rem;
-	padding-bottom: 1.25rem;
-	border-bottom: 1px solid var(--coco-border);
 }
 
-/* Botón principal Coco COD de alta conversión */
+/* Etiqueta "Cantidad:" y fila conjunta [ - 1 + ] + Botón "Comprar ahora" */
+.coco-ecomus-qty-label {
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: #111827;
+	margin-bottom: 0.45rem;
+}
+
+.coco-cart-action-row {
+	display: flex !important;
+	align-items: center !important;
+	gap: 0.75rem !important;
+	width: 100% !important;
+	margin-bottom: 1.1rem !important;
+}
+
+.single-product div.product form.cart .quantity {
+	display: inline-flex !important;
+	align-items: center !important;
+	justify-content: space-between !important;
+	background-color: #F3F4F6 !important;
+	border: 1px solid #E5E7EB !important;
+	border-radius: 999px !important;
+	height: 50px !important;
+	width: 130px !important;
+	padding: 0 0.35rem !important;
+	margin: 0 !important;
+	flex-shrink: 0 !important;
+	float: none !important;
+}
+
+.coco-qty-btn {
+	width: 34px !important;
+	height: 34px !important;
+	border: none !important;
+	background: transparent !important;
+	color: #111827 !important;
+	font-size: 1.2rem !important;
+	font-weight: 600 !important;
+	cursor: pointer !important;
+	display: inline-flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	border-radius: 50% !important;
+	padding: 0 !important;
+	transition: var(--coco-transition);
+}
+
+.coco-qty-btn:hover {
+	background-color: #E5E7EB !important;
+}
+
+.single-product div.product form.cart .quantity input.qty {
+	width: 44px !important;
+	height: 100% !important;
+	border: none !important;
+	background: transparent !important;
+	text-align: center !important;
+	font-size: 0.98rem !important;
+	font-weight: 700 !important;
+	color: #111827 !important;
+	padding: 0 !important;
+	margin: 0 !important;
+	box-shadow: none !important;
+	-moz-appearance: textfield !important;
+}
+
+.single-product div.product form.cart .quantity input.qty::-webkit-outer-spin-button,
+.single-product div.product form.cart .quantity input.qty::-webkit-inner-spin-button {
+	-webkit-appearance: none !important;
+	margin: 0 !important;
+}
+
+/* Botón único "Comprar ahora" al lado del selector de cantidad */
 #coco-cod-open-modal,
 .coco-cod-button {
-	width: 100% !important;
-	display: flex !important;
-	align-items: center;
-	justify-content: center;
-	gap: 0.65rem;
+	flex: 1 1 auto !important;
+	width: auto !important;
+	height: 50px !important;
+	display: inline-flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	gap: 0.5rem;
 	background-color: var(--coco-cod-green) !important;
 	color: var(--coco-white) !important;
-	font-size: 1.05rem !important;
-	font-weight: 800 !important;
-	padding: 1.1rem 1.75rem !important;
-	border-radius: var(--coco-radius-md) !important;
-	box-shadow: 0 8px 24px rgba(22, 163, 74, 0.32) !important;
-	text-transform: uppercase;
-	letter-spacing: 0.02em;
+	font-size: 0.98rem !important;
+	font-weight: 700 !important;
+	padding: 0 1.75rem !important;
+	margin: 0 !important;
+	border-radius: 999px !important;
+	box-shadow: 0 6px 18px rgba(22, 163, 74, 0.25) !important;
+	text-transform: none !important;
+	letter-spacing: 0.01em;
 	transition: var(--coco-transition) !important;
 	cursor: pointer;
+	border: none !important;
 }
 
 #coco-cod-open-modal:hover,
 .coco-cod-button:hover {
 	background-color: var(--coco-cod-green-dark) !important;
-	transform: translateY(-2px);
-	box-shadow: 0 12px 30px rgba(22, 163, 74, 0.42) !important;
+	transform: translateY(-1px);
+	box-shadow: 0 8px 24px rgba(22, 163, 74, 0.35) !important;
 }
 
-/* Ocultar botón nativo de añadir al carrito */
+/* Ocultar botón nativo de añadir al carrito (omitir segundo botón) */
 .single-product form.cart .single_add_to_cart_button {
 	display: none !important;
 }
 
-/* Caja de garantías y confianza estilo Ecomus */
-.coco-ecomus-trust-box {
+/* Bloques inferiores Ecomus adaptados a Paraguay */
+.coco-ecomus-extra-info {
+	margin-top: 1.15rem;
+}
+
+.coco-ecomus-quick-links {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 1.5rem;
+	padding-bottom: 1.15rem;
+	margin-bottom: 1.25rem;
+	border-bottom: 1px solid var(--coco-border);
+}
+
+.coco-quick-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45rem;
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: #111827;
+	text-decoration: none;
+	background: none;
+	border: none;
+	padding: 0;
+	cursor: pointer;
+	transition: var(--coco-transition);
+}
+
+.coco-quick-link:hover {
+	color: var(--coco-primary);
+}
+
+.coco-ql-icon {
+	width: 22px;
+	height: 22px;
+	border: 1px solid #D1D5DB;
+	border-radius: 50%;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.72rem;
+	font-weight: 700;
+}
+
+/* Dos cajas de plazos de entrega y garantía estilo Ecomus */
+.coco-ecomus-delivery-grid {
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
 	gap: 0.85rem;
-	background-color: #F8FAFC;
-	border: 1px solid var(--coco-border);
-	border-radius: var(--coco-radius-md);
-	padding: 1.15rem 1.25rem;
-	margin-top: 1.5rem;
+	margin-bottom: 1.25rem;
 }
 
-.coco-trust-item {
+.coco-ecomus-delivery-card {
+	border: 1px solid #E5E7EB;
+	border-radius: 6px;
+	padding: 1.2rem 1rem;
+	text-align: center;
+	background-color: #FFFFFF;
+}
+
+.coco-delivery-card-icon {
+	color: #111827;
+	margin-bottom: 0.6rem;
 	display: flex;
-	align-items: flex-start;
-	gap: 0.65rem;
+	justify-content: center;
 }
 
-.coco-trust-item-icon {
-	font-size: 1.35rem;
-	line-height: 1;
-	flex-shrink: 0;
-	margin-top: 0.1rem;
+.coco-ecomus-delivery-card p {
+	margin: 0;
+	font-size: 0.82rem;
+	line-height: 1.5;
+	color: #374151;
 }
 
-.coco-trust-item-content {
-	display: flex;
-	flex-direction: column;
-}
-
-.coco-trust-item-content strong {
-	font-size: 0.85rem;
+.coco-ecomus-delivery-card strong {
+	color: #111827;
 	font-weight: 700;
-	color: var(--coco-dark);
-	line-height: 1.3;
 }
 
-.coco-trust-item-content span {
-	font-size: 0.76rem;
-	color: var(--coco-muted);
-	line-height: 1.35;
-	margin-top: 0.15rem;
+/* Fila de Pago Seguro con métodos de Paraguay (ueno bank, Giros Tigo, Efectivo, QR) */
+.coco-ecomus-safe-checkout {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 1rem;
+	padding-top: 0.4rem;
+}
+
+.coco-safe-label {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: 0.78rem;
+	font-weight: 600;
+	color: #111827;
+	line-height: 1.25;
+}
+
+.coco-py-payment-badges {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.45rem;
+}
+
+.coco-pay-badge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.72rem;
+	font-weight: 800;
+	padding: 0.28rem 0.65rem;
+	border-radius: 4px;
+	letter-spacing: 0.01em;
+	line-height: 1;
+	white-space: nowrap;
+}
+
+.coco-pay-ueno {
+	background-color: #0F172A;
+	color: #00E5A3;
+	border: 1px solid #0F172A;
+}
+
+.coco-pay-tigo {
+	background-color: #00377B;
+	color: #FFFFFF;
+	border: 1px solid #00377B;
+}
+
+.coco-pay-efectivo {
+	background-color: #F0FDF4;
+	color: #15803D;
+	border: 1px solid #BBF7D0;
+}
+
+.coco-pay-qr {
+	background-color: #EEF2FF;
+	color: #4338CA;
+	border: 1px solid #C7D2FE;
 }
 
 /* Pestañas / Tabs estilo moderno Ecomus (100% ancho inferior) */
@@ -1414,9 +1630,9 @@ ul.products::after,
 		padding: 1.25rem !important;
 	}
 
-	.coco-ecomus-trust-box {
+	.coco-ecomus-delivery-grid {
 		grid-template-columns: 1fr !important;
-		gap: 0.85rem !important;
+		gap: 0.75rem !important;
 	}
 
 	.woocommerce ul.products,

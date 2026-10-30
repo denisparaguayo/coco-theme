@@ -337,55 +337,188 @@ function coco_theme_register_pattern_categories() {
 add_action( 'init', 'coco_theme_register_pattern_categories' );
 
 /**
- * Barra de urgencia y demanda estilo Ecomus bajo el precio en la ficha de producto.
+ * Cabecera de marca y estado En Stock estilo Ecomus en la ficha de producto.
  */
-function coco_theme_single_product_urgency_bar() {
+function coco_theme_ecomus_brand_and_stock() {
+	global $product;
 	?>
-	<div class="coco-stock-urgency-bar">
-		<div class="coco-urgency-text">
-			<span class="coco-urgency-flame">⚡</span>
-			<span>¡Alta demanda! Quedan <strong>pocas unidades en stock</strong> para entrega inmediata</span>
-		</div>
-		<div class="coco-urgency-progress">
-			<div class="coco-urgency-fill"></div>
-		</div>
+	<div class="coco-ecomus-meta-top">
+		<span class="coco-ecomus-brand">Marca: <strong>Coco Cherry Store</strong></span>
 	</div>
 	<?php
 }
-add_action( 'woocommerce_single_product_summary', 'coco_theme_single_product_urgency_bar', 12 );
+add_action( 'woocommerce_single_product_summary', 'coco_theme_ecomus_brand_and_stock', 4 );
+
+function coco_theme_ecomus_stock_badge() {
+	global $product;
+	if ( $product instanceof \WC_Product && ! $product->is_in_stock() ) {
+		echo '<div class="coco-ecomus-stock-wrap"><span class="coco-ecomus-stock-badge is-out">Agotado</span></div>';
+	} else {
+		echo '<div class="coco-ecomus-stock-wrap"><span class="coco-ecomus-stock-badge">En stock</span></div>';
+	}
+}
+add_action( 'woocommerce_single_product_summary', 'coco_theme_ecomus_stock_badge', 8 );
 
 /**
- * Caja de garantías de compra estilo Ecomus debajo del botón de Coco COD en la ficha de producto.
+ * Contador dinámico estilo Ecomus: "X personas están viendo esto ahora mismo."
+ */
+function coco_theme_single_product_live_viewers() {
+	$initial_viewers = wp_rand( 7, 15 );
+	?>
+	<div class="coco-ecomus-live-viewers">
+		<span id="coco-live-viewers-count" class="coco-viewers-badge"><?php echo esc_html( $initial_viewers ); ?></span>
+		<span class="coco-viewers-text">personas están viendo esto ahora mismo.</span>
+	</div>
+	<script>
+	(function(){
+		var el = document.getElementById('coco-live-viewers-count');
+		if (!el) return;
+		setInterval(function(){
+			var current = parseInt(el.textContent, 10) || 8;
+			var delta = Math.floor(Math.random() * 5) - 2; // -2 a +2
+			var next = current + delta;
+			if (next < 5) next = 6;
+			if (next > 24) next = 19;
+			el.textContent = next;
+		}, 6500);
+	})();
+	</script>
+	<?php
+}
+add_action( 'woocommerce_single_product_summary', 'coco_theme_single_product_live_viewers', 12 );
+
+/**
+ * Selector de cantidad accesible estilo Ecomus [ - 1 + ] junto al botón "Comprar ahora".
+ */
+function coco_theme_before_quantity_wrap() {
+	echo '<div class="coco-ecomus-qty-label">Cantidad:</div>';
+	echo '<div class="coco-cart-action-row">';
+}
+add_action( 'woocommerce_before_add_to_cart_quantity', 'coco_theme_before_quantity_wrap', 5 );
+
+function coco_theme_qty_minus_btn() {
+	echo '<button type="button" class="coco-qty-btn coco-qty-minus" aria-label="Disminuir cantidad">−</button>';
+}
+add_action( 'woocommerce_before_quantity_input_field', 'coco_theme_qty_minus_btn', 10 );
+
+function coco_theme_qty_plus_btn() {
+	echo '<button type="button" class="coco-qty-btn coco-qty-plus" aria-label="Aumentar cantidad">+</button>';
+}
+add_action( 'woocommerce_after_quantity_input_field', 'coco_theme_qty_plus_btn', 10 );
+
+function coco_theme_after_cart_action_row() {
+	echo '</div><!-- /.coco-cart-action-row -->';
+	?>
+	<script>
+	(function(){
+		function initCocoEcomusCartRow() {
+			var row = document.querySelector('.single-product .coco-cart-action-row');
+			var codBtn = document.getElementById('coco-cod-open-modal') || document.querySelector('.single-product .coco-cod-button');
+			if (row && codBtn && codBtn.parentElement !== row) {
+				row.appendChild(codBtn);
+			}
+			if (codBtn) {
+				codBtn.textContent = 'Comprar ahora';
+			}
+			// Botones + y - del selector de cantidad
+			var qtyWrap = document.querySelector('.single-product .quantity');
+			if (qtyWrap && !qtyWrap.dataset.cocoBound) {
+				qtyWrap.dataset.cocoBound = '1';
+				var input = qtyWrap.querySelector('input.qty');
+				var minus = qtyWrap.querySelector('.coco-qty-minus');
+				var plus  = qtyWrap.querySelector('.coco-qty-plus');
+				if (input && minus) {
+					minus.addEventListener('click', function(){
+						var val = parseFloat(input.value) || 1;
+						var min = parseFloat(input.getAttribute('min')) || 1;
+						var step = parseFloat(input.getAttribute('step')) || 1;
+						if (val > min) {
+							input.value = val - step;
+							input.dispatchEvent(new Event('change', { bubbles: true }));
+						}
+					});
+				}
+				if (input && plus) {
+					plus.addEventListener('click', function(){
+						var val = parseFloat(input.value) || 1;
+						var max = parseFloat(input.getAttribute('max'));
+						var step = parseFloat(input.getAttribute('step')) || 1;
+						if (!max || val < max) {
+							input.value = val + step;
+							input.dispatchEvent(new Event('change', { bubbles: true }));
+						}
+					});
+				}
+			}
+		}
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', initCocoEcomusCartRow);
+		} else {
+			initCocoEcomusCartRow();
+		}
+		setTimeout(initCocoEcomusCartRow, 400);
+	})();
+	</script>
+	<?php
+}
+add_action( 'woocommerce_after_add_to_cart_button', 'coco_theme_after_cart_action_row', 99 );
+
+/**
+ * Bloques Ecomus adaptados a Paraguay debajo del botón "Comprar ahora":
+ * 1) Enlaces rápidos (Haz una pregunta / Entrega y devolución / Compartir)
+ * 2) Dos cajas de plazos de entrega y garantía en Paraguay
+ * 3) Garantía de pago seguro con métodos locales (ueno bank, Giros Tigo, Efectivo, QR / Transferencia)
  */
 function coco_theme_product_cod_guarantees() {
+	global $product;
+	$product_title = ( $product instanceof \WC_Product ) ? $product->get_name() : get_the_title();
+	$product_url   = get_permalink();
+	$wa_question   = 'https://wa.me/595981531503?text=' . rawurlencode( 'Hola Coco Cherry Store! Tengo una consulta sobre el producto: ' . $product_title . ' (' . $product_url . ')' );
 	?>
-	<div class="coco-ecomus-trust-box">
-		<div class="coco-trust-item">
-			<div class="coco-trust-item-icon">💵</div>
-			<div class="coco-trust-item-content">
-				<strong>Pago Contra Entrega</strong>
-				<span>Abonás en efectivo o transferencia recién al recibir tu paquete en puerta</span>
+	<div class="coco-ecomus-extra-info">
+		<!-- Enlaces de acción rápida estilo Ecomus -->
+		<div class="coco-ecomus-quick-links">
+			<a href="<?php echo esc_url( $wa_question ); ?>" target="_blank" rel="noopener noreferrer" class="coco-quick-link">
+				<span class="coco-ql-icon">?</span>
+				<span>Haz una pregunta</span>
+			</a>
+			<a href="#tab-description" class="coco-quick-link">
+				<span class="coco-ql-icon">🚚</span>
+				<span>Entrega y devolución</span>
+			</a>
+			<button type="button" class="coco-quick-link coco-share-btn" onclick="if(navigator.share){navigator.share({title:document.title,url:window.location.href});}else if(navigator.clipboard){navigator.clipboard.writeText(window.location.href);this.querySelector('.coco-share-label').textContent='¡Enlace copiado!';}">
+				<span class="coco-ql-icon">🔗</span>
+				<span class="coco-share-label">Compartir</span>
+			</button>
+		</div>
+
+		<!-- Dos cajas de entrega y garantía estilo Ecomus adaptadas a Paraguay -->
+		<div class="coco-ecomus-delivery-grid">
+			<div class="coco-ecomus-delivery-card">
+				<div class="coco-delivery-card-icon">
+					<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+				</div>
+				<p>Plazos de entrega estimados: <strong>24–48 hs</strong> (Asunción y Gran Asunción), <strong>2–4 días</strong> (Interior de Paraguay).</p>
+			</div>
+			<div class="coco-ecomus-delivery-card">
+				<div class="coco-delivery-card-icon">
+					<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path><path d="M16 16h5v5"></path></svg>
+				</div>
+				<p><strong>Pago Contra Entrega</strong> al recibir en puerta. Garantía de cambio directo por defectos de fábrica.</p>
 			</div>
 		</div>
-		<div class="coco-trust-item">
-			<div class="coco-trust-item-icon">🚚</div>
-			<div class="coco-trust-item-content">
-				<strong>Envíos a Todo Paraguay</strong>
-				<span>Delivery express en Asunción, Gran Asunción e interior del país</span>
+
+		<!-- Fila de pago seguro adaptada a Paraguay (ueno bank, Giros Tigo, Efectivo, Transferencia) -->
+		<div class="coco-ecomus-safe-checkout">
+			<div class="coco-safe-label">
+				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+				<span>Garantizamos<br>un pago seguro.</span>
 			</div>
-		</div>
-		<div class="coco-trust-item">
-			<div class="coco-trust-item-icon">🛡️</div>
-			<div class="coco-trust-item-content">
-				<strong>100% Compra Segura</strong>
-				<span>Artículos verificados, nuevos y con garantía directa</span>
-			</div>
-		</div>
-		<div class="coco-trust-item">
-			<div class="coco-trust-item-icon">📲</div>
-			<div class="coco-trust-item-content">
-				<strong>Atención por WhatsApp</strong>
-				<span>Consultas y seguimiento directo al 0981 531503</span>
+			<div class="coco-py-payment-badges">
+				<span class="coco-pay-badge coco-pay-ueno" title="ueno bank (Transferencia / QR)">ueno bank</span>
+				<span class="coco-pay-badge coco-pay-tigo" title="Giros Tigo">Giros Tigo</span>
+				<span class="coco-pay-badge coco-pay-efectivo" title="Efectivo al recibir">💵 Efectivo</span>
+				<span class="coco-pay-badge coco-pay-qr" title="Transferencia bancaria / SIPAP / QR">QR / Transf.</span>
 			</div>
 		</div>
 	</div>
