@@ -7,7 +7,7 @@ Description: Tema WordPress Full Site Editing (FSE) ultraligero y de alta conver
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 7.4
-Version: 1.0.2
+Version: 1.0.3
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: coco-theme
@@ -633,39 +633,334 @@ body {
 }
 
 /* ==========================================================================
-   7. FICHA DE PRODUCTO INDIVIDUAL E INTEGRACIÓN COCO COD
+   7. FICHA DE PRODUCTO ESTILO ECOMUS + INTEGRACIÓN COCO COD
    ========================================================================== */
-.coco-single-product-wrap {
+.single-product .coco-single-product-wrap {
 	background-color: var(--coco-white);
 	border: 1px solid var(--coco-border);
 	border-radius: var(--coco-radius-lg);
-	padding: 2rem;
+	padding: 2.5rem;
 	box-shadow: var(--coco-shadow-sm);
 }
 
-/* Ocultar el botón estándar Añadir al carrito en la ficha para dejar 100% protagonismo a Coco COD */
+/* Grilla moderna de 2 columnas estilo Ecomus */
+.single-product div.product {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 3.5rem;
+	align-items: flex-start;
+}
+
+.single-product div.product .woocommerce-product-gallery {
+	flex: 1 1 52%;
+	max-width: calc(54% - 1.75rem);
+	position: relative;
+}
+
+.single-product div.product .woocommerce-product-gallery img {
+	border-radius: var(--coco-radius-md);
+	width: 100%;
+	height: auto;
+	box-shadow: 0 4px 20px rgba(31, 41, 51, 0.06);
+	border: 1px solid var(--coco-border);
+}
+
+.single-product div.product .woocommerce-product-gallery .flex-control-thumbs {
+	display: flex;
+	gap: 0.75rem;
+	margin-top: 1rem;
+	padding: 0;
+	list-style: none;
+}
+
+.single-product div.product .woocommerce-product-gallery .flex-control-thumbs li {
+	flex: 0 0 76px;
+	cursor: pointer;
+}
+
+.single-product div.product .woocommerce-product-gallery .flex-control-thumbs li img {
+	border-radius: 8px;
+	border: 2px solid transparent;
+	transition: var(--coco-transition);
+}
+
+.single-product div.product .woocommerce-product-gallery .flex-control-thumbs li img.flex-active,
+.single-product div.product .woocommerce-product-gallery .flex-control-thumbs li img:hover {
+	border-color: var(--coco-primary);
+}
+
+/* Columna derecha resumen (Sticky en Desktop) */
+.single-product div.product .summary.entry-summary {
+	flex: 1 1 40%;
+	max-width: calc(46% - 1.75rem);
+	position: sticky;
+	top: 90px;
+}
+
+/* Marquesina animada estilo Ecomus arriba a la derecha */
+.coco-product-marquee-wrap {
+	overflow: hidden;
+	background: linear-gradient(135deg, #FFF7ED 0%, #FEF3C7 50%, #F0FDF4 100%);
+	border: 1px solid #FED7AA;
+	border-radius: 999px;
+	padding: 0.45rem 0.85rem;
+	margin-bottom: 1.15rem;
+	box-shadow: 0 2px 8px rgba(228, 123, 2, 0.08);
+	width: 100%;
+}
+
+.coco-product-marquee {
+	display: flex;
+	overflow: hidden;
+	user-select: none;
+	width: 100%;
+}
+
+.coco-product-marquee-track {
+	display: flex;
+	align-items: center;
+	gap: 1.25rem;
+	white-space: nowrap;
+	animation: cocoMarqueeScroll 22s linear infinite;
+	font-size: 0.76rem;
+	font-weight: 800;
+	letter-spacing: 0.04em;
+	color: #B45309;
+	text-transform: uppercase;
+}
+
+.coco-product-marquee-wrap:hover .coco-product-marquee-track {
+	animation-play-state: paused;
+}
+
+.coco-marquee-sep {
+	color: #F59E0B;
+	opacity: 0.7;
+}
+
+@keyframes cocoMarqueeScroll {
+	0% {
+		transform: translateX(0);
+	}
+	100% {
+		transform: translateX(-50%);
+	}
+}
+
+.single-product .product_title {
+	font-family: var(--wp--preset--font-family--heading);
+	font-size: 1.85rem !important;
+	font-weight: 800 !important;
+	color: var(--coco-dark);
+	line-height: 1.25;
+	margin: 0 0 0.85rem 0 !important;
+	letter-spacing: -0.02em;
+}
+
+.single-product .woocommerce-product-rating {
+	display: flex;
+	align-items: center;
+	gap: 0.65rem;
+	margin-bottom: 1rem;
+	font-size: 0.9rem;
+	color: #F59E0B;
+}
+
+.single-product .woocommerce-product-rating .star-rating {
+	font-size: 1rem;
+	letter-spacing: 2px;
+}
+
+.single-product p.price,
+.single-product span.price {
+	font-size: 1.75rem !important;
+	font-weight: 800 !important;
+	color: var(--coco-primary) !important;
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	margin-bottom: 0.85rem !important;
+}
+
+.single-product p.price del {
+	font-size: 1.15rem;
+	color: #94A3B8;
+	font-weight: 600;
+}
+
+.single-product p.price ins {
+	text-decoration: none;
+}
+
+/* Barra de urgencia y demanda estilo Ecomus */
+.coco-stock-urgency-bar {
+	background-color: #FFF7ED;
+	border: 1px solid #FFEDD5;
+	border-radius: var(--coco-radius-sm);
+	padding: 0.75rem 1rem;
+	margin: 0.85rem 0 1.25rem 0;
+}
+
+.coco-urgency-text {
+	font-size: 0.85rem;
+	color: #9A3412;
+	font-weight: 600;
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+	margin-bottom: 0.45rem;
+}
+
+.coco-urgency-text strong {
+	color: #C2410C;
+	font-weight: 800;
+}
+
+.coco-urgency-progress {
+	height: 6px;
+	background-color: #FED7AA;
+	border-radius: 999px;
+	overflow: hidden;
+}
+
+.coco-urgency-fill {
+	height: 100%;
+	width: 78%;
+	background: linear-gradient(90deg, #E47B02, #16A34A);
+	border-radius: 999px;
+	animation: cocoPulseUrgency 2s ease-in-out infinite alternate;
+}
+
+@keyframes cocoPulseUrgency {
+	0% { opacity: 0.85; }
+	100% { opacity: 1; }
+}
+
+.single-product .woocommerce-product-details__short-description {
+	color: var(--coco-slate);
+	font-size: 0.96rem;
+	line-height: 1.6;
+	margin-bottom: 1.25rem;
+	padding-bottom: 1.25rem;
+	border-bottom: 1px solid var(--coco-border);
+}
+
+/* Botón principal Coco COD de alta conversión */
+#coco-cod-open-modal,
+.coco-cod-button {
+	width: 100% !important;
+	display: flex !important;
+	align-items: center;
+	justify-content: center;
+	gap: 0.65rem;
+	background-color: var(--coco-cod-green) !important;
+	color: var(--coco-white) !important;
+	font-size: 1.05rem !important;
+	font-weight: 800 !important;
+	padding: 1.1rem 1.75rem !important;
+	border-radius: var(--coco-radius-md) !important;
+	box-shadow: 0 8px 24px rgba(22, 163, 74, 0.32) !important;
+	text-transform: uppercase;
+	letter-spacing: 0.02em;
+	transition: var(--coco-transition) !important;
+	cursor: pointer;
+}
+
+#coco-cod-open-modal:hover,
+.coco-cod-button:hover {
+	background-color: var(--coco-cod-green-dark) !important;
+	transform: translateY(-2px);
+	box-shadow: 0 12px 30px rgba(22, 163, 74, 0.42) !important;
+}
+
+/* Ocultar botón nativo de añadir al carrito */
 .single-product form.cart .single_add_to_cart_button {
 	display: none !important;
 }
 
-.coco-cod-btn-wrapper {
-	margin-top: 1rem;
-	margin-bottom: 1rem;
+/* Caja de garantías y confianza estilo Ecomus */
+.coco-ecomus-trust-box {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 0.85rem;
+	background-color: #F8FAFC;
+	border: 1px solid var(--coco-border);
+	border-radius: var(--coco-radius-md);
+	padding: 1.15rem 1.25rem;
+	margin-top: 1.5rem;
+}
+
+.coco-trust-item {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.65rem;
+}
+
+.coco-trust-item-icon {
+	font-size: 1.35rem;
+	line-height: 1;
+	flex-shrink: 0;
+	margin-top: 0.1rem;
+}
+
+.coco-trust-item-content {
+	display: flex;
+	flex-direction: column;
+}
+
+.coco-trust-item-content strong {
+	font-size: 0.85rem;
+	font-weight: 700;
+	color: var(--coco-dark);
+	line-height: 1.3;
+}
+
+.coco-trust-item-content span {
+	font-size: 0.76rem;
+	color: var(--coco-muted);
+	line-height: 1.35;
+	margin-top: 0.15rem;
+}
+
+/* Pestañas / Tabs estilo moderno Ecomus */
+.woocommerce-tabs {
+	margin-top: 3.5rem;
+	border-top: 1px solid var(--coco-border);
+	padding-top: 2.5rem;
 	width: 100%;
 }
 
-.coco-cod-button {
-	width: 100%;
-	justify-content: center;
-	box-shadow: 0 8px 22px rgba(22, 163, 74, 0.28);
+.woocommerce-tabs ul.tabs {
+	display: flex;
+	gap: 2rem;
+	list-style: none;
+	padding: 0;
+	margin: 0 0 1.5rem 0;
+	border-bottom: 1px solid var(--coco-border);
 }
 
-.coco-product-cod-guarantees {
-	background-color: #F0FDF4;
-	border: 1px solid #BBF7D0;
-	border-radius: var(--coco-radius-sm);
-	padding: 1rem 1.25rem;
-	margin-top: 1.25rem;
+.woocommerce-tabs ul.tabs li {
+	padding-bottom: 0.75rem;
+	margin-bottom: -1px;
+}
+
+.woocommerce-tabs ul.tabs li a {
+	font-size: 1.05rem;
+	font-weight: 700;
+	color: var(--coco-muted);
+	text-decoration: none;
+	transition: var(--coco-transition);
+}
+
+.woocommerce-tabs ul.tabs li.active a {
+	color: var(--coco-primary);
+	border-bottom: 2px solid var(--coco-primary);
+}
+
+.woocommerce-tabs .woocommerce-Tabs-panel {
+	color: var(--coco-slate);
+	line-height: 1.7;
+	font-size: 0.98rem;
 }
 
 /* ==========================================================================
@@ -883,6 +1178,29 @@ body {
 /* ==========================================================================
    11. RESPONSIVE DESIGN (MOBILE FIRST PARAGUAY)
    ========================================================================== */
+@media (max-width: 991px) {
+	.single-product div.product {
+		flex-direction: column !important;
+		gap: 2rem !important;
+	}
+
+	.single-product div.product .woocommerce-product-gallery,
+	.single-product div.product .summary.entry-summary {
+		max-width: 100% !important;
+		flex: 1 1 100% !important;
+		position: static !important;
+	}
+
+	.single-product .coco-single-product-wrap {
+		padding: 1.5rem !important;
+	}
+
+	.coco-ecomus-trust-box {
+		grid-template-columns: 1fr !important;
+		gap: 0.85rem !important;
+	}
+}
+
 @media (max-width: 991px) and (min-width: 782px) {
 	.coco-site-footer .wp-block-columns {
 		flex-wrap: wrap !important;

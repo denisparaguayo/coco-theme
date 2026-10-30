@@ -233,17 +233,91 @@ function coco_theme_register_pattern_categories() {
 add_action( 'init', 'coco_theme_register_pattern_categories' );
 
 /**
- * Sello de confianza debajo del botón de Coco COD en la ficha de producto.
+ * Marquesina animada estilo Ecomus en la columna derecha de la ficha de producto.
+ */
+function coco_theme_single_product_marquee() {
+	?>
+	<div class="coco-product-marquee-wrap">
+		<div class="coco-product-marquee">
+			<div class="coco-product-marquee-track">
+				<span>🔥 OFERTA DE TEMPORADA</span>
+				<span class="coco-marquee-sep">•</span>
+				<span>💵 PAGO CONTRA ENTREGA (EFECTIVO O QR)</span>
+				<span class="coco-marquee-sep">•</span>
+				<span>🚚 ENVÍOS A TODO PARAGUAY</span>
+				<span class="coco-marquee-sep">•</span>
+				<span>📲 PEDIDOS DIRECTOS: 0981 531503</span>
+				<span class="coco-marquee-sep">•</span>
+				<span>🛡️ 100% COMPRA SEGURA Y SIN RIESGO</span>
+				<span class="coco-marquee-sep">•</span>
+				<span>🔥 OFERTA DE TEMPORADA</span>
+				<span class="coco-marquee-sep">•</span>
+				<span>💵 PAGO CONTRA ENTREGA (EFECTIVO O QR)</span>
+				<span class="coco-marquee-sep">•</span>
+				<span>🚚 ENVÍOS A TODO PARAGUAY</span>
+				<span class="coco-marquee-sep">•</span>
+				<span>📲 PEDIDOS DIRECTOS: 0981 531503</span>
+				<span class="coco-marquee-sep">•</span>
+				<span>🛡️ 100% COMPRA SEGURA Y SIN RIESGO</span>
+			</div>
+		</div>
+	</div>
+	<?php
+}
+add_action( 'woocommerce_single_product_summary', 'coco_theme_single_product_marquee', 3 );
+
+/**
+ * Barra de urgencia y demanda estilo Ecomus bajo el precio en la ficha de producto.
+ */
+function coco_theme_single_product_urgency_bar() {
+	?>
+	<div class="coco-stock-urgency-bar">
+		<div class="coco-urgency-text">
+			<span class="coco-urgency-flame">⚡</span>
+			<span>¡Alta demanda! Quedan <strong>pocas unidades en stock</strong> para entrega inmediata</span>
+		</div>
+		<div class="coco-urgency-progress">
+			<div class="coco-urgency-fill"></div>
+		</div>
+	</div>
+	<?php
+}
+add_action( 'woocommerce_single_product_summary', 'coco_theme_single_product_urgency_bar', 12 );
+
+/**
+ * Caja de garantías de compra estilo Ecomus debajo del botón de Coco COD en la ficha de producto.
  */
 function coco_theme_product_cod_guarantees() {
 	?>
-	<div class="coco-product-cod-guarantees">
-		<p style="margin:0 0 6px 0; font-weight:700; color:#15803d; font-size:0.92rem;">
-			✓ Compra 100% Segura con Pago Contra Entrega
-		</p>
-		<p style="margin:0; font-size:0.85rem; color:#3e4c59; line-height:1.45;">
-			Recibís tu pedido en la comodidad de tu casa u oficina y abonás en <strong>efectivo o QR</strong> recién al tenerlo en tus manos. Envíos a Asunción, Gran Asunción y todo Paraguay.
-		</p>
+	<div class="coco-ecomus-trust-box">
+		<div class="coco-trust-item">
+			<div class="coco-trust-item-icon">💵</div>
+			<div class="coco-trust-item-content">
+				<strong>Pago Contra Entrega</strong>
+				<span>Abonás en efectivo o QR recién al recibir tu paquete en puerta</span>
+			</div>
+		</div>
+		<div class="coco-trust-item">
+			<div class="coco-trust-item-icon">🚚</div>
+			<div class="coco-trust-item-content">
+				<strong>Envíos a Todo Paraguay</strong>
+				<span>Delivery express en Asunción, Gran Asunción e interior</span>
+			</div>
+		</div>
+		<div class="coco-trust-item">
+			<div class="coco-trust-item-icon">🛡️</div>
+			<div class="coco-trust-item-content">
+				<strong>100% Compra Segura</strong>
+				<span>Artículos verificados, nuevos y con garantía directa</span>
+			</div>
+		</div>
+		<div class="coco-trust-item">
+			<div class="coco-trust-item-icon">📲</div>
+			<div class="coco-trust-item-content">
+				<strong>Atención por WhatsApp</strong>
+				<span>Consultas y seguimiento directo al 0981 531503</span>
+			</div>
+		</div>
 	</div>
 	<?php
 }
