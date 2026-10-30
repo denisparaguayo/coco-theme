@@ -7,7 +7,7 @@ Description: Tema WordPress Full Site Editing (FSE) ultraligero y de alta conver
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 7.4
-Version: 1.0.8
+Version: 1.0.9
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: coco-theme
@@ -1032,6 +1032,50 @@ ul.products::after,
 	text-align: center;
 	display: inline-block;
 	line-height: 1.2;
+}
+
+/* Barra de urgencia y stock animada estilo Ecomus */
+.coco-stock-urgency-bar {
+	background-color: var(--coco-primary-soft);
+	border: 1px solid #FFE4E6;
+	border-radius: var(--coco-radius-sm);
+	padding: 0.65rem 0.95rem;
+	margin: 0.85rem 0 1.25rem 0;
+}
+
+.coco-urgency-text {
+	font-size: 0.84rem;
+	color: #9F1239;
+	font-weight: 600;
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+	margin-bottom: 0.45rem;
+}
+
+.coco-urgency-text strong {
+	color: var(--coco-primary);
+	font-weight: 800;
+}
+
+.coco-urgency-progress {
+	height: 6px;
+	background-color: #FECDD3;
+	border-radius: 999px;
+	overflow: hidden;
+}
+
+.coco-urgency-fill {
+	height: 100%;
+	width: 78%;
+	background: linear-gradient(90deg, #CE1322, #D19711);
+	border-radius: 999px;
+	animation: cocoPulseUrgency 2s ease-in-out infinite alternate;
+}
+
+@keyframes cocoPulseUrgency {
+	0% { opacity: 0.85; }
+	100% { opacity: 1; }
 }
 
 .single-product .woocommerce-product-details__short-description {

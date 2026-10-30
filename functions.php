@@ -425,6 +425,24 @@ function coco_theme_single_product_live_viewers() {
 add_action( 'woocommerce_single_product_summary', 'coco_theme_single_product_live_viewers', 12 );
 
 /**
+ * Barra de urgencia y demanda de stock animada bajo el contador de visitas.
+ */
+function coco_theme_single_product_urgency_bar() {
+	?>
+	<div class="coco-stock-urgency-bar">
+		<div class="coco-urgency-text">
+			<span class="coco-urgency-flame">⚡</span>
+			<span>¡Alta demanda! Quedan <strong>pocas unidades en stock</strong> para entrega inmediata</span>
+		</div>
+		<div class="coco-urgency-progress">
+			<div class="coco-urgency-fill"></div>
+		</div>
+	</div>
+	<?php
+}
+add_action( 'woocommerce_single_product_summary', 'coco_theme_single_product_urgency_bar', 14 );
+
+/**
  * Selector de cantidad accesible estilo Ecomus [ - 1 + ] junto al botón "Comprar ahora".
  */
 function coco_theme_before_quantity_wrap() {
