@@ -7,7 +7,7 @@ Description: Tema WordPress Full Site Editing (FSE) ultraligero y de alta conver
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 7.4
-Version: 1.1.4
+Version: 1.1.5
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: coco-theme
@@ -904,29 +904,24 @@ main.has-surface-background-color {
 	visibility: visible !important;
 }
 
-.woocommerce-product-gallery .flex-viewport,
-.woocommerce-product-gallery figure.woocommerce-product-gallery__wrapper,
-.woocommerce-product-gallery .woocommerce-product-gallery__image {
-	width: 100% !important;
-	max-width: 100% !important;
-	min-width: 0 !important;
-	box-sizing: border-box !important;
-	display: block !important;
-	text-align: center !important;
+.woocommerce-product-gallery .woocommerce-product-gallery__wrapper {
+	margin: 0 !important;
+	padding: 0 !important;
 }
 
-.woocommerce-product-gallery__image img,
-.woocommerce-product-gallery .wp-post-image,
-.woocommerce-product-gallery figure img {
+.woocommerce-product-gallery .woocommerce-product-gallery__image a {
+	display: block !important;
+	width: 100% !important;
+}
+
+.woocommerce-product-gallery .woocommerce-product-gallery__image img {
 	width: 100% !important;
 	max-width: 100% !important;
 	height: auto !important;
-	max-height: 480px !important;
-	object-fit: contain !important;
 	border-radius: 8px !important;
 	display: block !important;
-	margin: 0 auto !important;
-	box-sizing: border-box !important;
+	margin: 0 !important;
+	box-shadow: none !important;
 }
 
 /* Desactivar cualquier lupa o zoom flotante */
@@ -2013,14 +2008,12 @@ main.has-surface-background-color {
 		visibility: visible !important;
 	}
 
-	.woocommerce-product-gallery__image img,
-	.woocommerce-product-gallery .wp-post-image,
-	.woocommerce-product-gallery figure img {
-		max-height: 350px !important;
-		width: auto !important;
+	.woocommerce-product-gallery .woocommerce-product-gallery__image img {
+		width: 100% !important;
 		max-width: 100% !important;
-		object-fit: contain !important;
-		margin: 0 auto !important;
+		height: auto !important;
+		display: block !important;
+		margin: 0 !important;
 	}
 
 	.single-product .related.products ul.products,
