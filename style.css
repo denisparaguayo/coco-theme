@@ -1,0 +1,484 @@
+/*
+Theme Name: Coco Cherry Store
+Theme URI: https://github.com/denisparaguayo/coco-theme
+Author: Coco Cherry Store (Denis)
+Author URI: https://cococherrypy.com
+Description: Tema WordPress Full Site Editing (FSE) ultraligero y de alta conversión diseñado a medida para Coco Cherry Store (Paraguay). Optimizado para el flujo exclusivo de Pago Contra Entrega en 1 clic (Coco COD) y atención por WhatsApp, sin carrito tradicional ni constructores visuales pesados.
+Requires at least: 6.4
+Tested up to: 6.7
+Requires PHP: 7.4
+Version: 1.0.0
+License: GPL-2.0-or-later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: coco-theme
+Tags: full-site-editing, e-commerce, block-patterns, custom-colors, wide-blocks
+*/
+
+/* ==========================================================================
+   1. VARIABLES BASE Y RESET GENERAL
+   ========================================================================== */
+:root {
+	--coco-primary: #E47B02;
+	--coco-primary-hover: #ED8F0C;
+	--coco-primary-soft: #FFF7ED;
+	--coco-cod-green: #16A34A;
+	--coco-cod-green-dark: #15803D;
+	--coco-whatsapp: #25D366;
+	--coco-dark: #1F2933;
+	--coco-slate: #3E4C59;
+	--coco-muted: #52606D;
+	--coco-border: #E4E7EB;
+	--coco-surface: #F9F9FB;
+	--coco-white: #FFFFFF;
+	--coco-radius-sm: 8px;
+	--coco-radius-md: 14px;
+	--coco-radius-lg: 20px;
+	--coco-shadow-sm: 0 2px 8px rgba(31, 41, 51, 0.05);
+	--coco-shadow-md: 0 10px 28px rgba(31, 41, 51, 0.07);
+	--coco-shadow-lg: 0 18px 40px rgba(31, 41, 51, 0.12);
+	--coco-transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html {
+	scroll-behavior: smooth;
+	-webkit-font-smoothing: antialiased;
+}
+
+body {
+	overflow-x: hidden;
+	color: var(--coco-dark);
+	background-color: var(--coco-white);
+}
+
+/* Ocultar cualquier rastro de carrito tradicional por seguridad global */
+.wp-block-woocommerce-mini-cart,
+.wc-block-mini-cart,
+.site-header-item-cart,
+.header-cart,
+.widget_shopping_cart {
+	display: none !important;
+}
+
+/* ==========================================================================
+   2. TOP BAR & CABECERA PRINCIPAL (HEADER)
+   ========================================================================== */
+.coco-top-bar {
+	font-size: 0.85rem;
+	font-weight: 600;
+	letter-spacing: 0.01em;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.coco-top-bar p {
+	margin: 0;
+}
+
+.coco-site-header {
+	position: sticky;
+	top: 0;
+	z-index: 990;
+	background-color: rgba(255, 255, 255, 0.96);
+	backdrop-filter: blur(10px);
+	border-bottom: 1px solid var(--coco-border);
+	box-shadow: 0 2px 12px rgba(31, 41, 51, 0.04);
+}
+
+.coco-header-logo img,
+.wp-block-site-logo img {
+	max-height: 52px;
+	width: auto;
+	display: block;
+}
+
+.coco-main-nav .wp-block-navigation-item__content {
+	font-weight: 600;
+	font-size: 0.95rem;
+	padding: 0.4rem 0.6rem;
+	border-radius: 6px;
+	transition: var(--coco-transition);
+}
+
+.coco-main-nav .wp-block-navigation-item__content:hover {
+	color: var(--coco-primary);
+	background-color: var(--coco-primary-soft);
+}
+
+.coco-header-wa-btn .wp-block-button__link {
+	background-color: var(--coco-cod-green) !important;
+	color: var(--coco-white) !important;
+	font-weight: 700;
+	font-size: 0.9rem;
+	padding: 0.65rem 1.2rem;
+	border-radius: 999px;
+	box-shadow: 0 4px 12px rgba(22, 163, 74, 0.22);
+	transition: var(--coco-transition);
+}
+
+.coco-header-wa-btn .wp-block-button__link:hover {
+	background-color: var(--coco-cod-green-dark) !important;
+	transform: translateY(-1px);
+	box-shadow: 0 6px 16px rgba(22, 163, 74, 0.32);
+}
+
+/* ==========================================================================
+   3. SECCIÓN HERO (PORTADA DE ALTA CONVERSIÓN)
+   ========================================================================== */
+.coco-hero-section {
+	position: relative;
+	overflow: hidden;
+	background: linear-gradient(135deg, #FFF7ED 0%, #FFFFFF 55%, #F0FDF4 100%);
+	border-bottom: 1px solid var(--coco-border);
+}
+
+.coco-hero-badge {
+	display: inline-block;
+	background-color: #FEF3C7;
+	color: #B45309;
+	font-weight: 700;
+	font-size: 0.82rem;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	padding: 0.4rem 1rem;
+	border-radius: 999px;
+	border: 1px solid #FDE68A;
+}
+
+.coco-hero-title {
+	letter-spacing: -0.02em;
+}
+
+.coco-hero-image-card {
+	border-radius: var(--coco-radius-lg);
+	overflow: hidden;
+	box-shadow: var(--coco-shadow-lg);
+	border: 4px solid var(--coco-white);
+}
+
+.coco-hero-image-card img {
+	width: 100%;
+	height: auto;
+	display: block;
+	object-fit: cover;
+}
+
+.coco-btn-primary .wp-block-button__link {
+	background-color: var(--coco-primary) !important;
+	color: var(--coco-white) !important;
+	font-weight: 700;
+	box-shadow: 0 6px 18px rgba(228, 123, 2, 0.28);
+	transition: var(--coco-transition);
+}
+
+.coco-btn-primary .wp-block-button__link:hover {
+	background-color: var(--coco-primary-hover) !important;
+	transform: translateY(-2px);
+	box-shadow: 0 10px 24px rgba(228, 123, 2, 0.36);
+}
+
+.coco-btn-whatsapp .wp-block-button__link {
+	background-color: var(--coco-cod-green) !important;
+	color: var(--coco-white) !important;
+	font-weight: 700;
+	box-shadow: 0 6px 18px rgba(22, 163, 74, 0.25);
+	transition: var(--coco-transition);
+}
+
+.coco-btn-whatsapp .wp-block-button__link:hover {
+	background-color: var(--coco-cod-green-dark) !important;
+	transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   4. PILARES DE CONFIANZA (TRUST BADGES)
+   ========================================================================== */
+.coco-trust-card {
+	background-color: var(--coco-white);
+	border: 1px solid var(--coco-border);
+	border-radius: var(--coco-radius-md);
+	box-shadow: var(--coco-shadow-sm);
+	transition: var(--coco-transition);
+	height: 100%;
+}
+
+.coco-trust-card:hover {
+	transform: translateY(-4px);
+	box-shadow: var(--coco-shadow-md);
+	border-color: var(--coco-primary);
+}
+
+.coco-trust-icon {
+	font-size: 2rem;
+	line-height: 1;
+	margin-bottom: 0.5rem;
+}
+
+/* ==========================================================================
+   5. GRID DE CATEGORÍAS PRINCIPALES
+   ========================================================================== */
+.coco-category-card {
+	background-color: var(--coco-white);
+	border: 1px solid var(--coco-border);
+	border-radius: var(--coco-radius-md);
+	overflow: hidden;
+	box-shadow: var(--coco-shadow-sm);
+	transition: var(--coco-transition);
+	position: relative;
+}
+
+.coco-category-card:hover {
+	transform: translateY(-5px);
+	box-shadow: var(--coco-shadow-md);
+	border-color: var(--coco-primary);
+}
+
+.coco-category-card .wp-block-button__link {
+	width: 100%;
+	text-align: center;
+	font-weight: 700;
+}
+
+/* ==========================================================================
+   6. CATÁLOGO Y PRODUCTOS WOOCOMMERCE (MODO EXCLUSIVO 1-CLIC COD)
+   ========================================================================== */
+.woocommerce ul.products li.product,
+.wp-block-post-template li.wc-block-product,
+.wc-block-grid__product {
+	background: var(--coco-white);
+	border: 1px solid var(--coco-border);
+	border-radius: var(--coco-radius-md);
+	padding: 1rem !important;
+	box-shadow: var(--coco-shadow-sm);
+	transition: var(--coco-transition);
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.woocommerce ul.products li.product:hover,
+.wp-block-post-template li.wc-block-product:hover,
+.wc-block-grid__product:hover {
+	transform: translateY(-4px);
+	box-shadow: var(--coco-shadow-md);
+	border-color: var(--coco-primary);
+}
+
+.woocommerce ul.products li.product a img,
+.wp-block-woocommerce-product-image img {
+	border-radius: var(--coco-radius-sm);
+	aspect-ratio: 1 / 1;
+	object-fit: cover;
+	width: 100%;
+}
+
+.woocommerce ul.products li.product .woocommerce-loop-product__title,
+.wp-block-post-title a {
+	font-size: 1.02rem !important;
+	font-weight: 700;
+	color: var(--coco-dark);
+	line-height: 1.35;
+	margin-top: 0.5rem;
+}
+
+.woocommerce ul.products li.product .price,
+.wp-block-woocommerce-product-price {
+	color: var(--coco-primary) !important;
+	font-weight: 800 !important;
+	font-size: 1.15rem !important;
+	margin-bottom: 0.75rem !important;
+}
+
+/* Botón en tarjetas de catálogo: lleva directo a la ficha de producto para pedir contra entrega */
+.woocommerce ul.products li.product .button,
+.wp-block-button.wc-block-components-product-button .wc-block-components-product-button__button {
+	width: 100%;
+	text-align: center;
+	background-color: var(--coco-cod-green) !important;
+	color: var(--coco-white) !important;
+	font-weight: 700 !important;
+	border-radius: var(--coco-radius-sm) !important;
+	padding: 0.7rem 1rem !important;
+	transition: var(--coco-transition);
+}
+
+.woocommerce ul.products li.product .button:hover,
+.wp-block-button.wc-block-components-product-button .wc-block-components-product-button__button:hover {
+	background-color: var(--coco-cod-green-dark) !important;
+	transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   7. FICHA DE PRODUCTO INDIVIDUAL E INTEGRACIÓN COCO COD
+   ========================================================================== */
+.coco-single-product-wrap {
+	background-color: var(--coco-white);
+	border: 1px solid var(--coco-border);
+	border-radius: var(--coco-radius-lg);
+	padding: 2rem;
+	box-shadow: var(--coco-shadow-sm);
+}
+
+/* Ocultar el botón estándar Añadir al carrito en la ficha para dejar 100% protagonismo a Coco COD */
+.single-product form.cart .single_add_to_cart_button {
+	display: none !important;
+}
+
+.coco-cod-btn-wrapper {
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+	width: 100%;
+}
+
+.coco-cod-button {
+	width: 100%;
+	justify-content: center;
+	box-shadow: 0 8px 22px rgba(22, 163, 74, 0.28);
+}
+
+.coco-product-cod-guarantees {
+	background-color: #F0FDF4;
+	border: 1px solid #BBF7D0;
+	border-radius: var(--coco-radius-sm);
+	padding: 1rem 1.25rem;
+	margin-top: 1.25rem;
+}
+
+/* ==========================================================================
+   8. BANNER PROMOCIONAL Y TESTIMONIOS
+   ========================================================================== */
+.coco-promo-banner {
+	background: linear-gradient(120deg, #1F2933 0%, #3E4C59 100%);
+	color: var(--coco-white);
+	border-radius: var(--coco-radius-lg);
+	overflow: hidden;
+	box-shadow: var(--coco-shadow-md);
+}
+
+.coco-review-card {
+	background-color: var(--coco-white);
+	border: 1px solid var(--coco-border);
+	border-radius: var(--coco-radius-md);
+	box-shadow: var(--coco-shadow-sm);
+	height: 100%;
+}
+
+.coco-review-stars {
+	color: #F59E0B;
+	font-size: 1.1rem;
+	letter-spacing: 2px;
+}
+
+/* ==========================================================================
+   9. PREGUNTAS FRECUENTES (ACORDEÓN NATIVO DETAILS)
+   ========================================================================== */
+.wp-block-details {
+	background-color: var(--coco-white);
+	border: 1px solid var(--coco-border);
+	border-radius: var(--coco-radius-sm);
+	padding: 1.1rem 1.4rem;
+	margin-bottom: 0.85rem;
+	box-shadow: var(--coco-shadow-sm);
+	transition: var(--coco-transition);
+}
+
+.wp-block-details[open] {
+	border-color: var(--coco-primary);
+	background-color: var(--coco-primary-soft);
+}
+
+.wp-block-details summary {
+	font-weight: 700;
+	font-size: 1.05rem;
+	color: var(--coco-dark);
+	cursor: pointer;
+	list-style: none;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.wp-block-details summary::after {
+	content: "+";
+	font-size: 1.4rem;
+	font-weight: 700;
+	color: var(--coco-primary);
+	line-height: 1;
+}
+
+.wp-block-details[open] summary::after {
+	content: "−";
+}
+
+.wp-block-details p {
+	margin-top: 0.75rem;
+	margin-bottom: 0;
+	color: var(--coco-slate);
+}
+
+/* ==========================================================================
+   10. FOOTER Y BOTÓN FLOTANTE DE WHATSAPP
+   ========================================================================== */
+.coco-site-footer {
+	border-top: 1px solid var(--coco-border);
+}
+
+.coco-site-footer a:hover {
+	color: var(--coco-primary) !important;
+}
+
+.coco-floating-wa {
+	position: fixed;
+	bottom: 22px;
+	right: 22px;
+	z-index: 995;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.6rem;
+	background-color: var(--coco-whatsapp);
+	color: var(--coco-white) !important;
+	font-weight: 700;
+	font-size: 0.92rem;
+	padding: 0.8rem 1.25rem;
+	border-radius: 999px;
+	box-shadow: 0 8px 24px rgba(37, 211, 102, 0.4);
+	text-decoration: none !important;
+	transition: var(--coco-transition);
+}
+
+.coco-floating-wa:hover {
+	transform: translateY(-3px) scale(1.02);
+	box-shadow: 0 12px 28px rgba(37, 211, 102, 0.52);
+	background-color: #1EBE5B;
+}
+
+.coco-floating-wa svg {
+	width: 22px;
+	height: 22px;
+	fill: currentColor;
+	flex-shrink: 0;
+}
+
+/* ==========================================================================
+   11. RESPONSIVE DESIGN (MOBILE FIRST PARAGUAY)
+   ========================================================================== */
+@media (max-width: 781px) {
+	.coco-top-bar {
+		font-size: 0.76rem;
+		text-align: center;
+	}
+
+	.coco-single-product-wrap {
+		padding: 1.15rem;
+	}
+
+	.coco-floating-wa {
+		bottom: 16px;
+		right: 16px;
+		padding: 0.75rem 1rem;
+		font-size: 0.85rem;
+	}
+
+	.coco-floating-wa span {
+		display: inline;
+	}
+}
+
