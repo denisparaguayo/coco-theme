@@ -585,6 +585,9 @@ add_action( 'woocommerce_after_add_to_cart_form', 'coco_theme_product_cod_guaran
  * Añadir insignia de producto estrella (Más Vendido) en las tarjetas del catálogo WooCommerce.
  */
 function coco_theme_loop_star_badge() {
+	if ( function_exists( 'is_product' ) && is_product() ) {
+		return;
+	}
 	global $product;
 	if ( ! $product instanceof \WC_Product ) {
 		return;
@@ -602,6 +605,9 @@ add_action( 'woocommerce_before_shop_loop_item_title', 'coco_theme_loop_star_bad
  * Añadir etiquetas universales de pago y entrega en las tarjetas del catálogo WooCommerce.
  */
 function coco_theme_loop_cod_tag() {
+	if ( function_exists( 'is_product' ) && is_product() ) {
+		return;
+	}
 	echo '<div class="coco-product-cod-badge"><span class="coco-cod-pill">💵 Pago Contra Entrega, transferencia, efectivo</span><span class="coco-delivery-pill">🚚 Envíos a todo Paraguay</span></div>';
 }
 add_action( 'woocommerce_after_shop_loop_item_title', 'coco_theme_loop_cod_tag', 15 );

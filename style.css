@@ -7,7 +7,7 @@ Description: Tema WordPress Full Site Editing (FSE) ultraligero y de alta conver
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 7.4
-Version: 1.1.0
+Version: 1.1.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: coco-theme
@@ -875,6 +875,7 @@ ul.products::after,
 	box-sizing: border-box !important;
 }
 
+/* Imagen de producto con altura máxima controlada y ajuste armónico (sin recorte ni scroll infinito) */
 .single-product div.product .woocommerce-product-gallery {
 	grid-column: 1 / 2 !important;
 	width: 100% !important;
@@ -885,6 +886,10 @@ ul.products::after,
 	margin: 0 !important;
 	overflow: hidden !important;
 	box-sizing: border-box !important;
+	background: #FAFAFA;
+	border: 1px solid var(--coco-border);
+	border-radius: var(--coco-radius-md);
+	padding: 0.75rem;
 }
 
 .woocommerce-product-gallery .flex-viewport,
@@ -894,19 +899,22 @@ ul.products::after,
 	max-width: 100% !important;
 	min-width: 0 !important;
 	box-sizing: border-box !important;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
 }
 
-/* Imagen de producto con proporción natural por defecto de WooCommerce (sin recorte ni zoom) */
 .woocommerce-product-gallery__image img,
 .woocommerce-product-gallery .wp-post-image,
 .woocommerce-product-gallery figure img {
-	width: 100% !important;
+	width: auto !important;
 	max-width: 100% !important;
 	height: auto !important;
-	max-height: none !important;
+	max-height: 480px !important;
 	object-fit: contain !important;
-	border-radius: var(--coco-radius-md) !important;
+	border-radius: 8px !important;
 	display: block !important;
+	margin: 0 auto !important;
 	box-sizing: border-box !important;
 }
 
@@ -1448,14 +1456,14 @@ ul.products::after,
 	display: block !important;
 }
 
-/* Grilla equilibrada de 4 columnas para productos relacionados */
+/* Grilla minimalista y equilibrada para productos relacionados */
 .single-product .related.products ul.products,
 .single-product .upsells.products ul.products {
 	display: grid !important;
 	grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-	gap: 1.75rem !important;
-	column-gap: 1.75rem !important;
-	row-gap: 2rem !important;
+	gap: 1.25rem !important;
+	column-gap: 1.25rem !important;
+	row-gap: 1.5rem !important;
 	padding: 0 !important;
 	margin: 0 !important;
 	list-style: none !important;
@@ -1473,6 +1481,83 @@ ul.products::after,
 	display: flex !important;
 	flex-direction: column !important;
 	justify-content: flex-start !important;
+	padding: 0.65rem !important;
+	border-radius: var(--coco-radius-md) !important;
+	background: #FFFFFF !important;
+	border: 1px solid var(--coco-border) !important;
+	box-shadow: 0 2px 8px rgba(31, 41, 51, 0.04) !important;
+	transition: var(--coco-transition) !important;
+	position: relative !important;
+	cursor: pointer !important;
+}
+
+.single-product .related.products ul.products li.product:hover,
+.single-product .upsells.products ul.products li.product:hover {
+	transform: translateY(-3px) !important;
+	box-shadow: var(--coco-shadow-md) !important;
+	border-color: var(--coco-primary) !important;
+}
+
+/* Enlace expandido: al dar clic en cualquier parte de la tarjeta lleva al producto */
+.single-product .related.products ul.products li.product a.woocommerce-LoopProduct-link,
+.single-product .upsells.products ul.products li.product a.woocommerce-LoopProduct-link {
+	display: flex !important;
+	flex-direction: column !important;
+	text-decoration: none !important;
+	height: 100% !important;
+}
+
+.single-product .related.products ul.products li.product a.woocommerce-LoopProduct-link::after,
+.single-product .upsells.products ul.products li.product a.woocommerce-LoopProduct-link::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: 0 !important;
+	z-index: 2 !important;
+	cursor: pointer !important;
+}
+
+/* Imagen cuadrada compacta en productos relacionados */
+.single-product .related.products ul.products li.product a img,
+.single-product .upsells.products ul.products li.product a img {
+	aspect-ratio: 1 / 1 !important;
+	object-fit: cover !important;
+	border-radius: 8px !important;
+	width: 100% !important;
+	height: auto !important;
+	margin-bottom: 0.45rem !important;
+}
+
+/* Título minimalista (máx 2 líneas) */
+.single-product .related.products ul.products li.product .woocommerce-loop-product__title,
+.single-product .upsells.products ul.products li.product .woocommerce-loop-product__title {
+	font-size: 0.88rem !important;
+	font-weight: 600 !important;
+	color: #111827 !important;
+	line-height: 1.35 !important;
+	margin: 0.35rem 0 0.3rem 0 !important;
+	display: -webkit-box !important;
+	-webkit-line-clamp: 2 !important;
+	-webkit-box-orient: vertical !important;
+	overflow: hidden !important;
+}
+
+/* Precio limpio y destacado */
+.single-product .related.products ul.products li.product .price,
+.single-product .upsells.products ul.products li.product .price {
+	font-size: 0.95rem !important;
+	font-weight: 700 !important;
+	color: var(--coco-primary) !important;
+	margin: auto 0 0 0 !important;
+}
+
+/* Ocultar botones e insignias innecesarias para máxima limpieza */
+.single-product .related.products .coco-product-cod-badge,
+.single-product .related.products .coco-star-product-badge,
+.single-product .related.products .button,
+.single-product .upsells.products .coco-product-cod-badge,
+.single-product .upsells.products .coco-star-product-badge,
+.single-product .upsells.products .button {
+	display: none !important;
 }
 
 /* ==========================================================================
@@ -1905,6 +1990,43 @@ ul.products::after,
 		max-width: 100% !important;
 		box-sizing: border-box !important;
 		overflow: hidden !important;
+	}
+
+	.single-product div.product .woocommerce-product-gallery {
+		padding: 0.5rem !important;
+		background: #FAFAFA !important;
+	}
+
+	.woocommerce-product-gallery__image img,
+	.woocommerce-product-gallery .wp-post-image,
+	.woocommerce-product-gallery figure img {
+		max-height: 350px !important;
+		width: auto !important;
+		max-width: 100% !important;
+		object-fit: contain !important;
+		margin: 0 auto !important;
+	}
+
+	.single-product .related.products ul.products,
+	.single-product .upsells.products ul.products {
+		grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+		gap: 0.75rem !important;
+	}
+
+	.single-product .related.products ul.products li.product,
+	.single-product .upsells.products ul.products li.product {
+		padding: 0.5rem !important;
+	}
+
+	.single-product .related.products ul.products li.product .woocommerce-loop-product__title,
+	.single-product .upsells.products ul.products li.product .woocommerce-loop-product__title {
+		font-size: 0.8rem !important;
+		margin: 0.3rem 0 0.2rem 0 !important;
+	}
+
+	.single-product .related.products ul.products li.product .price,
+	.single-product .upsells.products ul.products li.product .price {
+		font-size: 0.88rem !important;
 	}
 
 	.coco-sticky-top-marquee {
