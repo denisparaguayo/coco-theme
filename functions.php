@@ -19,11 +19,24 @@ new \Coco_Theme\Updater();
  * Configuración base del tema y soporte para FSE y WooCommerce.
  */
 function coco_theme_setup() {
+	add_theme_support( 'title-tag' );
 	add_theme_support( 'wp-block-styles' );
 	add_theme_support( 'editor-styles' );
 	add_editor_style( 'style.css' );
 	add_theme_support( 'responsive-embeds' );
 	add_theme_support( 'post-thumbnails' );
+
+	// Soporte completo para logotipo personalizado y flexible.
+	add_theme_support(
+		'custom-logo',
+		array(
+			'height'               => 100,
+			'width'                => 320,
+			'flex-height'          => true,
+			'flex-width'           => true,
+			'unlink-homepage-logo' => false,
+		)
+	);
 
 	// Soporte completo para WooCommerce.
 	add_theme_support(
@@ -45,6 +58,143 @@ function coco_theme_setup() {
 	add_theme_support( 'wc-product-gallery-slider' );
 }
 add_action( 'after_setup_theme', 'coco_theme_setup' );
+
+/**
+ * Habilitar soporte para subir y previsualizar imágenes SVG en la biblioteca de medios.
+ */
+function coco_theme_mime_types( $mimes ) {
+	$mimes['svg']  = 'image/svg+xml';
+	$mimes['svgz'] = 'image/svg+xml';
+	return $mimes;
+}
+add_filter( 'upload_mimes', 'coco_theme_mime_types' );
+
+function coco_theme_fix_svg_filetype( $data, $file, $filename, $mimes ) {
+	$ext = isset( $data['ext'] ) ? $data['ext'] : '';
+	if ( strlen( $ext ) < 1 ) {
+		$exploded = explode( '.', $filename );
+		$ext      = strtolower( end( $exploded ) );
+	}
+	if ( 'svg' === $ext ) {
+		$data['type'] = 'image/svg+xml';
+		$data['ext']  = 'svg';
+	} elseif ( 'svgz' === $ext ) {
+		$data['type'] = 'image/svg+xml';
+		$data['ext']  = 'svgz';
+	}
+	return $data;
+}
+add_filter( 'wp_check_filetype_and_ext', 'coco_theme_fix_svg_filetype', 10, 4 );
+
+/**
+ * Auto-detectar y sincronizar el logo de Coco Cherry Store (incluyendo COCO-NEW-LOGO.svg)
+ * para que nunca quede vacío tras activar el tema.
+ */
+function coco_theme_ensure_site_logo() {
+	$current_logo = get_theme_mod( 'custom_logo' );
+	$site_logo    = get_option( 'site_logo' );
+
+	if ( ! empty( $current_logo ) && ! empty( $site_logo ) ) {
+		return;
+	}
+
+	if ( empty( $current_logo ) && ! empty( $site_logo ) ) {
+		set_theme_mod( 'custom_logo', $site_logo );
+		return;
+	}
+
+	if ( ! empty( $current_logo ) && empty( $site_logo ) ) {
+		update_option( 'site_logo', $current_logo );
+		return;
+	}
+
+	// 1. Buscar en mods de temas anteriores (ej. Kadence, Astra, Storefront).
+	global $wpdb;
+	$prev_mods = $wpdb->get_results( "SELECT option_name, option_value FROM {$wpdb->options} WHERE option_name LIKE 'theme_mods_%' AND option_name != 'theme_mods_coco-theme' LIMIT 15" );
+	if ( ! empty( $prev_mods ) ) {
+		foreach ( $prev_mods as $row ) {
+			$data = maybe_unserialize( $row->option_value );
+			if ( is_array( $data ) && ! empty( $data['custom_logo'] ) ) {
+				$logo_id = intval( $data['custom_logo'] );
+				if ( $logo_id > 0 && wp_get_attachment_url( $logo_id ) ) {
+					set_theme_mod( 'custom_logo', $logo_id );
+					update_option( 'site_logo', $logo_id );
+					return;
+				}
+			}
+		}
+	}
+
+	// 2. Buscar por nombre de archivo oficial COCO-NEW-LOGO en biblioteca de medios.
+	$query = new \WP_Query(
+		array(
+			'post_type'      => 'attachment',
+			'post_status'    => 'inherit',
+			'posts_per_page' => 1,
+			's'              => 'COCO-NEW-LOGO',
+		)
+	);
+
+	if ( $query->have_posts() ) {
+		$logo_id = $query->posts[0]->ID;
+		set_theme_mod( 'custom_logo', $logo_id );
+		update_option( 'site_logo', $logo_id );
+		return;
+	}
+
+	// 3. Búsqueda de respaldo por 'logo'.
+	$query_alt = new \WP_Query(
+		array(
+			'post_type'      => 'attachment',
+			'post_mime_type' => 'image',
+			'post_status'    => 'inherit',
+			'posts_per_page' => 1,
+			's'              => 'logo',
+		)
+	);
+
+	if ( $query_alt->have_posts() ) {
+		$logo_id = $query_alt->posts[0]->ID;
+		set_theme_mod( 'custom_logo', $logo_id );
+		update_option( 'site_logo', $logo_id );
+	}
+}
+add_action( 'after_setup_theme', 'coco_theme_ensure_site_logo', 20 );
+
+/**
+ * Asegurar que el bloque Gutenberg core/site-logo devuelva la imagen del logo si existe.
+ */
+function coco_theme_fallback_site_logo_render( $block_content, $block ) {
+	if ( 'core/site-logo' !== $block['blockName'] ) {
+		return $block_content;
+	}
+
+	if ( false !== strpos( $block_content, '<img' ) ) {
+		return $block_content;
+	}
+
+	$logo_id = get_theme_mod( 'custom_logo' );
+	if ( ! $logo_id ) {
+		$logo_id = get_option( 'site_logo' );
+	}
+
+	if ( $logo_id ) {
+		$logo_url = wp_get_attachment_url( $logo_id );
+		if ( $logo_url ) {
+			$alt = get_post_meta( $logo_id, '_wp_attachment_image_alt', true );
+			$alt = $alt ? $alt : get_bloginfo( 'name' );
+			return sprintf(
+				'<div class="wp-block-site-logo"><a href="%s" class="custom-logo-link" rel="home"><img src="%s" class="custom-logo" alt="%s" style="max-height:52px;width:auto;" /></a></div>',
+				esc_url( home_url( '/' ) ),
+				esc_url( $logo_url ),
+				esc_attr( $alt )
+			);
+		}
+	}
+
+	return $block_content;
+}
+add_filter( 'render_block', 'coco_theme_fallback_site_logo_render', 10, 2 );
 
 /**
  * Encolar hoja de estilos principal (style.css) y fuentes optimizadas.
