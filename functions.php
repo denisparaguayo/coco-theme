@@ -19,14 +19,30 @@ new \Coco_Theme\Updater();
  * Configuración base del tema y soporte para FSE y WooCommerce.
  */
 function coco_theme_setup() {
+	add_theme_support( 'automatic-feed-links' );
 	add_theme_support( 'title-tag' );
 	add_theme_support( 'wp-block-styles' );
+	add_theme_support( 'align-wide' );
 	add_theme_support( 'editor-styles' );
 	add_editor_style( 'style.css' );
 	add_theme_support( 'responsive-embeds' );
 	add_theme_support( 'post-thumbnails' );
+	add_theme_support( 'customize-selective-refresh-widgets' );
+	add_theme_support(
+		'html5',
+		array(
+			'search-form',
+			'comment-form',
+			'comment-list',
+			'gallery',
+			'caption',
+			'style',
+			'script',
+			'navigation-widgets',
+		)
+	);
 
-	// Soporte completo para logotipo personalizado y flexible.
+	// Soporte completo para logotipo personalizado y opción nativa de ocultar título/descripción.
 	add_theme_support(
 		'custom-logo',
 		array(
@@ -34,7 +50,16 @@ function coco_theme_setup() {
 			'width'                => 320,
 			'flex-height'          => true,
 			'flex-width'           => true,
+			'header-text'          => array( 'site-title', 'site-description', 'wp-block-site-title', 'wp-block-site-tagline' ),
 			'unlink-homepage-logo' => false,
+		)
+	);
+
+	// Soporte para fondo personalizado y cabecera nativa de WordPress.
+	add_theme_support(
+		'custom-background',
+		array(
+			'default-color' => 'ffffff',
 		)
 	);
 
@@ -46,6 +71,10 @@ function coco_theme_setup() {
 			'footer'  => __( 'Menú de Pie de Página (Footer)', 'coco-theme' ),
 		)
 	);
+
+	// Habilitar soporte nativo de Widgets.
+	add_theme_support( 'widgets' );
+	add_theme_support( 'widgets-block-editor' );
 
 	// Soporte completo para WooCommerce.
 	add_theme_support(
@@ -716,9 +745,89 @@ function coco_theme_render_floating_whatsapp() {
 add_action( 'wp_footer', 'coco_theme_render_floating_whatsapp', 30 );
 
 /**
- * Panel de Personalización para elegir Menú Principal y prender o apagar el botón flotante de WhatsApp.
+ * Registrar áreas de Widgets nativas de WordPress (Tienda y Footer).
+ */
+function coco_theme_widgets_init() {
+	register_sidebar(
+		array(
+			'name'          => __( 'Barra Lateral de Tienda (WooCommerce)', 'coco-theme' ),
+			'id'            => 'sidebar-shop',
+			'description'   => __( 'Añade aquí widgets para el catálogo de productos.', 'coco-theme' ),
+			'before_widget' => '<div id="%1$s" class="widget %2$s">',
+			'after_widget'  => '</div>',
+			'before_title'  => '<h4 class="widget-title">',
+			'after_title'   => '</h4>',
+		)
+	);
+
+	register_sidebar(
+		array(
+			'name'          => __( 'Pie de Página (Widgets)', 'coco-theme' ),
+			'id'            => 'footer-1',
+			'description'   => __( 'Área de widgets adicional para el pie de página.', 'coco-theme' ),
+			'before_widget' => '<div id="%1$s" class="widget %2$s">',
+			'after_widget'  => '</div>',
+			'before_title'  => '<h4 class="widget-title">',
+			'after_title'   => '</h4>',
+		)
+	);
+}
+add_action( 'widgets_init', 'coco_theme_widgets_init' );
+
+/**
+ * Panel de Personalización: controles nativos en "Identidad del sitio" (ocultar título/descripción,
+ * ancho de logo) y sección "Opciones Coco Cherry Store".
  */
 function coco_theme_customize_register( $wp_customize ) {
+	// 1. Casilla nativa en "Identidad del sitio": Mostrar el título y la descripción corta del sitio.
+	$wp_customize->add_setting(
+		'coco_theme_show_title_tagline',
+		array(
+			'default'           => false,
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'rest_sanitize_boolean',
+			'transport'         => 'refresh',
+		)
+	);
+
+	$wp_customize->add_control(
+		'coco_theme_show_title_tagline',
+		array(
+			'label'    => __( 'Mostrar el título y la descripción corta del sitio', 'coco-theme' ),
+			'section'  => 'title_tagline',
+			'type'     => 'checkbox',
+			'priority' => 45,
+		)
+	);
+
+	// 2. Control de ancho del logotipo en "Identidad del sitio".
+	$wp_customize->add_setting(
+		'coco_theme_logo_width',
+		array(
+			'default'           => 125,
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'absint',
+			'transport'         => 'refresh',
+		)
+	);
+
+	$wp_customize->add_control(
+		'coco_theme_logo_width',
+		array(
+			'label'       => __( 'Ancho del Logotipo (px)', 'coco-theme' ),
+			'description' => __( 'Ajusta el tamaño del logotipo en la cabecera y pie de página (por defecto: 125px).', 'coco-theme' ),
+			'section'     => 'title_tagline',
+			'type'        => 'number',
+			'input_attrs' => array(
+				'min'  => 60,
+				'max'  => 300,
+				'step' => 5,
+			),
+			'priority'    => 9,
+		)
+	);
+
+	// 3. Sección propia Opciones Coco Cherry Store.
 	$wp_customize->add_section(
 		'coco_theme_options',
 		array(
@@ -779,4 +888,43 @@ function coco_theme_customize_register( $wp_customize ) {
 	);
 }
 add_action( 'customize_register', 'coco_theme_customize_register' );
+
+/**
+ * Aplicar visibilidad del título/descripción del sitio y ancho personalizado del logo.
+ */
+function coco_theme_customizer_dynamic_css() {
+	$show_title = get_theme_mod( 'coco_theme_show_title_tagline', false );
+	$logo_width = absint( get_theme_mod( 'coco_theme_logo_width', 125 ) );
+	if ( $logo_width < 60 ) {
+		$logo_width = 125;
+	}
+	$logo_height = intval( round( $logo_width * 0.49 ) );
+	?>
+	<style id="coco-customizer-dynamic-css">
+		.coco-header-logo img,
+		.coco-footer-logo img,
+		.wp-block-site-logo img,
+		.custom-logo {
+			width: <?php echo esc_attr( $logo_width ); ?>px !important;
+			height: <?php echo esc_attr( $logo_height ); ?>px !important;
+			max-height: <?php echo esc_attr( $logo_height + 6 ); ?>px !important;
+			object-fit: contain !important;
+		}
+		<?php if ( ! $show_title ) : ?>
+		.wp-block-site-title,
+		.wp-block-site-tagline,
+		.site-title,
+		.site-description {
+			display: none !important;
+		}
+		<?php else : ?>
+		.coco-header-logo .wp-block-site-title,
+		.coco-footer-logo .wp-block-site-title {
+			display: block !important;
+		}
+		<?php endif; ?>
+	</style>
+	<?php
+}
+add_action( 'wp_head', 'coco_theme_customizer_dynamic_css', 99 );
 
