@@ -1189,6 +1189,22 @@ function coco_theme_star_products_shortcode() {
 add_shortcode( 'coco_star_products', 'coco_theme_star_products_shortcode' );
 
 /**
+ * Asegurar que cualquier bloque o plantilla que contenga [coco_star_products]
+ * se renderice automáticamente con las tarjetas de los productos favoritos.
+ */
+add_filter(
+	'render_block',
+	function( $block_content, $block ) {
+		if ( is_string( $block_content ) && strpos( $block_content, '[coco_star_products]' ) !== false ) {
+			return str_replace( '[coco_star_products]', coco_theme_star_products_shortcode(), $block_content );
+		}
+		return $block_content;
+	},
+	20,
+	2
+);
+
+/**
  * Botón flotante de WhatsApp: desactivado por defecto para no obstruir pantalla móvil ni fichas de producto.
  * Puede encenderse o apagarse cuando se desee desde Apariencia > Personalizar > Opciones Coco Cherry.
  */
