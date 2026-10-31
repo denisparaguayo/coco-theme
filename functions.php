@@ -1608,7 +1608,98 @@ function coco_theme_customize_register( $wp_customize ) {
 		);
 	}
 
-	// 5. Controles de Estilo del Botón de Compra / Pago Contra Entrega (Ficha, Sticky móvil y Catálogo).
+	// 5. Controles del Botón Sticky Inferior en Celulares (Mobile Sticky Buy Bar).
+	$wp_customize->add_setting(
+		'coco_theme_mobile_sticky_buy_enabled',
+		array(
+			'default'           => true,
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'rest_sanitize_boolean',
+			'transport'         => 'refresh',
+		)
+	);
+
+	$wp_customize->add_control(
+		'coco_theme_mobile_sticky_buy_enabled',
+		array(
+			'label'       => __( 'Activar botón sticky de compra en celulares', 'coco-theme' ),
+			'description' => __( 'Muestra el botón flotante inferior en la ficha de producto al navegar desde un teléfono móvil.', 'coco-theme' ),
+			'section'     => 'coco_theme_options',
+			'type'        => 'checkbox',
+		)
+	);
+
+	$wp_customize->add_setting(
+		'coco_theme_mobile_sticky_mode',
+		array(
+			'default'           => 'scroll',
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'sanitize_key',
+			'transport'         => 'refresh',
+		)
+	);
+
+	$wp_customize->add_control(
+		'coco_theme_mobile_sticky_mode',
+		array(
+			'label'       => __( 'Comportamiento del botón sticky móvil', 'coco-theme' ),
+			'description' => __( 'Elige cuándo debe mostrarse el botón en la pantalla móvil.', 'coco-theme' ),
+			'section'     => 'coco_theme_options',
+			'type'        => 'select',
+			'choices'     => array(
+				'scroll' => __( 'Inteligente (Aparece al hacer scroll cuando se pasa el botón principal)', 'coco-theme' ),
+				'always' => __( 'Fijo siempre visible abajo (Sticky permanente)', 'coco-theme' ),
+			),
+		)
+	);
+
+	$wp_customize->add_setting(
+		'coco_theme_mobile_sticky_anim',
+		array(
+			'default'           => 'pulse',
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'sanitize_key',
+			'transport'         => 'refresh',
+		)
+	);
+
+	$wp_customize->add_control(
+		'coco_theme_mobile_sticky_anim',
+		array(
+			'label'       => __( 'Animación del botón sticky móvil', 'coco-theme' ),
+			'description' => __( 'Efecto de atención visual en celulares para maximizar clics.', 'coco-theme' ),
+			'section'     => 'coco_theme_options',
+			'type'        => 'select',
+			'choices'     => array(
+				'pulse' => __( 'Latido con Resplandor (Pulse Glow)', 'coco-theme' ),
+				'shine' => __( 'Destello de Luz Brillante (Shine Effect)', 'coco-theme' ),
+				'shake' => __( 'Sacudida de Atención (Wiggle / Shake)', 'coco-theme' ),
+				'none'  => __( 'Sin animación (Estático)', 'coco-theme' ),
+			),
+		)
+	);
+
+	$wp_customize->add_setting(
+		'coco_theme_mobile_sticky_text',
+		array(
+			'default'           => '',
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'sanitize_text_field',
+			'transport'         => 'refresh',
+		)
+	);
+
+	$wp_customize->add_control(
+		'coco_theme_mobile_sticky_text',
+		array(
+			'label'       => __( 'Texto personalizado del botón sticky (opcional)', 'coco-theme' ),
+			'description' => __( 'Déjalo vacío para usar el mismo texto del botón principal (ej: "Pagar contra entrega" o "Comprar ahora").', 'coco-theme' ),
+			'section'     => 'coco_theme_options',
+			'type'        => 'text',
+		)
+	);
+
+	// 6. Controles de Estilo del Botón de Compra / Pago Contra Entrega (Ficha, Sticky móvil y Catálogo).
 	$button_colors = array(
 		'coco_theme_btn_cod_bg_color'    => array(
 			'label'       => __( 'Botón de Compra: Color de Fondo', 'coco-theme' ),
@@ -2096,11 +2187,17 @@ add_action( 'wp_footer', 'coco_theme_render_sales_pop', 25 );
 
 /**
  * 5. Barra Sticky Inferior de Compra en Ficha de Producto para Móviles.
- * Implementa IntersectionObserver, sincronización del texto de Coco COD,
+ * Permite activación/desactivación desde Apariencia > Personalizar,
+ * elección entre modo Inteligente (IntersectionObserver al hacer scroll) o Siempre visible,
  * scroll asistido a variaciones incompletas y compatibilidad con iOS Safe Area.
  */
 function coco_theme_render_mobile_sticky_buy_bar() {
 	if ( ! function_exists( 'is_product' ) || ! is_product() ) {
+		return;
+	}
+
+	// Comprobar si el usuario tiene habilitado el botón sticky en el Personalizador
+	if ( ! get_theme_mod( 'coco_theme_mobile_sticky_buy_enabled', true ) ) {
 		return;
 	}
 
@@ -2112,13 +2209,27 @@ function coco_theme_render_mobile_sticky_buy_bar() {
 		return;
 	}
 
-	$is_variable = $product->is_type( 'variable' ) ? '1' : '0';
+	$is_variable      = $product->is_type( 'variable' ) ? '1' : '0';
+	$sticky_mode      = get_theme_mod( 'coco_theme_mobile_sticky_mode', 'scroll' );
+	$sticky_anim      = get_theme_mod( 'coco_theme_mobile_sticky_anim', 'pulse' );
+	$custom_text      = trim( get_theme_mod( 'coco_theme_mobile_sticky_text', '' ) );
+	$default_btn_text = ! empty( $custom_text ) ? $custom_text : __( 'Pagar al recibir en casa', 'coco-theme' );
+	$initial_visible  = ( 'always' === $sticky_mode );
+
+	$anim_class = '';
+	if ( 'pulse' === $sticky_anim ) {
+		$anim_class = 'coco-anim-pulse';
+	} elseif ( 'shine' === $sticky_anim ) {
+		$anim_class = 'coco-anim-shine';
+	} elseif ( 'shake' === $sticky_anim ) {
+		$anim_class = 'coco-anim-shake';
+	}
 	?>
-	<!-- Barra Sticky Inferior de Compra (Mobile: solo botón de compra limpio y de ancho completo) -->
-	<div id="coco-sticky-buy-bar" class="coco-sticky-buy-bar" aria-hidden="true" data-variable="<?php echo esc_attr( $is_variable ); ?>">
+	<!-- Barra Sticky Inferior de Compra en Móviles -->
+	<div id="coco-sticky-buy-bar" class="coco-sticky-buy-bar<?php echo $initial_visible ? ' is-always-visible is-visible' : ''; ?>" aria-hidden="<?php echo $initial_visible ? 'false' : 'true'; ?>" data-variable="<?php echo esc_attr( $is_variable ); ?>" data-mode="<?php echo esc_attr( $sticky_mode ); ?>" data-has-custom-text="<?php echo ! empty( $custom_text ) ? '1' : '0'; ?>">
 		<div class="coco-sticky-buy-inner">
-			<button type="button" id="coco-sticky-buy-btn" class="coco-sticky-buy-btn coco-pulse-active" aria-label="<?php esc_attr_e( 'Comprar ahora', 'coco-theme' ); ?>">
-				<span class="coco-sticky-btn-text"><?php esc_html_e( 'Pagar al recibir en casa', 'coco-theme' ); ?></span>
+			<button type="button" id="coco-sticky-buy-btn" class="coco-sticky-buy-btn <?php echo esc_attr( $anim_class ); ?>" aria-label="<?php esc_attr_e( 'Comprar ahora', 'coco-theme' ); ?>">
+				<span class="coco-sticky-btn-text"><?php echo esc_html( $default_btn_text ); ?></span>
 			</button>
 		</div>
 	</div>
@@ -2131,9 +2242,12 @@ function coco_theme_render_mobile_sticky_buy_bar() {
 			var btnText = bar ? bar.querySelector('.coco-sticky-btn-text') : null;
 			if (!bar || !btn) return;
 
-			// Sincronizar el título principal del botón con el botón original de Coco COD (sin subtítulo para evitar solapamientos)
+			var mode = bar.getAttribute('data-mode') || 'scroll';
+			var hasCustomText = bar.getAttribute('data-has-custom-text') === '1';
+
+			// Sincronizar texto si no se definió uno personalizado en el Personalizador
 			var origCodBtn = document.getElementById('coco-cod-open-modal') || document.querySelector('.single-product .coco-cod-button') || document.querySelector('.single-product .single_add_to_cart_button');
-			if (origCodBtn && btnText) {
+			if (!hasCustomText && origCodBtn && btnText) {
 				var titleSpan = origCodBtn.querySelector('.coco-cod-btn__title');
 				var origText = titleSpan ? titleSpan.textContent.trim() : origCodBtn.textContent.trim();
 				if (origText) {
@@ -2141,43 +2255,38 @@ function coco_theme_render_mobile_sticky_buy_bar() {
 				}
 			}
 
-			var triggerEl = document.querySelector('.coco-cart-action-row') || document.querySelector('form.cart') || origCodBtn;
-			if (!triggerEl) return;
-
 			function isModalActive() {
 				var m = document.getElementById('coco-cod-modal');
 				return (m && (m.classList.contains('is-open') || m.style.display === 'flex' || m.style.display === 'block')) || document.body.classList.contains('coco-cod-modal-open');
 			}
 
-			function updateVisibility() {
-				if (isModalActive()) {
-					bar.classList.remove('is-visible');
-					document.body.classList.remove('has-coco-sticky-visible');
-					bar.setAttribute('aria-hidden', 'true');
-					return;
+			// Modo "Siempre visible"
+			if (mode === 'always') {
+				function handleAlwaysVisibility() {
+					if (isModalActive()) {
+						bar.classList.remove('is-visible');
+						document.body.classList.remove('has-coco-sticky-visible');
+						bar.setAttribute('aria-hidden', 'true');
+					} else {
+						bar.classList.add('is-visible');
+						document.body.classList.add('has-coco-sticky-visible');
+						bar.setAttribute('aria-hidden', 'false');
+					}
 				}
-				var rect = triggerEl.getBoundingClientRect();
-				if (rect.bottom < 0) {
-					bar.classList.add('is-visible');
-					document.body.classList.add('has-coco-sticky-visible');
-					bar.setAttribute('aria-hidden', 'false');
-				} else {
-					bar.classList.remove('is-visible');
-					document.body.classList.remove('has-coco-sticky-visible');
-					bar.setAttribute('aria-hidden', 'true');
-				}
-			}
-
-			if ('IntersectionObserver' in window) {
-				var observer = new IntersectionObserver(function(entries) {
-					entries.forEach(function(entry) {
+				handleAlwaysVisibility();
+			} else {
+				// Modo "Inteligente" (IntersectionObserver al hacer scroll)
+				var triggerEl = document.querySelector('.coco-cart-action-row') || document.querySelector('form.cart') || origCodBtn;
+				if (triggerEl) {
+					function updateVisibility() {
 						if (isModalActive()) {
 							bar.classList.remove('is-visible');
 							document.body.classList.remove('has-coco-sticky-visible');
 							bar.setAttribute('aria-hidden', 'true');
 							return;
 						}
-						if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
+						var rect = triggerEl.getBoundingClientRect();
+						if (rect.bottom < 0) {
 							bar.classList.add('is-visible');
 							document.body.classList.add('has-coco-sticky-visible');
 							bar.setAttribute('aria-hidden', 'false');
@@ -2186,12 +2295,34 @@ function coco_theme_render_mobile_sticky_buy_bar() {
 							document.body.classList.remove('has-coco-sticky-visible');
 							bar.setAttribute('aria-hidden', 'true');
 						}
-					});
-				}, { rootMargin: '0px', threshold: 0 });
+					}
 
-				observer.observe(triggerEl);
-			} else {
-				window.addEventListener('scroll', updateVisibility, { passive: true });
+					if ('IntersectionObserver' in window) {
+						var observer = new IntersectionObserver(function(entries) {
+							entries.forEach(function(entry) {
+								if (isModalActive()) {
+									bar.classList.remove('is-visible');
+									document.body.classList.remove('has-coco-sticky-visible');
+									bar.setAttribute('aria-hidden', 'true');
+									return;
+								}
+								if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
+									bar.classList.add('is-visible');
+									document.body.classList.add('has-coco-sticky-visible');
+									bar.setAttribute('aria-hidden', 'false');
+								} else {
+									bar.classList.remove('is-visible');
+									document.body.classList.remove('has-coco-sticky-visible');
+									bar.setAttribute('aria-hidden', 'true');
+								}
+							});
+						}, { rootMargin: '0px', threshold: 0 });
+
+						observer.observe(triggerEl);
+					} else {
+						window.addEventListener('scroll', updateVisibility, { passive: true });
+					}
+				}
 			}
 
 			// Evento al hacer clic en el botón sticky
@@ -2232,6 +2363,9 @@ function coco_theme_render_mobile_sticky_buy_bar() {
 					if (isModalActive()) {
 						bar.classList.remove('is-visible');
 						document.body.classList.remove('has-coco-sticky-visible');
+					} else if (mode === 'always') {
+						bar.classList.add('is-visible');
+						document.body.classList.add('has-coco-sticky-visible');
 					}
 				});
 				bodyObserver.observe(document.body, { attributes: true, attributeFilter: ['class', 'style'] });

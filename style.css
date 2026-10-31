@@ -7,7 +7,7 @@ Description: Tema WordPress Full Site Editing (FSE) ultraligero y de alta conver
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 7.4
-Version: 1.2.6
+Version: 1.2.7
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: coco-theme
@@ -3779,7 +3779,10 @@ body.coco-cod-modal-open .coco-sticky-buy-bar {
 	background-color: var(--coco-btn-cod-hover, var(--coco-cod-green-dark, #15803D));
 }
 
-/* Efecto Pulse suave */
+/* ==========================================================================
+   ANIMACIONES DE ALTA CONVERSIÓN PARA EL BOTÓN STICKY MÓVIL
+   ========================================================================== */
+/* 1. Efecto Latido con Resplandor (Pulse Glow) */
 @keyframes cocoStickyPulse {
 	0%, 100% {
 		transform: scale(1);
@@ -3791,8 +3794,68 @@ body.coco-cod-modal-open .coco-sticky-buy-bar {
 	}
 }
 
-.coco-sticky-buy-btn.coco-pulse-active {
+.coco-sticky-buy-btn.coco-pulse-active,
+.coco-sticky-buy-btn.coco-anim-pulse {
 	animation: cocoStickyPulse 2.3s ease-in-out infinite;
+}
+
+/* 2. Efecto Destello de Luz Brillante (Shine Effect) */
+.coco-sticky-buy-btn.coco-anim-shine {
+	position: relative;
+	overflow: hidden;
+}
+
+.coco-sticky-buy-btn.coco-anim-shine::after {
+	content: "";
+	position: absolute;
+	top: -60%;
+	bottom: -60%;
+	left: -70%;
+	width: 45%;
+	background: linear-gradient(
+		to right,
+		rgba(255, 255, 255, 0) 0%,
+		rgba(255, 255, 255, 0.42) 50%,
+		rgba(255, 255, 255, 0) 100%
+	);
+	transform: rotate(25deg);
+	animation: cocoStickyShine 3.2s ease-in-out infinite;
+	pointer-events: none;
+}
+
+@keyframes cocoStickyShine {
+	0%, 35% {
+		left: -70%;
+	}
+	65%, 100% {
+		left: 140%;
+	}
+}
+
+/* 3. Efecto Sacudida de Atención (Wiggle / Shake suave) */
+@keyframes cocoStickyShake {
+	0%, 75%, 100% {
+		transform: scale(1) rotate(0deg);
+	}
+	78% {
+		transform: scale(1.025) rotate(-2deg);
+	}
+	82% {
+		transform: scale(1.03) rotate(2deg);
+	}
+	86% {
+		transform: scale(1.03) rotate(-2deg);
+	}
+	90% {
+		transform: scale(1.02) rotate(1.5deg);
+	}
+	94% {
+		transform: scale(1.01) rotate(0deg);
+	}
+}
+
+.coco-sticky-buy-btn.coco-anim-shake {
+	animation: cocoStickyShake 3.6s ease-in-out infinite;
 }
 
 /* Resaltado de atención para selector de variaciones al hacer scroll asistido */
