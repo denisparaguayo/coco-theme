@@ -41,7 +41,7 @@ function cocoDismissTopBar(){
 <!-- /wp:html -->
 
 <!-- wp:group {"className":"coco-site-header coco-boutique-header","style":{"spacing":{"padding":{"top":"0","bottom":"0","left":"0","right":"0"}}},"backgroundColor":"white","layout":{"type":"default"}} -->
-<header class="wp-block-group coco-site-header coco-boutique-header has-white-background-color has-background" style="padding-top:0;padding-right:0;padding-bottom:0;padding-left:0">
+<div class="wp-block-group coco-site-header coco-boutique-header has-white-background-color has-background" style="padding-top:0;padding-right:0;padding-bottom:0;padding-left:0">
 	<div class="coco-header-container">
 		<!-- Logo a la izquierda -->
 		<div class="coco-header-logo-area">
@@ -49,10 +49,11 @@ function cocoDismissTopBar(){
 			<!-- wp:site-title {"level":0,"style":{"typography":{"fontWeight":"800","fontSize":"1.35rem"}}} /-->
 		</div>
 
+		<!-- wp:html -->
 		<!-- Navegación central con íconos sobre etiquetas (Estilo Boutique) -->
 		<nav class="coco-header-nav-center" aria-label="Navegación Principal">
 			<ul class="coco-boutique-nav-list">
-				<li class="coco-nav-item <?php echo ( is_front_page() || ( function_exists('is_shop') && is_shop() ) ) ? 'active' : ''; ?>">
+				<li class="coco-nav-item">
 					<a href="/shop/" class="coco-nav-link">
 						<svg class="coco-nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
 							<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
@@ -61,7 +62,7 @@ function cocoDismissTopBar(){
 						<span class="coco-nav-label">Tienda</span>
 					</a>
 				</li>
-				<li class="coco-nav-item <?php echo ( is_tax('product_cat', 'bijouterie') || is_tax('product_cat', 'aros') ) ? 'active' : ''; ?>">
+				<li class="coco-nav-item">
 					<a href="/product-category/bijouterie/" class="coco-nav-link">
 						<svg class="coco-nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
 							<path d="M6 3h12l4 6-10 13L2 9z"></path>
@@ -71,7 +72,7 @@ function cocoDismissTopBar(){
 						<span class="coco-nav-label">Bijouterie & Accesorios</span>
 					</a>
 				</li>
-				<li class="coco-nav-item <?php echo is_tax('product_cat', 'hogar') ? 'active' : ''; ?>">
+				<li class="coco-nav-item">
 					<a href="/product-category/hogar/" class="coco-nav-link">
 						<svg class="coco-nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
 							<path d="M12 2a4 4 0 0 0-4 4c0 1.5.8 2.8 2 3.5L2 14v2h20v-2l-8-4.5c1.2-.7 2-2 2-3.5a4 4 0 0 0-4-4z"></path>
@@ -80,7 +81,7 @@ function cocoDismissTopBar(){
 						<span class="coco-nav-label">Hogar</span>
 					</a>
 				</li>
-				<li class="coco-nav-item <?php echo is_tax('product_cat', 'moda') ? 'active' : ''; ?>">
+				<li class="coco-nav-item">
 					<a href="/product-category/moda/" class="coco-nav-link">
 						<svg class="coco-nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
 							<polyline points="20 12 20 22 4 22 4 12"></polyline>
@@ -136,8 +137,10 @@ function cocoDismissTopBar(){
 				</svg>
 			</button>
 		</div>
+		<!-- /wp:html -->
 	</div>
 
+	<!-- wp:html -->
 	<!-- Buscador desplegable elegante -->
 	<div id="coco-header-search-bar" class="coco-header-search-drawer" style="display:none;">
 		<div class="coco-header-search-inner">
@@ -174,32 +177,47 @@ function cocoDismissTopBar(){
 			</div>
 		</div>
 	</div>
-</header>
-<!-- /wp:group -->
 
-<!-- wp:html -->
-<script>
-function cocoToggleSearch(force) {
-	var bar = document.getElementById('coco-header-search-bar');
-	if (!bar) return;
-	if (typeof force === 'boolean') {
-		bar.style.display = force ? 'block' : 'none';
-	} else {
-		bar.style.display = (bar.style.display === 'none' || bar.style.display === '') ? 'block' : 'none';
+	<script>
+	(function(){
+		try {
+			var loc = window.location.pathname;
+			var items = document.querySelectorAll('.coco-boutique-nav-list .coco-nav-item');
+			items.forEach(function(item){
+				var a = item.querySelector('a');
+				if (!a) return;
+				var h = a.getAttribute('href');
+				if (h && (loc === h || (h !== '/' && h !== '/shop/' && loc.indexOf(h) !== -1))) {
+					item.classList.add('active');
+				} else if (h === '/shop/' && (loc === '/' || loc === '/shop/' || loc === '/shop')) {
+					item.classList.add('active');
+				}
+			});
+		} catch(e){}
+	})();
+	function cocoToggleSearch(force) {
+		var bar = document.getElementById('coco-header-search-bar');
+		if (!bar) return;
+		if (typeof force === 'boolean') {
+			bar.style.display = force ? 'block' : 'none';
+		} else {
+			bar.style.display = (bar.style.display === 'none' || bar.style.display === '') ? 'block' : 'none';
+		}
+		if (bar.style.display === 'block') {
+			var inp = bar.querySelector('.coco-header-search-input');
+			if (inp) inp.focus();
+		}
 	}
-	if (bar.style.display === 'block') {
-		var inp = bar.querySelector('.coco-header-search-input');
-		if (inp) inp.focus();
+	function cocoToggleMobileNav(force) {
+		var drawer = document.getElementById('coco-mobile-drawer');
+		if (!drawer) return;
+		if (typeof force === 'boolean') {
+			if (force) drawer.classList.add('is-open'); else drawer.classList.remove('is-open');
+		} else {
+			drawer.classList.toggle('is-open');
+		}
 	}
-}
-function cocoToggleMobileNav(force) {
-	var drawer = document.getElementById('coco-mobile-drawer');
-	if (!drawer) return;
-	if (typeof force === 'boolean') {
-		if (force) drawer.classList.add('is-open'); else drawer.classList.remove('is-open');
-	} else {
-		drawer.classList.toggle('is-open');
-	}
-}
-</script>
-<!-- /wp:html -->
+	</script>
+	<!-- /wp:html -->
+</div>
+<!-- /wp:group -->

@@ -1109,48 +1109,6 @@ function coco_theme_catalog_scripts() {
 	</script>
 	<?php
 }
-	if ( ! is_shop() && ! is_product_taxonomy() ) {
-		return;
-	}
-	?>
-	<script>
-	(function(){
-		function initGridSwitcher() {
-			var grid = document.querySelector('.woocommerce ul.products, .woocommerce-page ul.products');
-			var buttons = document.querySelectorAll('.coco-grid-switcher .coco-grid-btn');
-			if (!grid || !buttons.length) return;
-
-			var saved = localStorage.getItem('coco_catalog_cols') || '4';
-			if (saved === '2') {
-				grid.classList.add('coco-grid-cols-2');
-				buttons.forEach(function(b){ b.classList.toggle('active', b.dataset.columns === '2'); });
-			}
-
-			buttons.forEach(function(btn){
-				btn.addEventListener('click', function(e){
-					e.preventDefault();
-					var cols = this.dataset.columns;
-					buttons.forEach(function(b){ b.classList.remove('active'); });
-					this.classList.add('active');
-					if (cols === '2') {
-						grid.classList.add('coco-grid-cols-2');
-						localStorage.setItem('coco_catalog_cols', '2');
-					} else {
-						grid.classList.remove('coco-grid-cols-2');
-						localStorage.setItem('coco_catalog_cols', '4');
-					}
-				});
-			});
-		}
-		if (document.readyState === 'loading') {
-			document.addEventListener('DOMContentLoaded', initGridSwitcher);
-		} else {
-			initGridSwitcher();
-		}
-	})();
-	</script>
-	<?php
-}
 add_action( 'wp_footer', 'coco_theme_catalog_scripts' );
 
 /**
