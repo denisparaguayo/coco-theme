@@ -1090,12 +1090,55 @@ function coco_theme_customize_register( $wp_customize ) {
 			)
 		);
 	}
+
+	// 5. Controles de Estilo del Botón de Compra / Pago Contra Entrega (Ficha, Sticky móvil y Catálogo).
+	$button_colors = array(
+		'coco_theme_btn_cod_bg_color'    => array(
+			'label'       => __( 'Botón de Compra: Color de Fondo', 'coco-theme' ),
+			'description' => __( 'Color principal del botón "Comprar ahora", barra sticky móvil y destacados.', 'coco-theme' ),
+			'default'     => '#16A34A',
+		),
+		'coco_theme_btn_cod_text_color'  => array(
+			'label'       => __( 'Botón de Compra: Color de Texto', 'coco-theme' ),
+			'description' => __( 'Color del texto dentro del botón de compra.', 'coco-theme' ),
+			'default'     => '#FFFFFF',
+		),
+		'coco_theme_btn_cod_hover_color' => array(
+			'label'       => __( 'Botón de Compra: Color Hover (Al pasar el cursor)', 'coco-theme' ),
+			'description' => __( 'Tonalidad del botón cuando el cliente pasa el cursor por encima.', 'coco-theme' ),
+			'default'     => '#15803D',
+		),
+	);
+
+	foreach ( $button_colors as $setting_id => $btn_cfg ) {
+		$wp_customize->add_setting(
+			$setting_id,
+			array(
+				'default'           => $btn_cfg['default'],
+				'type'              => 'theme_mod',
+				'sanitize_callback' => 'sanitize_hex_color',
+				'transport'         => 'refresh',
+			)
+		);
+
+		$wp_customize->add_control(
+			new \WP_Customize_Color_Control(
+				$wp_customize,
+				$setting_id,
+				array(
+					'label'       => $btn_cfg['label'],
+					'description' => $btn_cfg['description'],
+					'section'     => 'coco_theme_options',
+				)
+			)
+		);
+	}
 }
 add_action( 'customize_register', 'coco_theme_customize_register' );
 
 /**
  * Aplicar visibilidad del título/descripción del sitio, ancho personalizado del logo
- * y variables de color del componente Sales Pop.
+ * y variables de color del componente Sales Pop y Botones de Compra.
  */
 function coco_theme_customizer_dynamic_css() {
 	$show_title = get_theme_mod( 'coco_theme_show_title_tagline', false );
@@ -1110,15 +1153,61 @@ function coco_theme_customizer_dynamic_css() {
 	$sp_title  = sanitize_hex_color( get_theme_mod( 'coco_theme_sp_title_color', '#1F2933' ) ) ?: '#1F2933';
 	$sp_text   = sanitize_hex_color( get_theme_mod( 'coco_theme_sp_text_color', '#52606D' ) ) ?: '#52606D';
 	$sp_badge  = sanitize_hex_color( get_theme_mod( 'coco_theme_sp_badge_color', '#16A34A' ) ) ?: '#16A34A';
+
+	$btn_bg    = sanitize_hex_color( get_theme_mod( 'coco_theme_btn_cod_bg_color', '#16A34A' ) ) ?: '#16A34A';
+	$btn_text  = sanitize_hex_color( get_theme_mod( 'coco_theme_btn_cod_text_color', '#FFFFFF' ) ) ?: '#FFFFFF';
+	$btn_hover = sanitize_hex_color( get_theme_mod( 'coco_theme_btn_cod_hover_color', '#15803D' ) ) ?: '#15803D';
+
+	// Extraer valores RGB para que el resplandor de la animación Pulse use exactamente el color elegido
+	$r = 22; $g = 163; $b = 74;
+	if ( preg_match( '/^#?([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})$/i', $btn_bg, $m ) ) {
+		$r = hexdec( $m[1] );
+		$g = hexdec( $m[2] );
+		$b = hexdec( $m[3] );
+	}
 	?>
 	<style id="coco-customizer-dynamic-css">
 		:root {
+			--coco-cod-green: <?php echo esc_attr( $btn_bg ); ?>;
+			--coco-cod-green-dark: <?php echo esc_attr( $btn_hover ); ?>;
+			--coco-btn-cod-bg: <?php echo esc_attr( $btn_bg ); ?>;
+			--coco-btn-cod-text: <?php echo esc_attr( $btn_text ); ?>;
+			--coco-btn-cod-hover: <?php echo esc_attr( $btn_hover ); ?>;
 			--coco-sp-bg: <?php echo esc_attr( $sp_bg ); ?>;
 			--coco-sp-border: <?php echo esc_attr( $sp_border ); ?>;
 			--coco-sp-title: <?php echo esc_attr( $sp_title ); ?>;
 			--coco-sp-text: <?php echo esc_attr( $sp_text ); ?>;
 			--coco-sp-badge: <?php echo esc_attr( $sp_badge ); ?>;
 		}
+
+		/* Estilos dinámicos para los botones de compra */
+		#coco-cod-open-modal,
+		.coco-cod-button,
+		.coco-sticky-buy-btn,
+		.coco-spotlight-btn {
+			background-color: var(--coco-btn-cod-bg) !important;
+			color: var(--coco-btn-cod-text) !important;
+		}
+
+		#coco-cod-open-modal:hover,
+		.coco-cod-button:hover,
+		.coco-sticky-buy-btn:hover,
+		.coco-spotlight-btn:hover {
+			background-color: var(--coco-btn-cod-hover) !important;
+			color: var(--coco-btn-cod-text) !important;
+		}
+
+		@keyframes cocoStickyPulse {
+			0%, 100% {
+				transform: scale(1);
+				box-shadow: 0 4px 14px rgba(<?php echo "$r, $g, $b"; ?>, 0.35);
+			}
+			50% {
+				transform: scale(1.028);
+				box-shadow: 0 6px 20px rgba(<?php echo "$r, $g, $b"; ?>, 0.55), 0 0 0 5px rgba(<?php echo "$r, $g, $b"; ?>, 0.18);
+			}
+		}
+
 		.coco-header-logo img,
 		.coco-footer-logo img,
 		.wp-block-site-logo img,
