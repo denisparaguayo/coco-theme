@@ -1488,4 +1488,182 @@ function coco_theme_render_sales_pop() {
 }
 add_action( 'wp_footer', 'coco_theme_render_sales_pop', 25 );
 
+/**
+ * 5. Barra Sticky Inferior de Compra en Ficha de Producto para Móviles.
+ * Implementa IntersectionObserver, sincronización del texto de Coco COD,
+ * scroll asistido a variaciones incompletas y compatibilidad con iOS Safe Area.
+ */
+function coco_theme_render_mobile_sticky_buy_bar() {
+	if ( ! function_exists( 'is_product' ) || ! is_product() ) {
+		return;
+	}
+
+	global $product;
+	if ( ! is_a( $product, 'WC_Product' ) ) {
+		$product = wc_get_product( get_the_ID() );
+	}
+	if ( ! $product ) {
+		return;
+	}
+
+	$image_id    = $product->get_image_id();
+	$img_url     = $image_id ? wp_get_attachment_image_url( $image_id, 'thumbnail' ) : wc_placeholder_img_src( 'thumbnail' );
+	$title       = $product->get_name();
+	$price_html  = $product->get_price_html();
+	$is_variable = $product->is_type( 'variable' ) ? '1' : '0';
+	?>
+	<!-- Barra Sticky Inferior de Compra (Mobile) -->
+	<div id="coco-sticky-buy-bar" class="coco-sticky-buy-bar" aria-hidden="true" data-variable="<?php echo esc_attr( $is_variable ); ?>">
+		<div class="coco-sticky-buy-inner">
+			<div class="coco-sticky-buy-info">
+				<img src="<?php echo esc_url( $img_url ); ?>" alt="<?php echo esc_attr( $title ); ?>" class="coco-sticky-buy-thumb" loading="lazy" />
+				<div class="coco-sticky-buy-meta">
+					<span class="coco-sticky-buy-title"><?php echo esc_html( $title ); ?></span>
+					<span class="coco-sticky-buy-price"><?php echo wp_kses_post( $price_html ); ?></span>
+				</div>
+			</div>
+			<button type="button" id="coco-sticky-buy-btn" class="coco-sticky-buy-btn coco-pulse-active" aria-label="<?php esc_attr_e( 'Comprar ahora', 'coco-theme' ); ?>">
+				<span class="coco-sticky-btn-text"><?php esc_html_e( 'Comprar ahora', 'coco-theme' ); ?></span>
+			</button>
+		</div>
+	</div>
+
+	<script>
+	(function(){
+		function initCocoStickyBar() {
+			var bar = document.getElementById('coco-sticky-buy-bar');
+			var btn = document.getElementById('coco-sticky-buy-btn');
+			var btnText = bar ? bar.querySelector('.coco-sticky-btn-text') : null;
+			if (!bar || !btn) return;
+
+			// Sincronizar el texto del botón con el botón original de Coco COD
+			var origCodBtn = document.getElementById('coco-cod-open-modal') || document.querySelector('.single-product .coco-cod-button') || document.querySelector('.single-product .single_add_to_cart_button');
+			if (origCodBtn && btnText) {
+				var origText = origCodBtn.textContent.trim();
+				if (origText) {
+					btnText.textContent = origText;
+				}
+			}
+
+			// Actualizar el precio si se selecciona una variación
+			if (window.jQuery) {
+				window.jQuery(document).on('found_variation', 'form.variations_form', function(e, variation){
+					if (variation && variation.price_html) {
+						var priceEl = bar.querySelector('.coco-sticky-buy-price');
+						if (priceEl) {
+							priceEl.innerHTML = variation.price_html;
+						}
+					}
+				});
+			}
+
+			var triggerEl = document.querySelector('.coco-cart-action-row') || document.querySelector('form.cart') || origCodBtn;
+			if (!triggerEl) return;
+
+			function isModalActive() {
+				var m = document.getElementById('coco-cod-modal');
+				return (m && (m.classList.contains('is-open') || m.style.display === 'flex' || m.style.display === 'block')) || document.body.classList.contains('coco-cod-modal-open');
+			}
+
+			function updateVisibility() {
+				if (isModalActive()) {
+					bar.classList.remove('is-visible');
+					document.body.classList.remove('has-coco-sticky-visible');
+					bar.setAttribute('aria-hidden', 'true');
+					return;
+				}
+				var rect = triggerEl.getBoundingClientRect();
+				if (rect.bottom < 0) {
+					bar.classList.add('is-visible');
+					document.body.classList.add('has-coco-sticky-visible');
+					bar.setAttribute('aria-hidden', 'false');
+				} else {
+					bar.classList.remove('is-visible');
+					document.body.classList.remove('has-coco-sticky-visible');
+					bar.setAttribute('aria-hidden', 'true');
+				}
+			}
+
+			if ('IntersectionObserver' in window) {
+				var observer = new IntersectionObserver(function(entries) {
+					entries.forEach(function(entry) {
+						if (isModalActive()) {
+							bar.classList.remove('is-visible');
+							document.body.classList.remove('has-coco-sticky-visible');
+							bar.setAttribute('aria-hidden', 'true');
+							return;
+						}
+						if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
+							bar.classList.add('is-visible');
+							document.body.classList.add('has-coco-sticky-visible');
+							bar.setAttribute('aria-hidden', 'false');
+						} else {
+							bar.classList.remove('is-visible');
+							document.body.classList.remove('has-coco-sticky-visible');
+							bar.setAttribute('aria-hidden', 'true');
+						}
+					});
+				}, { rootMargin: '0px', threshold: 0 });
+
+				observer.observe(triggerEl);
+			} else {
+				window.addEventListener('scroll', updateVisibility, { passive: true });
+			}
+
+			// Evento al hacer clic en el botón sticky
+			btn.addEventListener('click', function(e){
+				e.preventDefault();
+
+				var isVariable = bar.getAttribute('data-variable') === '1';
+				var varForm = document.querySelector('form.variations_form');
+
+				// Si el producto es variable y faltan seleccionar opciones
+				if (isVariable && varForm) {
+					var varIdInput = varForm.querySelector('input[name="variation_id"]');
+					var variationId = varIdInput ? parseInt(varIdInput.value, 10) : 0;
+
+					if (!variationId || variationId <= 0) {
+						// Desplazar suavemente hasta los selectores de opciones
+						varForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+						varForm.classList.remove('coco-variations-highlight');
+						void varForm.offsetWidth; // Forzar reflow
+						varForm.classList.add('coco-variations-highlight');
+						setTimeout(function(){
+							varForm.classList.remove('coco-variations-highlight');
+						}, 2000);
+						return;
+					}
+				}
+
+				// Disparar el botón original de Coco COD
+				var targetBtn = document.getElementById('coco-cod-open-modal') || document.querySelector('.single-product .coco-cod-button') || document.querySelector('.single-product .single_add_to_cart_button');
+				if (targetBtn) {
+					targetBtn.click();
+				}
+			});
+
+			// Monitorear apertura de modal para esconder la barra sticky
+			if (window.MutationObserver) {
+				var bodyObserver = new MutationObserver(function(){
+					if (isModalActive()) {
+						bar.classList.remove('is-visible');
+						document.body.classList.remove('has-coco-sticky-visible');
+					}
+				});
+				bodyObserver.observe(document.body, { attributes: true, attributeFilter: ['class', 'style'] });
+			}
+		}
+
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', initCocoStickyBar);
+		} else {
+			initCocoStickyBar();
+		}
+	})();
+	</script>
+	<?php
+}
+add_action( 'wp_footer', 'coco_theme_render_mobile_sticky_buy_bar', 35 );
+
+
 
