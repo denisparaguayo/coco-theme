@@ -1,56 +1,63 @@
 <?php
 /**
- * Title: Hero Principal Coco Cherry (Pago Contra Entrega)
+ * Title: Hero Principal Coco Cherry (Diseño Boutique Alta Conversión)
  * Slug: coco-theme/hero-banner
  * Categories: coco-cherry, banner
  */
+$theme_uri = get_template_directory_uri();
 ?>
-<!-- wp:group {"className":"coco-hero-section","style":{"spacing":{"padding":{"top":"4.5rem","bottom":"4.5rem","left":"1.25rem","right":"1.25rem"}}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group coco-hero-section" style="padding-top:4.5rem;padding-right:1.25rem;padding-bottom:4.5rem;padding-left:1.25rem">
-	<!-- wp:columns {"align":"wide","verticalAlignment":"center","style":{"spacing":{"blockGap":{"top":"2.5rem","left":"3.5rem"}}}} -->
-	<div class="wp-block-columns alignwide are-vertically-aligned-center">
-		<!-- wp:column {"verticalAlignment":"center","width":"55%"} -->
-		<div class="wp-block-column is-vertically-aligned-center" style="flex-basis:55%">
-			<!-- wp:paragraph {"className":"coco-hero-badge"} -->
-			<p class="coco-hero-badge">✨ Pago Contra Entrega en Todo Paraguay</p>
-			<!-- /wp:paragraph -->
-
-			<!-- wp:heading {"level":1,"className":"coco-hero-title","style":{"spacing":{"margin":{"top":"1rem","bottom":"1rem"}}},"fontSize":"3xl"} -->
-			<h1 class="wp-block-heading coco-hero-title has-3-xl-font-size" style="margin-top:1rem;margin-bottom:1rem">Lo mejor en Moda, Bijou, Belleza y Hogar directo a tu puerta</h1>
-			<!-- /wp:heading -->
-
-			<!-- wp:paragraph {"textColor":"slate","fontSize":"lg"} -->
-			<p class="has-slate-color has-text-color has-lg-font-size">Comprá con total tranquilidad desde tu celular: hacés tu pedido en <strong>1 clic</strong> y abonás con <strong>Pago Contra Entrega, transferencia o efectivo</strong> al recibir tu paquete en Asunción, Gran Asunción e interior.</p>
-			<!-- /wp:paragraph -->
-
-			<!-- wp:buttons {"style":{"spacing":{"margin":{"top":"1.75rem"}}}} -->
-			<div class="wp-block-buttons" style="margin-top:1.75rem">
-				<!-- wp:button {"className":"coco-btn-primary"} -->
-				<div class="wp-block-button coco-btn-primary"><a class="wp-block-button__link wp-element-button" href="/shop/">🛍️ Ver Catálogo Completo</a></div>
-				<!-- /wp:button -->
+<!-- wp:group {"className":"coco-hero-luxury-section","style":{"spacing":{"padding":{"top":"3.5rem","bottom":"3.5rem","left":"1.25rem","right":"1.25rem"}}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group coco-hero-luxury-section" style="padding-top:3.5rem;padding-right:1.25rem;padding-bottom:3.5rem;padding-left:1.25rem">
+	<div class="coco-hero-luxury-inner alignwide">
+		<!-- Columna Izquierda: Mensaje y Llamado a la Acción -->
+		<div class="coco-hero-luxury-left">
+			<div class="coco-hero-pill-badge">
+				<span class="coco-hero-pill-icon">📦</span>
+				<span class="coco-hero-pill-text">PAGO CONTRA ENTREGA EN TODO PARAGUAY</span>
 			</div>
-			<!-- /wp:buttons -->
-		</div>
-		<!-- /wp:column -->
 
-		<!-- wp:column {"verticalAlignment":"center","width":"45%"} -->
-		<div class="wp-block-column is-vertically-aligned-center" style="flex-basis:45%">
-			<!-- wp:group {"className":"coco-hero-image-card","backgroundColor":"white","layout":{"type":"constrained"}} -->
-			<div class="wp-block-group coco-hero-image-card has-white-background-color has-background">
-				<span class="coco-hero-star-tag">⭐ Top #1 Más Vendido</span>
-				<!-- wp:image {"sizeSlug":"large","linkDestination":"none"} -->
-				<figure class="wp-block-image size-large"><img src="https://cococherrypy.com/wp-content/uploads/2026/10/Sunscreen_bottle_on_tropical_beach_2K_20261027014224-scaled.jpg" alt="Protector Solar Oro 24K FPS 90+ - Coco Cherry Store"/></figure>
-				<!-- /wp:image -->
-				<div class="coco-hero-card-meta">
-					<p class="coco-hero-card-title">Protector Solar Oro 24K FPS 90+</p>
-					<p class="coco-hero-card-price">120.000 Gs. <span class="coco-hero-card-badge">💵 Pago al Recibir</span></p>
+			<h1 class="coco-hero-headline">Productos que<br>hacen tu día mejor</h1>
+
+			<p class="coco-hero-subhead">
+				Moda, belleza y hogar, todo en un solo lugar. Comprá fácil, con envío y pago contra entrega.
+			</p>
+
+			<div class="coco-hero-cta-wrap">
+				<a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>" class="coco-hero-btn-catalog">
+					<svg class="coco-cta-bag-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+						<line x1="3" y1="6" x2="21" y2="6"></line>
+						<path d="M16 10a4 4 0 0 1-8 0"></path>
+					</svg>
+					<span>EXPLORAR CATÁLOGO</span>
+					<span class="coco-cta-arrow">&rarr;</span>
+				</a>
+
+				<!-- Doodle trazo de corazón dorado sutil -->
+				<svg class="coco-hero-heart-doodle" width="140" height="70" viewBox="0 0 140 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M10 45 C 35 40, 55 25, 75 16 C 82 8, 98 8, 105 22 C 112 36, 90 56, 75 62 C 60 66, 54 50, 64 38 C 74 26, 90 32, 84 46 C 76 60, 105 52, 130 40" stroke="#E2B268" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+				</svg>
+			</div>
+		</div>
+
+		<!-- Columna Derecha: Producto Destacado (Protector Solar Oro 24K FPS 90+) -->
+		<div class="coco-hero-luxury-right">
+			<div class="coco-hero-spotlight-box">
+				<div class="coco-hero-featured-tag">
+					<span>PRODUCTO DESTACADO</span>
 				</div>
+
+				<div class="coco-hero-serif-header">
+					<span class="coco-serif-sub">Protector Solar</span>
+					<span class="coco-serif-title">Oro 24K</span>
+					<span class="coco-serif-fps">FPS 90+</span>
+				</div>
+
+				<a href="<?php echo esc_url( home_url( '/shop/?s=Protector+Solar' ) ); ?>" class="coco-hero-stage-link" title="Protector Solar Oro 24K FPS 90+">
+					<img src="<?php echo esc_url( $theme_uri . '/assets/images/hero-sunscreen-beach.jpg' ); ?>" alt="Protector Solar Oro 24K FPS 90+ - Coco Cherry Store" class="coco-hero-stage-img" loading="eager" />
+				</a>
 			</div>
-			<!-- /wp:group -->
 		</div>
-		<!-- /wp:column -->
 	</div>
-	<!-- /wp:columns -->
 </div>
 <!-- /wp:group -->
-

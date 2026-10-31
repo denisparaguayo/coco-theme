@@ -7,7 +7,7 @@ Description: Tema WordPress Full Site Editing (FSE) ultraligero y de alta conver
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 7.4
-Version: 1.2.7
+Version: 1.2.8
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: coco-theme
@@ -164,7 +164,7 @@ body {
 
 .coco-site-header {
 	position: sticky;
-	top: 36px;
+	top: 0;
 	z-index: 990;
 	background-color: #FFFFFF !important;
 	border-bottom: 1.5px solid #DFC79C;
@@ -598,351 +598,608 @@ body.admin-bar .coco-mobile-drawer-content {
 }
 
 /* ==========================================================================
-   3. SECCIÓN HERO (PORTADA DE ALTA CONVERSIÓN)
+   3. ENCABEZADOS DE SECCIÓN CON LÍNEAS DORADAS FLANQUEADAS
    ========================================================================== */
-.coco-hero-section {
-	position: relative;
-	overflow: hidden;
-	background: linear-gradient(135deg, #FFF1F2 0%, #FFFFFF 55%, #FEF9EE 100%);
-	border-bottom: 1px solid var(--coco-border);
+.coco-flanked-header {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 1.5rem;
+	margin: 0 auto 2.25rem auto;
+	width: 100%;
+	text-align: center;
 }
 
-.coco-hero-badge {
+.coco-flank-line {
+	flex: 1;
+	max-width: 140px;
+	height: 1.5px;
+	background: #E2B268;
 	display: inline-block;
-	background-color: var(--coco-gold-soft);
-	color: #9A6F09;
-	font-weight: 700;
-	font-size: 0.82rem;
+}
+
+.coco-flank-title {
+	margin: 0;
+	font-size: 1.45rem;
+	font-weight: 800;
+	color: #0A192F;
 	text-transform: uppercase;
 	letter-spacing: 0.05em;
-	padding: 0.4rem 1rem;
-	border-radius: 999px;
-	border: 1px solid #FDE68A;
+	white-space: nowrap;
 }
 
-.coco-hero-title {
-	letter-spacing: -0.02em;
-}
-
-.coco-hero-image-card {
+/* ==========================================================================
+   4. HERO PRINCIPAL LUXURY BOUTIQUE (100% FIEL AL MOCKUP)
+   ========================================================================== */
+.coco-hero-luxury-section {
 	position: relative;
-	border-radius: var(--coco-radius-lg);
+	width: 100%;
+	background: linear-gradient(135deg, rgba(255, 248, 240, 0.96) 0%, rgba(254, 243, 230, 0.94) 50%, rgba(255, 237, 219, 0.9) 100%),
+	            url('assets/images/hero-collection-bg.jpg') center center / cover no-repeat;
 	overflow: hidden;
-	box-shadow: var(--coco-shadow-lg);
-	border: 1px solid var(--coco-border);
+	border-bottom: 1px solid #F0ECE4;
+}
+
+.coco-hero-luxury-inner {
+	display: grid;
+	grid-template-columns: 1.15fr 0.85fr;
+	gap: 3.5rem;
+	align-items: center;
+	max-width: 1280px;
+	margin: 0 auto;
+	width: 100%;
+}
+
+/* Columna Izquierda */
+.coco-hero-luxury-left {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	z-index: 2;
+}
+
+.coco-hero-pill-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
 	background: #FFFFFF;
-	transition: var(--coco-transition);
+	border: 1.5px solid #E2B268;
+	border-radius: 50px;
+	padding: 0.45rem 1.15rem;
+	box-shadow: 0 4px 14px rgba(226, 178, 104, 0.18);
+	margin-bottom: 1.25rem;
 }
 
-.coco-hero-image-card:hover {
-	transform: translateY(-4px);
-	box-shadow: 0 22px 48px rgba(31, 41, 51, 0.16);
+.coco-hero-pill-icon {
+	font-size: 0.95rem;
+	line-height: 1;
 }
 
-.coco-hero-star-tag {
+.coco-hero-pill-text {
+	font-size: 0.76rem;
+	font-weight: 800;
+	color: #0A192F;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+
+.coco-hero-headline {
+	font-size: clamp(2.3rem, 4.5vw, 3.4rem);
+	font-weight: 900;
+	color: #0A192F;
+	line-height: 1.12;
+	letter-spacing: -0.025em;
+	margin: 0 0 1.15rem 0;
+}
+
+.coco-hero-subhead {
+	font-size: 1.08rem;
+	color: #4A5568;
+	line-height: 1.55;
+	max-width: 480px;
+	margin: 0 0 2.25rem 0;
+}
+
+.coco-hero-cta-wrap {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+}
+
+.coco-hero-btn-catalog {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	background-color: #D1193E !important;
+	color: #FFFFFF !important;
+	text-decoration: none !important;
+	font-size: 0.95rem;
+	font-weight: 800;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	padding: 0.95rem 2.25rem;
+	border-radius: 50px;
+	box-shadow: 0 10px 28px rgba(209, 25, 62, 0.38);
+	transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+	z-index: 2;
+}
+
+.coco-hero-btn-catalog:hover {
+	background-color: #B81434 !important;
+	transform: translateY(-2px);
+	box-shadow: 0 14px 34px rgba(209, 25, 62, 0.48);
+}
+
+.coco-cta-bag-icon {
+	stroke: #FFFFFF;
+}
+
+.coco-cta-arrow {
+	font-size: 1.15rem;
+	transition: transform 0.25s ease;
+}
+
+.coco-hero-btn-catalog:hover .coco-cta-arrow {
+	transform: translateX(4px);
+}
+
+.coco-hero-heart-doodle {
 	position: absolute;
-	top: 16px;
-	left: 16px;
-	z-index: 10;
-	background: linear-gradient(135deg, #CE1322 0%, #D19711 100%);
+	left: 78%;
+	top: 25%;
+	pointer-events: none;
+	z-index: 1;
+}
+
+/* Columna Derecha: Producto Destacado */
+.coco-hero-luxury-right {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 2;
+}
+
+.coco-hero-spotlight-box {
+	position: relative;
+	text-align: center;
+	width: 100%;
+	max-width: 420px;
+}
+
+.coco-hero-featured-tag {
+	display: inline-block;
+	background-color: #D89B37;
 	color: #FFFFFF;
 	font-weight: 800;
 	font-size: 0.78rem;
-	padding: 0.38rem 0.85rem;
-	border-radius: 999px;
-	box-shadow: 0 4px 14px rgba(206, 19, 34, 0.35);
-	letter-spacing: 0.03em;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	padding: 0.38rem 1.15rem;
+	border-radius: 50px;
+	box-shadow: 0 4px 14px rgba(216, 155, 55, 0.32);
+	margin-bottom: 0.85rem;
 }
 
-.coco-hero-image-card img {
+.coco-hero-serif-header {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-bottom: 1.1rem;
+	font-family: 'Playfair Display', Georgia, serif;
+}
+
+.coco-serif-sub {
+	font-size: 1.35rem;
+	color: #9E743A;
+	font-weight: 500;
+	line-height: 1.2;
+}
+
+.coco-serif-title {
+	font-size: 2.6rem;
+	color: #8B5E28;
+	font-weight: 800;
+	line-height: 1.05;
+	letter-spacing: -0.01em;
+}
+
+.coco-serif-fps {
+	font-size: 2.3rem;
+	color: #8B5E28;
+	font-weight: 800;
+	line-height: 1.05;
+}
+
+.coco-hero-stage-link {
+	display: block;
+	text-decoration: none !important;
+}
+
+.coco-hero-stage-img {
 	width: 100%;
+	max-width: 330px;
 	height: auto;
 	display: block;
-	object-fit: cover;
+	margin: 0 auto;
+	border-radius: 20px;
+	box-shadow: 0 14px 40px rgba(139, 94, 40, 0.16);
+	transition: transform 0.35s ease;
 }
 
-.coco-hero-card-meta {
-	padding: 1.15rem 1.4rem;
-	background: #FFFFFF;
-	border-top: 1px solid var(--coco-border);
-}
-
-.coco-hero-card-title {
-	margin: 0 0 0.35rem 0;
-	font-weight: 800;
-	font-size: 1.05rem;
-	color: var(--coco-dark);
-}
-
-.coco-hero-card-price {
-	margin: 0;
-	font-weight: 800;
-	font-size: 1.25rem;
-	color: var(--coco-primary);
-	display: flex;
-	align-items: center;
-	gap: 0.75rem;
-}
-
-.coco-hero-card-badge {
-	font-size: 0.76rem;
-	font-weight: 700;
-	background-color: #F0FDF4;
-	color: #15803D;
-	padding: 0.22rem 0.6rem;
-	border-radius: 6px;
-	border: 1px solid #BBF7D0;
-}
-
-.coco-btn-primary .wp-block-button__link {
-	background-color: var(--coco-primary) !important;
-	color: var(--coco-white) !important;
-	font-weight: 700;
-	box-shadow: 0 6px 18px rgba(228, 123, 2, 0.28);
-	transition: var(--coco-transition);
-}
-
-.coco-btn-primary .wp-block-button__link:hover {
-	background-color: var(--coco-primary-hover) !important;
-	transform: translateY(-2px);
-	box-shadow: 0 10px 24px rgba(228, 123, 2, 0.36);
-}
-
-.coco-btn-whatsapp .wp-block-button__link {
-	background-color: var(--coco-cod-green) !important;
-	color: var(--coco-white) !important;
-	font-weight: 700;
-	box-shadow: 0 6px 18px rgba(22, 163, 74, 0.25);
-	transition: var(--coco-transition);
-}
-
-.coco-btn-whatsapp .wp-block-button__link:hover {
-	background-color: var(--coco-cod-green-dark) !important;
-	transform: translateY(-2px);
+.coco-hero-stage-link:hover .coco-hero-stage-img {
+	transform: scale(1.03);
 }
 
 /* ==========================================================================
-   4. PILARES DE CONFIANZA (TRUST BADGES)
+   5. SECCIÓN: LOS FAVORITOS DE COCO CHERRY (2 TARJETAS HORIZONTALES)
    ========================================================================== */
-.coco-trust-card {
-	background-color: var(--coco-white);
-	border: 1px solid var(--coco-border);
-	border-radius: var(--coco-radius-md);
-	box-shadow: var(--coco-shadow-sm);
-	transition: var(--coco-transition);
-	height: 100%;
+.coco-star-products-section {
+	padding-top: 3.5rem;
+	padding-bottom: 2.5rem;
 }
 
-.coco-trust-card:hover {
-	transform: translateY(-4px);
-	box-shadow: var(--coco-shadow-md);
-	border-color: var(--coco-primary);
-}
-
-.coco-trust-icon {
-	font-size: 2rem;
-	line-height: 1;
-	margin-bottom: 0.5rem;
-}
-
-/* ==========================================================================
-   4. SECCIÓN PRODUCTOS ESTRELLA (ENFOQUE DE ALTA CONVERSIÓN)
-   ========================================================================== */
-.coco-section-pill {
-	display: inline-block;
-	background-color: var(--coco-gold-soft);
-	color: #9A6F09;
-	font-weight: 800;
-	font-size: 0.78rem;
-	letter-spacing: 0.05em;
-	padding: 0.35rem 0.95rem;
-	border-radius: 999px;
-	border: 1px solid #FDE68A;
-	text-transform: uppercase;
-}
-
-.coco-star-spotlight-grid {
+.coco-fav-cards-grid {
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
 	gap: 2rem;
 	width: 100%;
+	max-width: 1280px;
+	margin: 0 auto;
 }
 
-.coco-star-spotlight-card {
+.coco-fav-card {
 	background: #FFFFFF;
-	border: 1px solid var(--coco-border);
-	border-radius: var(--coco-radius-lg);
-	padding: 1.85rem;
-	box-shadow: var(--coco-shadow-sm);
-	transition: var(--coco-transition);
+	border: 1px solid #F0ECE4;
+	border-radius: 22px;
+	overflow: hidden;
+	box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
+	transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.coco-fav-card:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08);
+	border-color: #E2B268;
+}
+
+.coco-fav-card-img-wrap {
+	width: 48%;
+	min-width: 48%;
 	position: relative;
 	overflow: hidden;
+	background: #FAF8F5;
 }
 
-.coco-star-spotlight-card:hover {
-	transform: translateY(-5px);
-	box-shadow: var(--coco-shadow-md);
-	border-color: var(--coco-primary);
-}
-
-.coco-spotlight-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	margin-bottom: 1.15rem;
-	gap: 0.5rem;
-}
-
-.coco-spotlight-badge {
-	background: linear-gradient(135deg, #CE1322 0%, #D19711 100%);
-	color: #FFFFFF;
-	font-size: 0.72rem;
-	font-weight: 800;
-	padding: 0.35rem 0.8rem;
-	border-radius: 999px;
-	letter-spacing: 0.04em;
-	text-transform: uppercase;
-	box-shadow: 0 4px 10px rgba(206, 19, 34, 0.25);
-}
-
-.coco-spotlight-rating {
-	color: #F59E0B;
-	font-weight: 700;
-	font-size: 0.88rem;
-	letter-spacing: 1px;
-}
-
-.coco-spotlight-img-link {
+.coco-fav-card-img-wrap a {
 	display: block;
-	border-radius: var(--coco-radius-md);
-	overflow: hidden;
-	margin-bottom: 1.25rem;
-	background: #F9F9FB;
+	width: 100%;
+	height: 100%;
 }
 
-.coco-spotlight-img-link img {
+.coco-fav-card-img-wrap img {
 	width: 100%;
-	height: 300px;
+	height: 100%;
+	min-height: 250px;
+	max-height: 300px;
 	object-fit: cover;
 	display: block;
-	transition: var(--coco-transition);
+	transition: transform 0.4s ease;
 }
 
-.coco-star-spotlight-card:hover .coco-spotlight-img-link img {
-	transform: scale(1.03);
+.coco-fav-card:hover .coco-fav-card-img-wrap img {
+	transform: scale(1.05);
 }
 
-.coco-spotlight-title {
+.coco-fav-badge {
+	position: absolute;
+	top: 14px;
+	left: 14px;
+	z-index: 5;
+	font-size: 0.72rem;
+	font-weight: 800;
+	color: #FFFFFF;
+	border-radius: 50px;
+	padding: 0.35rem 0.85rem;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.coco-fav-badge-gold {
+	background-color: #D89B37;
+}
+
+.coco-fav-badge-pink {
+	background-color: #E91E63;
+}
+
+.coco-fav-card-content {
+	width: 52%;
+	padding: 2rem 1.75rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+}
+
+.coco-fav-title {
+	margin: 0 0 0.85rem 0;
 	font-size: 1.25rem;
 	font-weight: 800;
-	line-height: 1.35;
-	margin: 0 0 1rem 0;
-	color: var(--coco-dark);
+	color: #0A192F;
+	line-height: 1.32;
 }
 
-.coco-spotlight-title a {
-	color: var(--coco-dark) !important;
+.coco-fav-title a {
+	color: #0A192F !important;
 	text-decoration: none !important;
-	transition: var(--coco-transition);
+	transition: color 0.2s ease;
 }
 
-.coco-spotlight-title a:hover {
-	color: var(--coco-primary) !important;
+.coco-fav-title a:hover {
+	color: #D1193E !important;
 }
 
-.coco-spotlight-features {
-	list-style: none !important;
-	padding: 0 !important;
-	margin: 0 0 1.25rem 0 !important;
-	flex-grow: 1;
+.coco-fav-gold-line {
+	width: 42px;
+	height: 3px;
+	background: #E2B268;
+	border-radius: 2px;
+	margin: 0 0 1.5rem 0;
 }
 
-.coco-spotlight-features li {
-	font-size: 0.9rem;
-	color: var(--coco-slate);
-	margin-bottom: 0.5rem;
-	line-height: 1.45;
-	list-style: none !important;
-	padding: 0 !important;
-}
-
-.coco-spotlight-price-row {
-	display: flex;
+.coco-fav-btn {
+	display: inline-flex;
 	align-items: center;
-	justify-content: space-between;
-	padding: 0.9rem 0;
-	border-top: 1px solid var(--coco-border);
-	margin-bottom: 1.15rem;
-	flex-wrap: wrap;
-	gap: 0.5rem;
-}
-
-.coco-spotlight-price {
-	font-size: 1.45rem;
-	font-weight: 800;
-	color: var(--coco-primary);
-}
-
-.coco-spotlight-cod {
-	background-color: #F0FDF4;
-	color: #15803D;
-	font-size: 0.78rem;
-	font-weight: 700;
-	padding: 0.25rem 0.65rem;
-	border-radius: 6px;
-	border: 1px solid #BBF7D0;
-}
-
-.coco-spotlight-action {
-	width: 100%;
-}
-
-.coco-spotlight-btn {
-	display: block;
-	width: 100%;
-	text-align: center;
-	background-color: var(--coco-cod-green) !important;
-	color: #FFFFFF !important;
-	font-weight: 800;
-	font-size: 1rem;
-	padding: 0.85rem 1.25rem;
-	border-radius: var(--coco-radius-md);
+	gap: 8px;
+	background: #FFFFFF;
+	border: 1.5px solid #D8A252;
+	color: #B87F28 !important;
 	text-decoration: none !important;
-	box-shadow: 0 6px 18px rgba(22, 163, 74, 0.25);
-	transition: var(--coco-transition);
+	font-size: 0.85rem;
+	font-weight: 800;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	padding: 0.65rem 1.6rem;
+	border-radius: 50px;
+	transition: all 0.25s ease;
 }
 
-.coco-spotlight-btn:hover {
-	background-color: var(--coco-cod-green-dark) !important;
+.coco-fav-btn:hover {
+	background: #D8A252;
+	color: #FFFFFF !important;
 	transform: translateY(-2px);
-	box-shadow: 0 10px 24px rgba(22, 163, 74, 0.35);
+	box-shadow: 0 6px 18px rgba(216, 162, 82, 0.35);
+}
+
+.coco-btn-arrow {
+	font-size: 1.05rem;
+	transition: transform 0.2s ease;
+}
+
+.coco-fav-btn:hover .coco-btn-arrow {
+	transform: translateX(3px);
 }
 
 /* ==========================================================================
-   5. GRID DE CATEGORÍAS PRINCIPALES
+   6. TIRA DE PILARES DE CONFIANZA (PAGO CONTRA ENTREGA | ENVÍOS | SEGURIDAD)
    ========================================================================== */
-.coco-category-card {
-	background-color: var(--coco-white);
-	border: 1px solid var(--coco-border);
-	border-radius: var(--coco-radius-md);
-	overflow: hidden;
-	box-shadow: var(--coco-shadow-sm);
-	transition: var(--coco-transition);
-	position: relative;
+.coco-trust-strip-wrapper {
+	padding-top: 1.5rem;
+	padding-bottom: 1.5rem;
 }
 
-.coco-category-card:hover {
-	transform: translateY(-5px);
-	box-shadow: var(--coco-shadow-md);
-	border-color: var(--coco-primary);
-}
-
-.coco-category-card .wp-block-button__link {
+.coco-trust-strip {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1100px;
+	margin: 0 auto;
+	gap: 2.5rem;
+	padding: 1.25rem 2rem;
+	background: #FDFBF8;
+	border: 1px solid #F0ECE4;
+	border-radius: 14px;
 	width: 100%;
-	text-align: center;
+}
+
+.coco-trust-strip-item {
+	display: inline-flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.coco-trust-strip-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.coco-trust-strip-text {
+	font-size: 1.02rem;
 	font-weight: 700;
+	color: #1A202C;
+}
+
+.coco-trust-strip-divider {
+	width: 1.5px;
+	height: 34px;
+	background: #E2D7C7;
+}
+
+/* ==========================================================================
+   7. SECCIÓN: EXPLORÁ NUESTRO CATÁLOGO (4 CATEGORÍAS CON FOTOS Y PILLS)
+   ========================================================================== */
+.coco-category-showcase-section {
+	padding-top: 3.5rem;
+	padding-bottom: 3.5rem;
+}
+
+.coco-catalog-grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 1.5rem;
+	max-width: 1280px;
+	margin: 0 auto;
+	width: 100%;
+}
+
+.coco-catalog-card {
+	position: relative;
+	border-radius: 18px;
+	overflow: hidden;
+	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+	background: #FAF8F5;
+	transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.coco-catalog-card:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 14px 32px rgba(0, 0, 0, 0.1);
+}
+
+.coco-catalog-card-link {
+	display: block;
+	position: relative;
+	text-decoration: none !important;
+}
+
+.coco-catalog-img-container {
+	width: 100%;
+	aspect-ratio: 1 / 1.15;
+	overflow: hidden;
+}
+
+.coco-catalog-img-container img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+	transition: transform 0.4s ease;
+}
+
+.coco-catalog-card:hover .coco-catalog-img-container img {
+	transform: scale(1.06);
+}
+
+.coco-catalog-pill {
+	position: absolute;
+	bottom: 16px;
+	left: 50%;
+	transform: translateX(-50%);
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	background: #FFFFFF;
+	color: #1A202C !important;
+	font-size: 0.92rem;
+	font-weight: 800;
+	padding: 0.55rem 1.4rem;
+	border-radius: 50px;
+	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+	transition: all 0.25s ease;
+	white-space: nowrap;
+}
+
+.coco-pill-arrow {
+	font-size: 1rem;
+	transition: transform 0.2s ease;
+}
+
+.coco-catalog-card:hover .coco-catalog-pill {
+	background: #0A192F;
+	color: #FFFFFF !important;
+	transform: translateX(-50%) translateY(-2px);
+	box-shadow: 0 8px 22px rgba(10, 25, 47, 0.3);
+}
+
+.coco-catalog-card:hover .coco-pill-arrow {
+	transform: translateX(3px);
+}
+
+/* ==========================================================================
+   ADAPTACIONES RESPONSIVAS DE LAS NUEVAS SECCIONES
+   ========================================================================== */
+@media (max-width: 992px) {
+	.coco-hero-luxury-inner {
+		grid-template-columns: 1fr;
+		gap: 2.5rem;
+		text-align: center;
+	}
+	.coco-hero-luxury-left {
+		align-items: center;
+	}
+	.coco-hero-headline {
+		font-size: 2.4rem;
+	}
+	.coco-hero-subhead {
+		text-align: center;
+	}
+	.coco-fav-cards-grid {
+		grid-template-columns: 1fr;
+	}
+	.coco-catalog-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+	.coco-trust-strip {
+		gap: 1.5rem;
+		padding: 1rem 1.25rem;
+	}
+}
+
+@media (max-width: 640px) {
+	.coco-hero-luxury-section {
+		padding-top: 2.5rem !important;
+		padding-bottom: 2.5rem !important;
+	}
+	.coco-hero-headline {
+		font-size: 1.95rem;
+	}
+	.coco-hero-heart-doodle {
+		display: none;
+	}
+	.coco-flanked-header {
+		gap: 0.75rem;
+	}
+	.coco-flank-line {
+		max-width: 40px;
+	}
+	.coco-flank-title {
+		font-size: 1.15rem;
+		white-space: normal;
+	}
+	.coco-fav-card {
+		flex-direction: column;
+	}
+	.coco-fav-card-img-wrap {
+		width: 100%;
+		min-width: 100%;
+		height: 220px;
+	}
+	.coco-fav-card-content {
+		width: 100%;
+		padding: 1.5rem;
+	}
+	.coco-trust-strip {
+		flex-direction: column;
+		gap: 1rem;
+		padding: 1.1rem;
+	}
+	.coco-trust-strip-divider {
+		width: 60%;
+		height: 1px;
+	}
+	.coco-catalog-grid {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 12px;
+	}
+	.coco-catalog-pill {
+		padding: 0.45rem 1rem;
+		font-size: 0.82rem;
+		bottom: 12px;
+	}
 }
 
 /* ==========================================================================

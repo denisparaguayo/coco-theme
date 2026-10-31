@@ -1111,16 +1111,14 @@ function coco_theme_star_products_shortcode() {
 		)
 	);
 	if ( ! empty( $query_sun ) ) {
-		$products[] = array(
-			'product' => $query_sun[0],
-			'badge'   => '🔥 #1 MÁS VENDIDO EN BELLEZA',
-			'rating'  => '★★★★★ 4.9 (Más de 350 clientas)',
-			'bullets' => array(
-				'Máxima protección solar FPS 90+ de amplio espectro',
-				'Fórmula antiedad enriquecida con partículas de Oro 24K',
-				'Textura ultraligera, acabado mate sin brillo ni efecto graso',
-			),
-		);
+		$p1 = $query_sun[0];
+		$img1 = $p1->get_image_id() ? wp_get_attachment_image_url( $p1->get_image_id(), 'large' ) : get_template_directory_uri() . '/assets/images/fav-protector.jpg';
+		$link1 = get_permalink( $p1->get_id() );
+		$name1 = $p1->get_name();
+	} else {
+		$img1 = get_template_directory_uri() . '/assets/images/fav-protector.jpg';
+		$link1 = home_url( '/shop/' );
+		$name1 = 'Protector Solar Oro 24K FPS 90+';
 	}
 
 	// 2. Rizador de Pestañas Térmico y Perfilador de Cejas 2 en 1
@@ -1132,81 +1130,58 @@ function coco_theme_star_products_shortcode() {
 		)
 	);
 	if ( ! empty( $query_riz ) ) {
-		$products[] = array(
-			'product' => $query_riz[0],
-			'badge'   => '✨ TENDENCIA VIRAL 2 EN 1',
-			'rating'  => '★★★★★ 5.0 (Novedad destacada)',
-			'bullets' => array(
-				'Rizado térmico rápido, natural y de larga duración sin quebrar',
-				'Perfilador eléctrico de alta precisión integrado para cejas perfectas',
-				'Batería recargable USB de larga duración para llevar a cualquier parte',
-			),
-		);
-	}
-
-	// Respaldo dinámico si no coinciden por nombre exacto
-	if ( count( $products ) < 2 ) {
-		$fallback = wc_get_products(
-			array(
-				'limit'   => 2 - count( $products ),
-				'status'  => 'publish',
-				'orderby' => 'popularity',
-			)
-		);
-		foreach ( $fallback as $fb_prod ) {
-			$products[] = array(
-				'product' => $fb_prod,
-				'badge'   => '⭐ PRODUCTO DESTACADO',
-				'rating'  => '★★★★★ 4.9',
-				'bullets' => array(
-					'Calidad premium seleccionada por Coco Cherry Store',
-					'Abonás en efectivo o QR recién al recibir tu paquete',
-					'Envíos rápidos y seguros a todo Paraguay',
-				),
-			);
-		}
-	}
-
-	if ( empty( $products ) ) {
-		return '';
+		$p2 = $query_riz[0];
+		$img2 = $p2->get_image_id() ? wp_get_attachment_image_url( $p2->get_image_id(), 'large' ) : get_template_directory_uri() . '/assets/images/fav-rizador.jpg';
+		$link2 = get_permalink( $p2->get_id() );
+		$name2 = $p2->get_name();
+	} else {
+		$img2 = get_template_directory_uri() . '/assets/images/fav-rizador.jpg';
+		$link2 = home_url( '/shop/' );
+		$name2 = 'Rizador de Pestañas Térmico y Perfilador de Cejas 2 en 1 Recargable USB';
 	}
 
 	ob_start();
 	?>
-	<div class="coco-star-spotlight-grid">
-		<?php foreach ( $products as $item ) :
-			$p = $item['product'];
-			$img_id = $p->get_image_id();
-			$img_url = $img_id ? wp_get_attachment_image_url( $img_id, 'large' ) : wc_placeholder_img_src();
-			$link = get_permalink( $p->get_id() );
-			?>
-			<div class="coco-star-spotlight-card">
-				<div class="coco-spotlight-header">
-					<span class="coco-spotlight-badge"><?php echo esc_html( $item['badge'] ); ?></span>
-					<span class="coco-spotlight-rating"><?php echo esc_html( $item['rating'] ); ?></span>
-				</div>
-				<a href="<?php echo esc_url( $link ); ?>" class="coco-spotlight-img-link" title="<?php echo esc_attr( $p->get_name() ); ?>">
-					<img src="<?php echo esc_url( $img_url ); ?>" alt="<?php echo esc_attr( $p->get_name() ); ?>" loading="lazy" />
+	<div class="coco-fav-cards-grid">
+		<!-- Card 1: Protector Solar -->
+		<div class="coco-fav-card">
+			<div class="coco-fav-card-img-wrap">
+				<span class="coco-fav-badge coco-fav-badge-gold">&#9733; MÁS VENDIDO</span>
+				<a href="<?php echo esc_url( $link1 ); ?>" tabindex="-1">
+					<img src="<?php echo esc_url( $img1 ); ?>" alt="<?php echo esc_attr( $name1 ); ?>" loading="lazy" />
 				</a>
-				<h3 class="coco-spotlight-title">
-					<a href="<?php echo esc_url( $link ); ?>"><?php echo esc_html( $p->get_name() ); ?></a>
-				</h3>
-				<ul class="coco-spotlight-features">
-					<?php foreach ( $item['bullets'] as $b ) : ?>
-						<li>✓ <?php echo esc_html( $b ); ?></li>
-					<?php endforeach; ?>
-				</ul>
-				<div class="coco-spotlight-price-row">
-					<span class="coco-spotlight-price"><?php echo $p->get_price_html(); ?></span>
-					<span class="coco-spotlight-cod">💵 Pago al Recibir en Puerta</span>
-				</div>
-				<div class="coco-spotlight-action">
-					<a href="<?php echo esc_url( $link ); ?>" class="coco-spotlight-btn">
-						Pedir con Pago Contra Entrega &rarr;
-					</a>
-				</div>
 			</div>
-		<?php endforeach; ?>
+			<div class="coco-fav-card-content">
+				<h3 class="coco-fav-title">
+					<a href="<?php echo esc_url( $link1 ); ?>"><?php echo esc_html( $name1 ); ?></a>
+				</h3>
+				<div class="coco-fav-gold-line"></div>
+				<a href="<?php echo esc_url( $link1 ); ?>" class="coco-fav-btn">
+					<span>VER PRODUCTO</span>
+					<span class="coco-btn-arrow">&rarr;</span>
+				</a>
+			</div>
+		</div>
+
+		<!-- Card 2: Rizador de Pestañas -->
+		<div class="coco-fav-card">
+			<div class="coco-fav-card-img-wrap">
+				<span class="coco-fav-badge coco-fav-badge-pink">&#127800; BELLEZA</span>
+				<a href="<?php echo esc_url( $link2 ); ?>" tabindex="-1">
+					<img src="<?php echo esc_url( $img2 ); ?>" alt="<?php echo esc_attr( $name2 ); ?>" loading="lazy" />
+				</a>
+			</div>
+			<div class="coco-fav-card-content">
+				<h3 class="coco-fav-title">
+					<a href="<?php echo esc_url( $link2 ); ?>"><?php echo esc_html( $name2 ); ?></a>
+				</h3>
+				<div class="coco-fav-gold-line"></div>
+				<a href="<?php echo esc_url( $link2 ); ?>" class="coco-fav-btn">
+					<span>VER PRODUCTO</span>
+					<span class="coco-btn-arrow">&rarr;</span>
+				</a>
+			</div>
+		</div>
 	</div>
 	<?php
 	return ob_get_clean();
