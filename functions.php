@@ -687,15 +687,30 @@ function coco_theme_loop_second_image() {
 add_action( 'woocommerce_before_shop_loop_item_title', 'coco_theme_loop_second_image', 11 );
 
 /**
- * Banner Hero Editorial de Colección (Estilo Revista de Lujo).
+ * Ocultar título redundante ("Shop"), migas de pan y descripción duplicada en el archivo de tienda/categorías
+ * para que el Hero Banner de ancho completo sea el único encabezado protagonista.
+ */
+add_filter( 'woocommerce_show_page_title', '__return_false' );
+
+function coco_theme_clean_archive_headers() {
+	remove_action( 'woocommerce_archive_description', 'woocommerce_taxonomy_archive_description', 10 );
+	remove_action( 'woocommerce_archive_description', 'woocommerce_product_archive_description', 10 );
+	if ( function_exists( 'is_shop' ) && ( is_shop() || is_product_taxonomy() ) ) {
+		remove_action( 'woocommerce_before_main_content', 'woocommerce_breadcrumb', 20 );
+	}
+}
+add_action( 'wp', 'coco_theme_clean_archive_headers' );
+
+/**
+ * Banner Hero Editorial de Colección de Ancho Completo (Estilo Boutique de Lujo).
  */
 function coco_theme_render_category_banner() {
 	if ( ! is_shop() && ! is_product_taxonomy() ) {
 		return;
 	}
 
-	$title       = 'Colección Exclusiva';
-	$description = 'Aretes, bijouterie, moda y accesorios con modelos pensados para iluminar tu rostro y combinar con cualquier estilo.';
+	$title       = 'Nuestra Colección';
+	$description = 'Aretes, aros colgantes, argollas y modelos con brillo pensados para iluminar tu rostro y combinar con cualquier estilo.';
 
 	if ( is_product_category() ) {
 		$term = get_queried_object();
@@ -703,8 +718,10 @@ function coco_theme_render_category_banner() {
 			$title = $term->name;
 			if ( ! empty( $term->description ) ) {
 				$description = wp_strip_all_tags( $term->description );
+			} elseif ( stripos( $term->name, 'aro' ) !== false ) {
+				$description = 'Aretes, aros colgantes, argollas y modelos con brillo pensados para iluminar tu rostro y combinar con cualquier estilo.';
 			} else {
-				$description = sprintf( 'Descubrí los modelos más exclusivos de %s pensados para realzar tu estilo y con entrega rápida en todo el país.', esc_html( $term->name ) );
+				$description = sprintf( 'Modelos exclusivos de %s seleccionados para iluminar tu estilo y combinar con cualquier ocasión.', $term->name );
 			}
 		}
 	} elseif ( is_product_tag() ) {
@@ -713,21 +730,16 @@ function coco_theme_render_category_banner() {
 			$title = $term->name;
 		}
 	}
+
+	$bg_url = COCO_THEME_URI . '/assets/images/hero-collection-bg.jpg';
 	?>
-	<section class="coco-collection-hero-banner" aria-label="Cabecera de Colección">
-		<div class="coco-collection-hero-content">
-			<span class="coco-collection-kicker">NUESTRA COLECCIÓN</span>
-			<h1 class="coco-collection-title"><?php echo esc_html( $title ); ?></h1>
-			<p class="coco-collection-desc"><?php echo esc_html( $description ); ?></p>
-		</div>
-		<div class="coco-collection-hero-art" aria-hidden="true">
-			<div class="coco-collection-art-glow"></div>
-			<div class="coco-collection-art-gem">
-				<svg width="68" height="68" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M6 3h12l4 6-10 13L2 9z"></path>
-					<path d="M11 3 8 9l4 13 4-13-3-6"></path>
-					<path d="M2 9h20"></path>
-				</svg>
+	<section class="coco-collection-hero-banner" aria-label="Cabecera de Colección" style="--coco-hero-bg: url('<?php echo esc_url( $bg_url ); ?>');">
+		<div class="coco-collection-hero-inner">
+			<div class="coco-collection-hero-content">
+				<span class="coco-collection-kicker"><span class="coco-kicker-line" aria-hidden="true"></span>NUESTRA COLECCIÓN</span>
+				<h1 class="coco-collection-title"><?php echo esc_html( $title ); ?></h1>
+				<p class="coco-collection-desc"><?php echo esc_html( $description ); ?></p>
+				<span class="coco-collection-bottom-line" aria-hidden="true"></span>
 			</div>
 		</div>
 	</section>
@@ -742,8 +754,11 @@ function coco_theme_get_category_icon_svg( $slug, $name ) {
 	$slug = strtolower( $slug );
 	$name = strtolower( $name );
 
-	if ( strpos( $slug, 'aro' ) !== false || strpos( $name, 'aro' ) !== false || strpos( $slug, 'bijou' ) !== false ) {
+	if ( strpos( $slug, 'aro' ) !== false || strpos( $name, 'aro' ) !== false ) {
 		return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12l4 6-10 13L2 9z"></path><path d="M11 3 8 9l4 13 4-13-3-6"></path><path d="M2 9h20"></path></svg>';
+	}
+	if ( strpos( $slug, 'bijou' ) !== false || strpos( $name, 'bijou' ) !== false ) {
+		return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path><path d="M16 10a4 4 0 0 1-8 0"></path></svg>';
 	}
 	if ( strpos( $slug, 'belleza' ) !== false || strpos( $name, 'belleza' ) !== false || strpos( $slug, 'cosmet' ) !== false ) {
 		return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>';
@@ -771,7 +786,7 @@ function coco_theme_get_category_icon_svg( $slug, $name ) {
 }
 
 /**
- * Píldoras de navegación rápida con scroll horizontal y flecha deslizable.
+ * Píldoras de navegación rápida con scroll horizontal hacia izquierda y derecha.
  */
 function coco_theme_render_category_chips() {
 	if ( ! is_shop() && ! is_product_taxonomy() ) {
@@ -797,10 +812,14 @@ function coco_theme_render_category_chips() {
 		return;
 	}
 
-	$shop_url      = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/tienda/' );
+	$shop_url      = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/shop/' );
 	$is_all_active = is_shop() && ! is_product_category();
 
 	echo '<div class="coco-catalog-chips-wrapper">';
+
+	// Botón flecha izquierda para deslizar hacia atrás
+	echo '<button type="button" class="coco-chips-scroll-btn coco-chips-scroll-prev" id="coco-chips-prev" aria-label="Deslizar categorías a la izquierda" onclick="cocoScrollChips(-280)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>';
+
 	echo '<div class="coco-catalog-chips-scroll" id="coco-chips-scroll-container">';
 
 	// Opción "Todas las colecciones" con ícono de grilla
@@ -824,120 +843,34 @@ function coco_theme_render_category_chips() {
 
 	echo '</div>'; // /.coco-catalog-chips-scroll
 
-	// Botón flecha derecha para deslizar
-	echo '<button type="button" class="coco-chips-scroll-btn" aria-label="Deslizar categorías" onclick="cocoScrollChips(220)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>';
+	// Botón flecha derecha para deslizar hacia adelante
+	echo '<button type="button" class="coco-chips-scroll-btn coco-chips-scroll-next" id="coco-chips-next" aria-label="Deslizar categorías a la derecha" onclick="cocoScrollChips(280)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>';
 
 	echo '</div>'; // /.coco-catalog-chips-wrapper
 }
 add_action( 'woocommerce_archive_description', 'coco_theme_render_category_chips', 25 );
 
 /**
- * Apertura del Contenedor Split de 2 Columnas (Sidebar Filtros + Contenido Principal).
+ * Apertura del Contenedor Principal del Catálogo (Solo tarjetas en el container, sin sidebar de filtros).
  */
 function coco_theme_catalog_split_open() {
 	if ( function_exists( 'is_product' ) && is_product() ) {
 		return;
 	}
-
-	$current_cat_id = 0;
-	if ( is_product_category() ) {
-		$current_cat    = get_queried_object();
-		$current_cat_id = $current_cat ? $current_cat->term_id : 0;
-	}
-
-	$cats = get_terms(
-		array(
-			'taxonomy'   => 'product_cat',
-			'hide_empty' => true,
-			'parent'     => 0,
-			'exclude'    => array( get_option( 'default_product_cat' ) ),
-		)
-	);
-
-	// Total en stock aproximado
-	$total_products = wp_count_posts( 'product' );
-	$publish_count  = isset( $total_products->publish ) ? intval( $total_products->publish ) : 28;
-
-	echo '<div class="coco-catalog-split-container">';
-
-	// Barra móvil para abrir filtros
-	echo '<div class="coco-mobile-filter-bar"><button type="button" class="coco-mobile-filter-trigger" onclick="cocoToggleSidebarFilters(true)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg> <span>Filtrar por</span></button></div>';
-
-	// ASIDE: Barra lateral de filtros
-	echo '<aside class="coco-catalog-sidebar" id="coco-catalog-sidebar">';
-	echo '<div class="coco-sidebar-inner">';
-
-	// Cabecera sidebar con botón cerrar en móvil
-	echo '<div class="coco-sidebar-header">';
-	echo '<h3 class="coco-sidebar-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg> <span>Filtrar por</span></h3>';
-	echo '<button type="button" class="coco-sidebar-close-btn" aria-label="Cerrar filtros" onclick="cocoToggleSidebarFilters(false)">✕</button>';
-	echo '</div>';
-
-	// Sección Categorías (Acordeón)
-	if ( ! empty( $cats ) && ! is_wp_error( $cats ) ) {
-		echo '<div class="coco-sidebar-accordion is-open">';
-		echo '<div class="coco-accordion-head" onclick="this.parentElement.classList.toggle(\'is-open\')"><span>Categoría</span><svg class="coco-accordion-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg></div>';
-		echo '<div class="coco-accordion-body">';
-		echo '<ul class="coco-sidebar-filter-list">';
-
-		$counter = 0;
-		foreach ( $cats as $cat ) {
-			$counter++;
-			$is_checked = ( $cat->term_id === $current_cat_id );
-			$item_class = ( $counter > 6 ) ? 'coco-filter-item-extra' : '';
-
-			printf(
-				'<li class="%s"><a href="%s" class="coco-filter-checkbox %s"><span class="coco-custom-check"></span><span class="coco-filter-label">%s</span><span class="coco-filter-count">(%d)</span></a></li>',
-				esc_attr( $item_class ),
-				esc_url( get_term_link( $cat ) ),
-				$is_checked ? 'is-checked' : '',
-				esc_html( $cat->name ),
-				intval( $cat->count )
-			);
-		}
-
-		echo '</ul>';
-		if ( count( $cats ) > 6 ) {
-			echo '<button type="button" class="coco-sidebar-toggle-more" onclick="this.previousElementSibling.classList.toggle(\'show-all\'); this.textContent = this.textContent === \'Ver más +\' ? \'Ver menos −\' : \'Ver más +\';">Ver más +</button>';
-		}
-		echo '</div>'; // /.coco-accordion-body
-		echo '</div>'; // /.coco-sidebar-accordion
-	}
-
-	// Sección Disponibilidad (Acordeón)
-	echo '<div class="coco-sidebar-accordion is-open">';
-	echo '<div class="coco-accordion-head" onclick="this.parentElement.classList.toggle(\'is-open\')"><span>Disponibilidad</span><svg class="coco-accordion-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg></div>';
-	echo '<div class="coco-accordion-body">';
-	echo '<div class="coco-filter-checkbox is-checked"><span class="coco-custom-check"></span><span class="coco-filter-label">En stock</span><span class="coco-filter-count">(' . esc_html( $publish_count ) . ')</span></div>';
-	echo '</div>';
-	echo '</div>';
-
-	// Badge de Confianza: Envíos a todo Paraguay
-	echo '<div class="coco-sidebar-trust-box">';
-	echo '<div class="coco-trust-box-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg></div>';
-	echo '<div class="coco-trust-box-content"><strong>Envíos a todo Paraguay</strong><span>Comprá con confianza</span></div>';
-	echo '</div>';
-
-	echo '</div><!-- /.coco-sidebar-inner -->';
-	echo '</aside><!-- /.coco-catalog-sidebar -->';
-
-	// Backdrop para móvil
-	echo '<div class="coco-sidebar-backdrop" onclick="cocoToggleSidebarFilters(false)"></div>';
-
-	// Apertura del área principal de cuadrícula
+	echo '<div class="coco-catalog-container">';
 	echo '<div class="coco-catalog-main-area">';
 }
 add_action( 'woocommerce_before_shop_loop', 'coco_theme_catalog_split_open', 5 );
 
 /**
- * Cierre del Contenedor Split de 2 Columnas.
+ * Cierre del Contenedor Principal del Catálogo.
  */
 function coco_theme_catalog_split_close() {
 	if ( function_exists( 'is_product' ) && is_product() ) {
 		return;
 	}
 	echo '</div><!-- /.coco-catalog-main-area -->';
-	echo '</div><!-- /.coco-catalog-split-container -->';
+	echo '</div><!-- /.coco-catalog-container -->';
 }
 add_action( 'woocommerce_after_shop_loop', 'coco_theme_catalog_split_close', 999 );
 
@@ -1044,7 +977,7 @@ function coco_theme_catalog_trust_band() {
 add_action( 'woocommerce_after_shop_loop', 'coco_theme_catalog_trust_band', 25 );
 
 /**
- * Scripts de interactividad para filtros laterales, conmutador de columnas y scroll de píldoras.
+ * Scripts de interactividad para conmutador de columnas y scroll bidireccional de píldoras.
  */
 function coco_theme_catalog_scripts() {
 	if ( ! is_shop() && ! is_product_taxonomy() ) {
@@ -1054,26 +987,24 @@ function coco_theme_catalog_scripts() {
 	<script>
 	function cocoScrollChips(offset) {
 		var container = document.getElementById('coco-chips-scroll-container');
-		if (container) {
-			container.scrollBy({ left: offset, behavior: 'smooth' });
-		}
-	}
-	function cocoToggleSidebarFilters(open) {
-		var sidebar = document.getElementById('coco-catalog-sidebar');
-		var backdrop = document.querySelector('.coco-sidebar-backdrop');
-		if (!sidebar) return;
-		if (open) {
-			sidebar.classList.add('is-active');
-			if (backdrop) backdrop.classList.add('is-active');
-			document.body.style.overflow = 'hidden';
+		if (!container) return;
+		var target = container.scrollLeft + offset;
+		if (typeof container.scrollTo === 'function') {
+			container.scrollTo({ left: target, behavior: 'smooth' });
 		} else {
-			sidebar.classList.remove('is-active');
-			if (backdrop) backdrop.classList.remove('is-active');
-			document.body.style.overflow = '';
+			container.scrollLeft = target;
 		}
 	}
 	(function(){
-		function initGridSwitcher() {
+		function initChipsAndGrid() {
+			var container = document.getElementById('coco-chips-scroll-container');
+			if (container) {
+				var activeChip = container.querySelector('.coco-cat-chip.active');
+				if (activeChip && activeChip.offsetLeft > container.clientWidth * 0.6) {
+					container.scrollLeft = Math.max(0, activeChip.offsetLeft - container.clientWidth / 2 + activeChip.clientWidth / 2);
+				}
+			}
+
 			var grid = document.querySelector('.woocommerce ul.products, .woocommerce-page ul.products');
 			var buttons = document.querySelectorAll('.coco-grid-switcher .coco-grid-btn');
 			if (!grid || !buttons.length) return;
@@ -1101,9 +1032,9 @@ function coco_theme_catalog_scripts() {
 			});
 		}
 		if (document.readyState === 'loading') {
-			document.addEventListener('DOMContentLoaded', initGridSwitcher);
+			document.addEventListener('DOMContentLoaded', initChipsAndGrid);
 		} else {
-			initGridSwitcher();
+			initChipsAndGrid();
 		}
 	})();
 	</script>
@@ -2051,24 +1982,13 @@ function coco_theme_render_mobile_sticky_buy_bar() {
 		return;
 	}
 
-	$image_id    = $product->get_image_id();
-	$img_url     = $image_id ? wp_get_attachment_image_url( $image_id, 'thumbnail' ) : wc_placeholder_img_src( 'thumbnail' );
-	$title       = $product->get_name();
-	$price_html  = $product->get_price_html();
 	$is_variable = $product->is_type( 'variable' ) ? '1' : '0';
 	?>
-	<!-- Barra Sticky Inferior de Compra (Mobile) -->
+	<!-- Barra Sticky Inferior de Compra (Mobile: solo botón de compra limpio y de ancho completo) -->
 	<div id="coco-sticky-buy-bar" class="coco-sticky-buy-bar" aria-hidden="true" data-variable="<?php echo esc_attr( $is_variable ); ?>">
 		<div class="coco-sticky-buy-inner">
-			<div class="coco-sticky-buy-info">
-				<img src="<?php echo esc_url( $img_url ); ?>" alt="<?php echo esc_attr( $title ); ?>" class="coco-sticky-buy-thumb" loading="lazy" />
-				<div class="coco-sticky-buy-meta">
-					<span class="coco-sticky-buy-title"><?php echo esc_html( $title ); ?></span>
-					<span class="coco-sticky-buy-price"><?php echo wp_kses_post( $price_html ); ?></span>
-				</div>
-			</div>
 			<button type="button" id="coco-sticky-buy-btn" class="coco-sticky-buy-btn coco-pulse-active" aria-label="<?php esc_attr_e( 'Comprar ahora', 'coco-theme' ); ?>">
-				<span class="coco-sticky-btn-text"><?php esc_html_e( 'Comprar ahora', 'coco-theme' ); ?></span>
+				<span class="coco-sticky-btn-text"><?php esc_html_e( 'Pagar al recibir en casa', 'coco-theme' ); ?></span>
 			</button>
 		</div>
 	</div>
@@ -2081,25 +2001,14 @@ function coco_theme_render_mobile_sticky_buy_bar() {
 			var btnText = bar ? bar.querySelector('.coco-sticky-btn-text') : null;
 			if (!bar || !btn) return;
 
-			// Sincronizar el texto del botón con el botón original de Coco COD
+			// Sincronizar el título principal del botón con el botón original de Coco COD (sin subtítulo para evitar solapamientos)
 			var origCodBtn = document.getElementById('coco-cod-open-modal') || document.querySelector('.single-product .coco-cod-button') || document.querySelector('.single-product .single_add_to_cart_button');
 			if (origCodBtn && btnText) {
-				var origText = origCodBtn.textContent.trim();
+				var titleSpan = origCodBtn.querySelector('.coco-cod-btn__title');
+				var origText = titleSpan ? titleSpan.textContent.trim() : origCodBtn.textContent.trim();
 				if (origText) {
 					btnText.textContent = origText;
 				}
-			}
-
-			// Actualizar el precio si se selecciona una variación
-			if (window.jQuery) {
-				window.jQuery(document).on('found_variation', 'form.variations_form', function(e, variation){
-					if (variation && variation.price_html) {
-						var priceEl = bar.querySelector('.coco-sticky-buy-price');
-						if (priceEl) {
-							priceEl.innerHTML = variation.price_html;
-						}
-					}
-				});
 			}
 
 			var triggerEl = document.querySelector('.coco-cart-action-row') || document.querySelector('form.cart') || origCodBtn;

@@ -7,7 +7,7 @@ Description: Tema WordPress Full Site Editing (FSE) ultraligero y de alta conver
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 7.4
-Version: 1.2.4
+Version: 1.2.5
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: coco-theme
@@ -166,10 +166,8 @@ body {
 	position: sticky;
 	top: 36px;
 	z-index: 990;
-	background-color: rgba(255, 255, 255, 0.98);
-	backdrop-filter: blur(10px);
-	-webkit-backdrop-filter: blur(10px);
-	border-bottom: 1px solid var(--coco-border);
+	background-color: #FFFFFF !important;
+	border-bottom: 1.5px solid #DFC79C;
 	box-shadow: 0 2px 14px rgba(31, 41, 51, 0.04);
 	padding: 0 !important;
 }
@@ -399,38 +397,60 @@ body {
 	padding: 0 0.5rem;
 }
 
-/* Cajón móvil de navegación (Off-Canvas Drawer) */
+/* Cajón móvil de navegación (Off-Canvas Drawer de pantalla completa) */
 .coco-mobile-nav-drawer {
-	position: fixed;
-	inset: 0;
-	z-index: 9999;
+	position: fixed !important;
+	top: 0 !important;
+	left: 0 !important;
+	right: 0 !important;
+	bottom: 0 !important;
+	width: 100vw !important;
+	height: 100vh !important;
+	height: 100dvh !important;
+	z-index: 99999 !important;
 	display: none;
 }
 
 .coco-mobile-nav-drawer.is-open {
-	display: block;
+	display: block !important;
 }
 
 .coco-mobile-drawer-backdrop {
-	position: absolute;
-	inset: 0;
-	background: rgba(15, 23, 42, 0.55);
+	position: fixed !important;
+	top: 0 !important;
+	left: 0 !important;
+	right: 0 !important;
+	bottom: 0 !important;
+	width: 100vw !important;
+	height: 100vh !important;
+	height: 100dvh !important;
+	background: rgba(15, 23, 42, 0.55) !important;
 	backdrop-filter: blur(4px);
+	-webkit-backdrop-filter: blur(4px);
+	z-index: 1;
 }
 
 .coco-mobile-drawer-content {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	right: 0;
-	width: 85%;
-	max-width: 340px;
-	background: #FFFFFF;
-	box-shadow: -4px 0 24px rgba(0,0,0,0.15);
-	display: flex;
-	flex-direction: column;
-	padding: 1.5rem;
-	z-index: 2;
+	position: fixed !important;
+	top: 0 !important;
+	bottom: 0 !important;
+	right: 0 !important;
+	width: 84% !important;
+	max-width: 340px !important;
+	height: 100vh !important;
+	height: 100dvh !important;
+	background-color: #FFFFFF !important;
+	box-shadow: -8px 0 32px rgba(0, 0, 0, 0.18) !important;
+	display: flex !important;
+	flex-direction: column !important;
+	padding: 1.5rem !important;
+	box-sizing: border-box !important;
+	overflow-y: auto !important;
+	z-index: 2 !important;
+}
+
+body.admin-bar .coco-mobile-drawer-content {
+	padding-top: 3.5rem !important;
 }
 
 .coco-mobile-drawer-header {
@@ -451,9 +471,10 @@ body {
 .coco-mobile-drawer-close {
 	background: none;
 	border: none;
-	font-size: 1.3rem;
+	font-size: 1.35rem;
 	cursor: pointer;
 	color: #64748B;
+	padding: 0.25rem 0.5rem;
 }
 
 .coco-mobile-nav-list {
@@ -462,44 +483,27 @@ body {
 	padding: 0;
 	display: flex;
 	flex-direction: column;
-	gap: 0.75rem;
-	flex: 1;
+	gap: 0.5rem;
 }
 
 .coco-mobile-nav-list li a {
 	display: flex;
 	align-items: center;
 	gap: 0.85rem;
-	padding: 0.75rem 1rem;
+	padding: 0.85rem 1rem;
 	border-radius: 10px;
 	color: #374151;
+	background: #FFFFFF;
 	text-decoration: none;
 	font-weight: 600;
-	font-size: 0.95rem;
+	font-size: 0.96rem;
 	transition: all 0.2s ease;
 }
 
-.coco-mobile-nav-list li a:hover {
+.coco-mobile-nav-list li a:hover,
+.coco-mobile-nav-list li a:active {
 	background: #FAF6ED;
 	color: #B87B1D;
-}
-
-.coco-mobile-drawer-footer {
-	padding-top: 1.25rem;
-	border-top: 1px solid #F1EFEA;
-}
-
-.coco-mobile-wa-btn {
-	display: block;
-	text-align: center;
-	background: #16A34A;
-	color: #FFFFFF;
-	text-decoration: none;
-	padding: 0.85rem 1rem;
-	border-radius: 12px;
-	font-weight: 700;
-	font-size: 0.92rem;
-	box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
 }
 
 .coco-classic-menu-list li.menu-item-has-children > a::after {
@@ -959,22 +963,31 @@ ul.products::after,
 	content: none !important;
 }
 
-/* Cabecera Hero de Colección con superficie institucional sobria */
+/* Resetear cabecera nativa de WooCommerce para evitar cajas o títulos duplicados */
 .woocommerce-products-header {
-	background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%) !important;
-	border: 1px solid #E2E8F0 !important;
-	border-radius: 16px !important;
-	padding: 2.25rem 1.5rem 1.75rem 1.5rem !important;
-	margin-bottom: 2rem !important;
-	text-align: center !important;
-	box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03) !important;
+	background: transparent !important;
+	border: none !important;
+	border-radius: 0 !important;
+	padding: 0 !important;
+	margin: 0 !important;
+	text-align: left !important;
+	box-shadow: none !important;
+}
+
+.post-type-archive-product .woocommerce-breadcrumb,
+.tax-product_cat .woocommerce-breadcrumb,
+.tax-product_tag .woocommerce-breadcrumb,
+.woocommerce-products-header .page-title,
+.woocommerce-products-header__title,
+.woocommerce-products-header .term-description,
+.woocommerce-products-header .page-description {
+	display: none !important;
 }
 
 .woocommerce-breadcrumb {
 	font-size: 0.8rem !important;
 	color: #64748B !important;
 	margin: 0 auto 0.85rem auto !important;
-	text-align: center !important;
 	font-weight: 500;
 }
 
@@ -988,118 +1001,109 @@ ul.products::after,
 	color: var(--coco-primary) !important;
 }
 
-.woocommerce-products-header .page-title,
-.woocommerce-products-header__title {
-	font-size: 2.3rem !important;
-	font-weight: 800 !important;
-	color: #0F172A !important;
-	letter-spacing: -0.025em;
-	margin: 0.25rem 0 0.5rem 0 !important;
-	line-height: 1.2 !important;
-}
-
-.woocommerce-products-header .term-description {
-	font-size: 0.95rem !important;
-	color: #475569 !important;
-	max-width: 640px !important;
-	margin: 0 auto 1.25rem auto !important;
-	line-height: 1.6 !important;
-}
-
 /* ==========================================================================
-   BANNER HERO EDITORIAL DE COLECCIÓN (ESTILO BOUTIQUE DE LUJO)
+   BANNER HERO EDITORIAL DE COLECCIÓN DE ANCHO COMPLETO (ESTILO BOUTIQUE DE LUJO)
    ========================================================================== */
 .coco-collection-hero-banner {
+	width: 100vw;
+	position: relative;
+	left: 50%;
+	right: 50%;
+	margin-left: -50vw;
+	margin-right: -50vw;
+	margin-top: 0;
+	margin-bottom: 0;
+	background-color: #F6EFE4;
+	background-image: linear-gradient(90deg, rgba(251, 246, 238, 0.92) 0%, rgba(251, 246, 238, 0.65) 48%, rgba(251, 246, 238, 0) 72%), var(--coco-hero-bg, url('assets/images/hero-collection-bg.jpg'));
+	background-size: cover;
+	background-position: center right;
+	background-repeat: no-repeat;
+	border-bottom: 1px solid #E5D5B5;
+	overflow: hidden;
+	box-sizing: border-box;
+}
+
+.coco-collection-hero-inner {
+	max-width: 1320px;
+	width: 100%;
+	margin: 0 auto;
+	padding: 3.4rem 2rem;
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
-	background: linear-gradient(135deg, #FAF7F2 0%, #F5ECE0 100%);
-	border: 1px solid #EBE2D3;
-	border-radius: 20px;
-	padding: 2.5rem 3rem;
-	margin: 1.25rem 0 2rem 0;
-	position: relative;
-	overflow: hidden;
-	box-shadow: 0 4px 20px rgba(184, 123, 29, 0.04);
+	justify-content: flex-start;
+	text-align: left !important;
+	box-sizing: border-box;
+	min-height: 290px;
 }
 
 .coco-collection-hero-content {
-	max-width: 660px;
+	max-width: 540px;
 	position: relative;
 	z-index: 2;
+	text-align: left !important;
 }
 
 .coco-collection-kicker {
 	display: inline-flex;
 	align-items: center;
-	gap: 0.5rem;
-	font-size: 0.78rem;
-	font-weight: 700;
-	letter-spacing: 0.22em;
-	color: #A66B15;
+	gap: 0.75rem;
+	font-size: 0.8rem;
+	font-weight: 600;
+	letter-spacing: 0.26em;
+	color: #2D3748;
 	text-transform: uppercase;
-	margin-bottom: 0.5rem;
+	margin-bottom: 0.4rem;
 }
 
-.coco-collection-kicker::before {
-	content: "—";
-	font-weight: 700;
-	color: #A66B15;
+.coco-kicker-line {
+	display: inline-block;
+	width: 36px;
+	height: 2px;
+	background-color: #C88A22;
+	flex-shrink: 0;
 }
 
 .coco-collection-title {
 	font-family: 'Playfair Display', Georgia, serif !important;
-	font-size: clamp(2.2rem, 4.5vw, 3.4rem) !important;
+	font-size: clamp(2.75rem, 5vw, 4.1rem) !important;
 	font-weight: 700 !important;
-	color: #1A1A1A !important;
-	line-height: 1.15 !important;
-	margin: 0.25rem 0 0.85rem 0 !important;
+	color: #161616 !important;
+	line-height: 1.08 !important;
+	margin: 0.1rem 0 0.85rem 0 !important;
 	letter-spacing: -0.02em !important;
+	text-align: left !important;
 }
 
 .coco-collection-desc {
 	font-size: 1.02rem;
-	line-height: 1.65;
-	color: #52606D;
+	line-height: 1.62;
+	color: #374151;
 	margin: 0;
+	max-width: 470px;
+	text-align: left !important;
 }
 
-.coco-collection-hero-art {
-	position: relative;
-	z-index: 1;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 140px;
-	height: 140px;
-	color: #D9A038;
-	opacity: 0.9;
-	flex-shrink: 0;
-}
-
-.coco-collection-art-glow {
-	position: absolute;
-	width: 170px;
-	height: 170px;
-	background: radial-gradient(circle, rgba(217, 160, 56, 0.28) 0%, rgba(250, 247, 242, 0) 72%);
-	border-radius: 50%;
-	pointer-events: none;
-}
-
-.coco-collection-art-gem svg {
-	filter: drop-shadow(0 4px 12px rgba(184, 123, 29, 0.2));
+.coco-collection-bottom-line {
+	display: block;
+	width: 58px;
+	height: 2.5px;
+	background-color: #C88A22;
+	margin-top: 1.25rem;
+	border-radius: 2px;
 }
 
 /* ==========================================================================
-   CARRUSEL DE PÍLDORAS DE CATEGORÍAS (CON ÍCONOS Y BOTÓN DESLIZABLE)
+   CARRUSEL DE PÍLDORAS DE CATEGORÍAS (CON BOTONES IZQUIERDA Y DERECHA)
    ========================================================================== */
 .coco-catalog-chips-wrapper {
 	display: flex;
 	align-items: center;
+	max-width: 1320px;
 	width: 100%;
-	margin-bottom: 2.25rem;
+	margin: 1.6rem auto 2rem auto;
 	position: relative;
-	gap: 0.75rem;
+	gap: 0.65rem;
+	box-sizing: border-box;
 }
 
 .coco-catalog-chips-scroll {
@@ -1108,8 +1112,9 @@ ul.products::after,
 	gap: 0.65rem;
 	overflow-x: auto;
 	scroll-behavior: smooth;
-	padding: 4px 2px;
+	padding: 6px 4px;
 	flex: 1;
+	min-width: 0;
 	scrollbar-width: none;
 	-ms-overflow-style: none;
 }
@@ -1137,7 +1142,7 @@ ul.products::after,
 }
 
 .coco-cat-chip svg {
-	stroke: #64748B;
+	stroke: #B87B1D;
 	transition: stroke 0.2s ease;
 }
 
@@ -1170,16 +1175,17 @@ ul.products::after,
 	background: #FFFFFF;
 	border: 1px solid #E5DFD5;
 	box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-	display: flex;
+	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	cursor: pointer;
-	color: #4B5563;
+	color: #374151;
 	flex-shrink: 0;
 	transition: all 0.2s ease;
 }
 
-.coco-chips-scroll-btn:hover {
+.coco-chips-scroll-btn:hover,
+.coco-chips-scroll-btn:active {
 	background: #B87B1D;
 	color: #FFFFFF;
 	border-color: #B87B1D;
@@ -1187,53 +1193,24 @@ ul.products::after,
 }
 
 /* ==========================================================================
-   ESTRUCTURA DE 2 COLUMNAS (SIDEBAR DE FILTROS + CONTENIDO PRINCIPAL)
+   CONTENEDOR PRINCIPAL DEL CATÁLOGO (SOLO TARJETAS EN CONTAINER, SIN SIDEBAR)
    ========================================================================== */
+.coco-catalog-container {
+	max-width: 1320px;
+	width: 100%;
+	margin: 0 auto;
+	box-sizing: border-box;
+}
+
 .coco-catalog-split-container {
-	display: grid;
-	grid-template-columns: 260px 1fr;
-	gap: 2.25rem;
-	align-items: start;
+	display: block;
 	width: 100%;
 }
 
+.coco-catalog-sidebar,
 .coco-mobile-filter-bar {
-	display: none;
-	margin-bottom: 1rem;
+	display: none !important;
 }
-
-.coco-mobile-filter-trigger {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.5rem;
-	background: #FFFFFF;
-	border: 1px solid #E5DFD5;
-	color: #1F2933;
-	font-weight: 600;
-	font-size: 0.92rem;
-	padding: 0.65rem 1.25rem;
-	border-radius: 999px;
-	cursor: pointer;
-	box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-}
-
-.coco-catalog-sidebar {
-	background: #FFFFFF;
-	border: 1px solid #EFEAE1;
-	border-radius: 18px;
-	padding: 1.5rem;
-	box-shadow: 0 2px 12px rgba(0,0,0,0.02);
-	position: sticky;
-	top: 110px;
-}
-
-.coco-sidebar-header {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding-bottom: 0.85rem;
-	border-bottom: 1px solid #F1EFEA;
-	margin-bottom: 1.25rem;
 }
 
 .coco-sidebar-title {
@@ -3215,18 +3192,38 @@ main.has-surface-background-color {
 	}
 
 	.woocommerce-products-header {
-		padding: 1.5rem 1rem !important;
-		margin-bottom: 1.5rem !important;
-		border-radius: 12px !important;
+		padding: 0 !important;
+		margin: 0 !important;
+		border: none !important;
+		border-radius: 0 !important;
 	}
 
-	.woocommerce-products-header .page-title,
-	.woocommerce-products-header__title {
-		font-size: 1.75rem !important;
+	.coco-collection-hero-banner {
+		background-image: linear-gradient(90deg, rgba(251, 246, 238, 0.94) 0%, rgba(251, 246, 238, 0.82) 60%, rgba(251, 246, 238, 0.35) 100%), var(--coco-hero-bg, url('assets/images/hero-collection-bg.jpg'));
+		background-position: 72% center;
+	}
+
+	.coco-collection-hero-inner {
+		padding: 2.1rem 1.25rem;
+		min-height: 200px;
+	}
+
+	.coco-collection-title {
+		font-size: 2.25rem !important;
+	}
+
+	.coco-collection-desc {
+		font-size: 0.92rem;
 	}
 
 	.coco-catalog-chips-wrapper {
-		justify-content: flex-start !important;
+		margin: 1.15rem auto 1.4rem auto;
+		gap: 0.45rem;
+	}
+
+	.coco-chips-scroll-btn {
+		width: 34px;
+		height: 34px;
 	}
 
 	.coco-catalog-toolbar-wrap {
@@ -3687,71 +3684,22 @@ body.coco-cod-modal-open .coco-sticky-buy-bar {
 .coco-sticky-buy-inner {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
-	gap: 0.75rem;
+	justify-content: center;
 	width: 100%;
 	max-width: 100%;
 	box-sizing: border-box;
 }
 
 .coco-sticky-buy-info {
-	display: flex;
-	align-items: center;
-	gap: 0.65rem;
-	min-width: 0;
-	flex: 1 1 auto;
-}
-
-.coco-sticky-buy-thumb {
-	width: 44px;
-	height: 44px;
-	min-width: 44px;
-	object-fit: cover;
-	border-radius: 8px;
-	border: 1px solid var(--coco-border, #E2E8F0);
-	background-color: var(--coco-surface, #F8FAFC);
-}
-
-.coco-sticky-buy-meta {
-	display: flex;
-	flex-direction: column;
-	min-width: 0;
-	line-height: 1.25;
-}
-
-.coco-sticky-buy-title {
-	font-size: 0.8rem;
-	font-weight: 600;
-	color: var(--coco-dark, #1F2933);
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	display: block;
-}
-
-.coco-sticky-buy-price {
-	font-size: 0.92rem;
-	font-weight: 800;
-	color: var(--coco-cod-green, #16A34A);
-	white-space: nowrap;
-}
-
-.coco-sticky-buy-price del {
-	font-size: 0.75rem;
-	color: var(--coco-muted, #64748B);
-	font-weight: 400;
-	margin-right: 0.25rem;
-}
-
-.coco-sticky-buy-price ins {
-	text-decoration: none;
+	display: none !important;
 }
 
 .coco-sticky-buy-btn {
 	appearance: none;
 	-webkit-appearance: none;
-	flex: 0 0 auto;
-	height: 44px;
+	flex: 1 1 100%;
+	width: 100% !important;
+	height: 48px;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -3760,13 +3708,15 @@ body.coco-cod-modal-open .coco-sticky-buy-bar {
 	border: none;
 	border-radius: 999px;
 	padding: 0 1.25rem;
-	font-size: 0.92rem;
+	font-size: 0.96rem;
 	font-weight: 700;
 	letter-spacing: 0.01em;
 	cursor: pointer;
 	box-shadow: 0 4px 14px rgba(22, 163, 74, 0.35);
 	text-decoration: none;
 	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 	box-sizing: border-box;
 	transition: background-color 0.2s ease, transform 0.2s ease;
 }
