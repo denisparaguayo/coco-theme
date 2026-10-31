@@ -604,39 +604,23 @@ function coco_theme_product_cod_guarantees() {
 add_action( 'woocommerce_after_add_to_cart_form', 'coco_theme_product_cod_guarantees', 25 );
 
 /**
- * Añadir insignia de producto estrella (Más Vendido) en las tarjetas del catálogo WooCommerce.
+ * Catálogo minimalista tipo revista / editorial:
+ * En todo el loop de productos (catálogo, categorías, etiquetas, búsquedas y relacionados),
+ * se muestra ÚNICAMENTE la imagen cuadrada (1:1) y el nombre del producto.
+ * El precio, botón de carrito, valoraciones y badges se retiran para que el cliente
+ * haga clic directamente sobre el producto y acceda a la ficha detallada.
  */
-function coco_theme_loop_star_badge() {
-	if ( function_exists( 'is_product' ) && is_product() ) {
-		return;
-	}
-	global $product;
-	if ( ! $product instanceof \WC_Product ) {
-		return;
-	}
-	$name    = mb_strtolower( $product->get_name(), 'UTF-8' );
-	$is_star = $product->is_featured() || false !== strpos( $name, 'protector solar' ) || false !== strpos( $name, 'rizador' );
-
-	if ( $is_star ) {
-		echo '<span class="coco-star-product-badge">⭐ MÁS VENDIDO</span>';
-	}
+function coco_theme_catalog_minimal_loop() {
+	remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_price', 10 );
+	remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_rating', 5 );
+	remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_show_product_loop_sale_flash', 10 );
+	remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
 }
-add_action( 'woocommerce_before_shop_loop_item_title', 'coco_theme_loop_star_badge', 5 );
+add_action( 'init', 'coco_theme_catalog_minimal_loop' );
+add_action( 'wp', 'coco_theme_catalog_minimal_loop', 20 );
 
-/**
- * En la sección de productos relacionados de la ficha, mantener solo imagen y título (sin precio, sin botón, sin badge).
- */
-function coco_theme_minimal_related_products_hooks() {
-	if ( function_exists( 'is_product' ) && is_product() ) {
-		remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_price', 10 );
-		remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_rating', 5 );
-		remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_show_product_loop_sale_flash', 10 );
-		remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
-	}
-}
-add_action( 'wp', 'coco_theme_minimal_related_products_hooks', 20 );
 add_action( 'woocommerce_before_template_part', function( $template_name ) {
-	if ( false !== strpos( $template_name, 'related' ) || false !== strpos( $template_name, 'up-sells' ) ) {
+	if ( false !== strpos( $template_name, 'related' ) || false !== strpos( $template_name, 'up-sells' ) || false !== strpos( $template_name, 'product' ) ) {
 		remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_price', 10 );
 		remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_rating', 5 );
 		remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_show_product_loop_sale_flash', 10 );
@@ -645,15 +629,32 @@ add_action( 'woocommerce_before_template_part', function( $template_name ) {
 } );
 
 /**
- * Añadir etiquetas universales de pago y entrega en las tarjetas del catálogo WooCommerce.
+ * Segunda imagen fluida al hacer hover en el catálogo (si existe en la galería del producto).
  */
-function coco_theme_loop_cod_tag() {
-	if ( function_exists( 'is_product' ) && is_product() ) {
+function coco_theme_loop_second_image() {
+	global $product;
+	if ( ! $product instanceof \WC_Product ) {
 		return;
 	}
-	echo '<div class="coco-product-cod-badge"><span class="coco-cod-pill">💵 Pago Contra Entrega, transferencia, efectivo</span><span class="coco-delivery-pill">🚚 Envíos a todo Paraguay</span></div>';
+	$gallery = $product->get_gallery_image_ids();
+	if ( ! empty( $gallery ) ) {
+		$second_id = $gallery[0];
+		$second_img = wp_get_attachment_image(
+			$second_id,
+			'woocommerce_thumbnail',
+			false,
+			array(
+				'class'   => 'coco-loop-secondary-img',
+				'loading' => 'lazy',
+				'alt'     => esc_attr( $product->get_name() ),
+			)
+		);
+		if ( $second_img ) {
+			echo '<div class="coco-loop-second-img-wrap">' . $second_img . '</div>';
+		}
+	}
 }
-add_action( 'woocommerce_after_shop_loop_item_title', 'coco_theme_loop_cod_tag', 15 );
+add_action( 'woocommerce_before_shop_loop_item_title', 'coco_theme_loop_second_image', 11 );
 
 /**
  * Shortcode [coco_star_products]: Muestra los 2 productos estrella destacados con diseño de alta conversión.
