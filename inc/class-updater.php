@@ -81,16 +81,26 @@ class Updater {
 		$branch = $this->get_branch();
 
 		$candidate_urls = array(
+			sprintf( 'https://api.github.com/repos/%s/contents/style.css?ref=%s', $repo, $branch ),
 			sprintf( 'https://raw.githubusercontent.com/%s/%s/style.css', $repo, $branch ),
 			sprintf( 'https://raw.githubusercontent.com/%s/%s/%s/style.css', $repo, $branch, self::THEME_SLUG ),
 		);
 
 		foreach ( $candidate_urls as $raw_url ) {
+			$headers = array(
+				'Cache-Control' => 'no-cache, no-store, must-revalidate',
+				'Pragma'        => 'no-cache',
+			);
+			if ( false !== strpos( $raw_url, 'api.github.com' ) ) {
+				$headers['Accept'] = 'application/vnd.github.v3.raw';
+			}
+
 			$response = wp_remote_get(
 				add_query_arg( 't', time(), $raw_url ),
 				array(
 					'timeout'    => 15,
 					'user-agent' => 'Coco-Theme-Updater/' . $this->get_local_version() . '; ' . home_url(),
+					'headers'    => $headers,
 				)
 			);
 
@@ -161,6 +171,8 @@ class Updater {
 
 		if ( 'check' === $action ) {
 			delete_transient( self::TRANSIENT_KEY );
+			delete_site_transient( 'update_themes' );
+			wp_clean_themes_cache();
 			$this->get_remote_version( true );
 
 			wp_safe_redirect(
