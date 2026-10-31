@@ -7,7 +7,7 @@ Description: Tema WordPress Full Site Editing (FSE) ultraligero y de alta conver
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 7.4
-Version: 1.1.5
+Version: 1.1.6
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: coco-theme
@@ -40,6 +40,13 @@ Tags: full-site-editing, e-commerce, block-patterns, custom-colors, wide-blocks
 	--coco-shadow-md: 0 10px 28px rgba(31, 41, 51, 0.07);
 	--coco-shadow-lg: 0 18px 40px rgba(31, 41, 51, 0.12);
 	--coco-transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+	/* Variables por defecto de Sales Pop (heredan la paleta del tema) */
+	--coco-sp-bg: var(--coco-white);
+	--coco-sp-border: var(--coco-border);
+	--coco-sp-title: var(--coco-dark);
+	--coco-sp-title-hover: var(--coco-primary);
+	--coco-sp-text: var(--coco-muted);
+	--coco-sp-badge: var(--coco-cod-green);
 }
 
 *,
@@ -2161,4 +2168,226 @@ main.has-surface-background-color {
 		display: inline;
 	}
 }
+
+/* ==========================================================================
+   14. NOTIFICACIÓN FLOTANTE DE COMPRAS EN VIVO (SALES POP / SOCIAL PROOF)
+   ========================================================================== */
+.coco-sales-pop {
+	position: fixed;
+	bottom: 22px;
+	left: 22px;
+	z-index: 9980;
+	width: 370px;
+	max-width: calc(100vw - 28px);
+	background-color: var(--coco-sp-bg, var(--coco-white));
+	border: 1px solid var(--coco-sp-border, var(--coco-border));
+	border-radius: 12px;
+	box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14), 0 2px 6px rgba(15, 23, 42, 0.06);
+	padding: 13px 15px;
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	opacity: 0;
+	visibility: hidden;
+	transform: translateY(20px) scale(0.98);
+	transition: opacity 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+	            transform 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+	            visibility 0.38s;
+	pointer-events: none;
+	font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.coco-sales-pop.is-visible {
+	opacity: 1;
+	visibility: visible;
+	transform: translateY(0) scale(1);
+	pointer-events: auto;
+}
+
+/* Ocultar si el modal de Coco COD está activo en pantalla */
+body.coco-cod-modal-open .coco-sales-pop {
+	opacity: 0 !important;
+	visibility: hidden !important;
+	pointer-events: none !important;
+}
+
+.coco-sp-thumb-link {
+	flex: 0 0 70px;
+	width: 70px;
+	height: 70px;
+	border-radius: 8px;
+	overflow: hidden;
+	background: var(--coco-surface, #F9F9FB);
+	border: 1px solid rgba(0, 0, 0, 0.05);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-decoration: none;
+}
+
+.coco-sp-thumb {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+	transition: transform 0.3s ease;
+}
+
+.coco-sp-thumb-link:hover .coco-sp-thumb {
+	transform: scale(1.06);
+}
+
+.coco-sp-body {
+	flex: 1 1 auto;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+}
+
+.coco-sp-top-row {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 8px;
+}
+
+.coco-sp-buyer {
+	font-size: 0.82rem;
+	line-height: 1.3;
+	color: var(--coco-sp-text, var(--coco-muted));
+	font-weight: 500;
+	margin: 0;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.coco-sp-close {
+	appearance: none;
+	background: transparent;
+	border: none;
+	color: var(--coco-sp-text, var(--coco-muted));
+	opacity: 0.65;
+	cursor: pointer;
+	padding: 0 2px;
+	margin: -2px -2px 0 0;
+	font-size: 1.05rem;
+	line-height: 1;
+	transition: opacity 0.2s ease, color 0.2s ease;
+	flex-shrink: 0;
+}
+
+.coco-sp-close:hover {
+	opacity: 1;
+	color: var(--coco-sp-title, var(--coco-dark));
+}
+
+.coco-sp-product-link {
+	font-size: 0.92rem;
+	line-height: 1.32;
+	font-weight: 700;
+	color: var(--coco-sp-title, var(--coco-dark));
+	text-decoration: none !important;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	margin: 1px 0 3px;
+	transition: color 0.2s ease;
+}
+
+.coco-sp-product-link:hover {
+	color: var(--coco-sp-title-hover, var(--coco-primary));
+}
+
+.coco-sp-meta-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	margin-top: 1px;
+}
+
+.coco-sp-meta-left {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex-wrap: nowrap;
+}
+
+.coco-sp-time {
+	font-size: 0.76rem;
+	color: var(--coco-sp-text, var(--coco-muted));
+	opacity: 0.9;
+	font-weight: 400;
+}
+
+.coco-sp-verified {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 0.76rem;
+	font-weight: 600;
+	color: var(--coco-sp-text, var(--coco-muted));
+}
+
+.coco-sp-verified svg {
+	width: 14px;
+	height: 14px;
+	color: var(--coco-sp-badge, var(--coco-cod-green));
+	flex-shrink: 0;
+}
+
+.coco-sp-info-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--coco-sp-text, var(--coco-muted));
+	opacity: 0.55;
+	flex-shrink: 0;
+	cursor: help;
+}
+
+.coco-sp-info-icon svg {
+	width: 14px;
+	height: 14px;
+}
+
+@media (max-width: 767px) {
+	.coco-sales-pop.hide-on-mobile {
+		display: none !important;
+	}
+
+	.coco-sales-pop {
+		left: 12px;
+		right: 12px;
+		bottom: 14px;
+		width: auto;
+		max-width: calc(100vw - 24px);
+		padding: 10px 12px;
+		gap: 11px;
+	}
+
+	.coco-sp-thumb-link {
+		flex: 0 0 58px;
+		width: 58px;
+		height: 58px;
+	}
+
+	.coco-sp-buyer {
+		font-size: 0.78rem;
+	}
+
+	.coco-sp-product-link {
+		font-size: 0.85rem;
+		-webkit-line-clamp: 2;
+	}
+
+	.coco-sp-time,
+	.coco-sp-verified {
+		font-size: 0.72rem;
+	}
+}
+
 

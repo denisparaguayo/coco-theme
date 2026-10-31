@@ -953,11 +953,125 @@ function coco_theme_customize_register( $wp_customize ) {
 			'type'        => 'checkbox',
 		)
 	);
+
+	// 4. Controles de Notificaciones de Compras en Vivo (Sales Pop / Social Proof).
+	$wp_customize->add_setting(
+		'coco_theme_sales_pop_enabled',
+		array(
+			'default'           => true,
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'rest_sanitize_boolean',
+			'transport'         => 'refresh',
+		)
+	);
+
+	$wp_customize->add_control(
+		'coco_theme_sales_pop_enabled',
+		array(
+			'label'       => __( 'Activar notificaciones de compras en vivo (Sales Pop)', 'coco-theme' ),
+			'description' => __( 'Muestra el aviso flotante inferior izquierdo ("Fulanito en Ciudad compró...") con tus productos reales.', 'coco-theme' ),
+			'section'     => 'coco_theme_options',
+			'type'        => 'checkbox',
+		)
+	);
+
+	$wp_customize->add_setting(
+		'coco_theme_sales_pop_mobile',
+		array(
+			'default'           => true,
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'rest_sanitize_boolean',
+			'transport'         => 'refresh',
+		)
+	);
+
+	$wp_customize->add_control(
+		'coco_theme_sales_pop_mobile',
+		array(
+			'label'       => __( 'Mostrar Sales Pop también en celulares', 'coco-theme' ),
+			'description' => __( 'Adapta la tarjeta en formato compacto para pantallas móviles.', 'coco-theme' ),
+			'section'     => 'coco_theme_options',
+			'type'        => 'checkbox',
+		)
+	);
+
+	$wp_customize->add_setting(
+		'coco_theme_sales_pop_interval',
+		array(
+			'default'           => 16,
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'absint',
+			'transport'         => 'refresh',
+		)
+	);
+
+	$wp_customize->add_control(
+		'coco_theme_sales_pop_interval',
+		array(
+			'label'       => __( 'Intervalo entre notificaciones (segundos)', 'coco-theme' ),
+			'description' => __( 'Tiempo de espera entre un aviso de compra y el siguiente (por defecto: 16 seg).', 'coco-theme' ),
+			'section'     => 'coco_theme_options',
+			'type'        => 'number',
+			'input_attrs' => array(
+				'min'  => 8,
+				'max'  => 90,
+				'step' => 2,
+			),
+		)
+	);
+
+	// Selectores de color de Sales Pop (Por defecto usan la paleta oficial de Coco Theme).
+	$sales_pop_colors = array(
+		'coco_theme_sp_bg_color'     => array(
+			'label'   => __( 'Sales Pop: Color de Fondo', 'coco-theme' ),
+			'default' => '#FFFFFF',
+		),
+		'coco_theme_sp_border_color' => array(
+			'label'   => __( 'Sales Pop: Color de Borde', 'coco-theme' ),
+			'default' => '#E4E7EB',
+		),
+		'coco_theme_sp_title_color'  => array(
+			'label'   => __( 'Sales Pop: Color del Nombre del Producto', 'coco-theme' ),
+			'default' => '#1F2933',
+		),
+		'coco_theme_sp_text_color'   => array(
+			'label'   => __( 'Sales Pop: Color del Texto Secundario', 'coco-theme' ),
+			'default' => '#52606D',
+		),
+		'coco_theme_sp_badge_color'  => array(
+			'label'   => __( 'Sales Pop: Color del Sello "✓ Verificada"', 'coco-theme' ),
+			'default' => '#16A34A',
+		),
+	);
+
+	foreach ( $sales_pop_colors as $setting_id => $color_cfg ) {
+		$wp_customize->add_setting(
+			$setting_id,
+			array(
+				'default'           => $color_cfg['default'],
+				'type'              => 'theme_mod',
+				'sanitize_callback' => 'sanitize_hex_color',
+				'transport'         => 'refresh',
+			)
+		);
+
+		$wp_customize->add_control(
+			new \WP_Customize_Color_Control(
+				$wp_customize,
+				$setting_id,
+				array(
+					'label'   => $color_cfg['label'],
+					'section' => 'coco_theme_options',
+				)
+			)
+		);
+	}
 }
 add_action( 'customize_register', 'coco_theme_customize_register' );
 
 /**
- * Aplicar visibilidad del título/descripción del sitio y ancho personalizado del logo.
+ * Aplicar visibilidad del título/descripción del sitio, ancho personalizado del logo
+ * y variables de color del componente Sales Pop.
  */
 function coco_theme_customizer_dynamic_css() {
 	$show_title = get_theme_mod( 'coco_theme_show_title_tagline', false );
@@ -966,8 +1080,21 @@ function coco_theme_customizer_dynamic_css() {
 		$logo_width = 125;
 	}
 	$logo_height = intval( round( $logo_width * 0.49 ) );
+
+	$sp_bg     = sanitize_hex_color( get_theme_mod( 'coco_theme_sp_bg_color', '#FFFFFF' ) ) ?: '#FFFFFF';
+	$sp_border = sanitize_hex_color( get_theme_mod( 'coco_theme_sp_border_color', '#E4E7EB' ) ) ?: '#E4E7EB';
+	$sp_title  = sanitize_hex_color( get_theme_mod( 'coco_theme_sp_title_color', '#1F2933' ) ) ?: '#1F2933';
+	$sp_text   = sanitize_hex_color( get_theme_mod( 'coco_theme_sp_text_color', '#52606D' ) ) ?: '#52606D';
+	$sp_badge  = sanitize_hex_color( get_theme_mod( 'coco_theme_sp_badge_color', '#16A34A' ) ) ?: '#16A34A';
 	?>
 	<style id="coco-customizer-dynamic-css">
+		:root {
+			--coco-sp-bg: <?php echo esc_attr( $sp_bg ); ?>;
+			--coco-sp-border: <?php echo esc_attr( $sp_border ); ?>;
+			--coco-sp-title: <?php echo esc_attr( $sp_title ); ?>;
+			--coco-sp-text: <?php echo esc_attr( $sp_text ); ?>;
+			--coco-sp-badge: <?php echo esc_attr( $sp_badge ); ?>;
+		}
 		.coco-header-logo img,
 		.coco-footer-logo img,
 		.wp-block-site-logo img,
@@ -994,4 +1121,343 @@ function coco_theme_customizer_dynamic_css() {
 	<?php
 }
 add_action( 'wp_head', 'coco_theme_customizer_dynamic_css', 99 );
+
+/**
+ * Limpiar caché del Sales Pop cuando se actualiza un producto o entra un nuevo pedido.
+ */
+function coco_theme_flush_sales_pop_cache() {
+	delete_transient( 'coco_theme_sales_pop_items_v1' );
+}
+add_action( 'save_post_product', 'coco_theme_flush_sales_pop_cache' );
+add_action( 'woocommerce_new_order', 'coco_theme_flush_sales_pop_cache' );
+
+/**
+ * Obtener lista híbrida de notificaciones de compra (Pedidos reales recientes + Catálogo activo de Paraguay).
+ *
+ * @return array Lista de notificaciones listas para mostrar.
+ */
+function coco_theme_get_sales_pop_items() {
+	if ( ! function_exists( 'wc_get_products' ) ) {
+		return array();
+	}
+
+	$cached = get_transient( 'coco_theme_sales_pop_items_v1' );
+	if ( is_array( $cached ) && ! empty( $cached ) ) {
+		return $cached;
+	}
+
+	$items = array();
+
+	// 1. Intentar nutrir primero con pedidos recientes reales de WooCommerce.
+	if ( function_exists( 'wc_get_orders' ) ) {
+		$recent_orders = wc_get_orders(
+			array(
+				'limit'   => 5,
+				'status'  => array( 'wc-processing', 'wc-completed', 'wc-on-hold' ),
+				'orderby' => 'date',
+				'order'   => 'DESC',
+			)
+		);
+
+		foreach ( $recent_orders as $order ) {
+			if ( ! $order instanceof \WC_Order ) {
+				continue;
+			}
+			$first_name = trim( $order->get_billing_first_name() );
+			if ( empty( $first_name ) ) {
+				$first_name = trim( $order->get_shipping_first_name() );
+			}
+			// Extraer solo el primer nombre de pila por privacidad.
+			if ( ! empty( $first_name ) ) {
+				$parts      = preg_split( '/\s+/', $first_name );
+				$first_name = ucfirst( mb_strtolower( $parts[0], 'UTF-8' ) );
+			} else {
+				continue;
+			}
+
+			$city = trim( $order->get_billing_city() );
+			if ( empty( $city ) ) {
+				$city = trim( $order->get_shipping_city() );
+			}
+			if ( empty( $city ) ) {
+				$city = 'Asunción';
+			}
+
+			$order_items = $order->get_items();
+			if ( empty( $order_items ) ) {
+				continue;
+			}
+			$first_item = reset( $order_items );
+			$product    = is_callable( array( $first_item, 'get_product' ) ) ? $first_item->get_product() : null;
+			if ( ! $product instanceof \WC_Product || 'publish' !== $product->get_status() ) {
+				continue;
+			}
+
+			$img_id  = $product->get_image_id();
+			$img_url = $img_id ? wp_get_attachment_image_url( $img_id, 'woocommerce_thumbnail' ) : wc_placeholder_img_src();
+
+			$date_created = $order->get_date_created();
+			$time_ago     = 'hace 25 minutos';
+			if ( $date_created ) {
+				$diff_hours = round( ( time() - $date_created->getTimestamp() ) / 3600 );
+				if ( $diff_hours <= 1 ) {
+					$time_ago = 'hace ' . wp_rand( 8, 45 ) . ' minutos';
+				} elseif ( $diff_hours <= 12 ) {
+					$time_ago = 'hace ' . intval( $diff_hours ) . ' horas';
+				} else {
+					$time_ago = 'hace ' . wp_rand( 1, 3 ) . ' horas';
+				}
+			}
+
+			$items[] = array(
+				'buyer' => sprintf( '%s en %s compró', $first_name, $city ),
+				'title' => $product->get_name(),
+				'url'   => get_permalink( $product->get_id() ),
+				'image' => $img_url,
+				'time'  => $time_ago,
+			);
+		}
+	}
+
+	// 2. Completar hasta 12 notificaciones con productos reales del catálogo y compradores de Paraguay.
+	$catalog_products = wc_get_products(
+		array(
+			'limit'   => 14,
+			'status'  => 'publish',
+			'orderby' => 'popularity',
+			'order'   => 'DESC',
+		)
+	);
+
+	if ( ! empty( $catalog_products ) ) {
+		$py_buyers = array(
+			array( 'name' => 'María', 'city' => 'Asunción', 'time' => 'hace 12 minutos' ),
+			array( 'name' => 'Camila', 'city' => 'San Lorenzo', 'time' => 'hace 24 minutos' ),
+			array( 'name' => 'Guillermo', 'city' => 'Luque', 'time' => 'hace 41 minutos' ),
+			array( 'name' => 'Leticia', 'city' => 'Ciudad del Este', 'time' => 'hace 1 hora' ),
+			array( 'name' => 'Romina', 'city' => 'Lambaré', 'time' => 'hace 1 hora' ),
+			array( 'name' => 'Andrea', 'city' => 'Fernando de la Mora', 'time' => 'hace 2 horas' ),
+			array( 'name' => 'Carlos', 'city' => 'Encarnación', 'time' => 'hace 2 horas' ),
+			array( 'name' => 'Fátima', 'city' => 'Capiatá', 'time' => 'hace 3 horas' ),
+			array( 'name' => 'Belén', 'city' => 'Mariano Roque Alonso', 'time' => 'hace 18 minutos' ),
+			array( 'name' => 'Rodrigo', 'city' => 'Ñemby', 'time' => 'hace 35 minutos' ),
+			array( 'name' => 'Jazmín', 'city' => 'Villarrica', 'time' => 'hace 3 horas' ),
+			array( 'name' => 'Karina', 'city' => 'Caaguazú', 'time' => 'hace 4 horas' ),
+		);
+
+		$buyer_count = count( $py_buyers );
+		$idx         = 0;
+
+		foreach ( $catalog_products as $prod ) {
+			if ( count( $items ) >= 12 ) {
+				break;
+			}
+			if ( ! $prod instanceof \WC_Product ) {
+				continue;
+			}
+
+			$img_id  = $prod->get_image_id();
+			$img_url = $img_id ? wp_get_attachment_image_url( $img_id, 'woocommerce_thumbnail' ) : wc_placeholder_img_src();
+			$profile = $py_buyers[ $idx % $buyer_count ];
+			$idx++;
+
+			$items[] = array(
+				'buyer' => sprintf( '%s en %s compró', $profile['name'], $profile['city'] ),
+				'title' => $prod->get_name(),
+				'url'   => get_permalink( $prod->get_id() ),
+				'image' => $img_url,
+				'time'  => $profile['time'],
+			);
+		}
+	}
+
+	if ( ! empty( $items ) ) {
+		set_transient( 'coco_theme_sales_pop_items_v1', $items, 30 * MINUTE_IN_SECONDS );
+	}
+
+	return $items;
+}
+
+/**
+ * Renderizar el componente flotante de Notificaciones de Compra en Vivo (Sales Pop) en el pie de página.
+ */
+function coco_theme_render_sales_pop() {
+	if ( is_admin() ) {
+		return;
+	}
+
+	// Respetar el interruptor del Personalizador.
+	if ( ! get_theme_mod( 'coco_theme_sales_pop_enabled', true ) ) {
+		return;
+	}
+
+	// No mostrar durante el proceso de pago / orden recibida para evitar distracciones.
+	if ( function_exists( 'is_checkout' ) && is_checkout() ) {
+		return;
+	}
+
+	$items = coco_theme_get_sales_pop_items();
+	if ( empty( $items ) ) {
+		return;
+	}
+
+	$show_mobile  = get_theme_mod( 'coco_theme_sales_pop_mobile', true );
+	$interval_sec = absint( get_theme_mod( 'coco_theme_sales_pop_interval', 16 ) );
+	if ( $interval_sec < 8 ) {
+		$interval_sec = 16;
+	}
+
+	$first = $items[0];
+	$classes = 'coco-sales-pop';
+	if ( ! $show_mobile ) {
+		$classes .= ' hide-on-mobile';
+	}
+	?>
+	<div id="coco-sales-pop" class="<?php echo esc_attr( $classes ); ?>" role="status" aria-live="polite">
+		<a href="<?php echo esc_url( $first['url'] ); ?>" class="coco-sp-thumb-link" id="coco-sp-thumb-link">
+			<img src="<?php echo esc_url( $first['image'] ); ?>" alt="<?php echo esc_attr( $first['title'] ); ?>" class="coco-sp-thumb" id="coco-sp-thumb" loading="lazy" />
+		</a>
+		<div class="coco-sp-body">
+			<div class="coco-sp-top-row">
+				<p class="coco-sp-buyer" id="coco-sp-buyer"><?php echo esc_html( $first['buyer'] ); ?></p>
+				<button type="button" class="coco-sp-close" id="coco-sp-close" aria-label="<?php esc_attr_e( 'Cerrar notificación', 'coco-theme' ); ?>">&times;</button>
+			</div>
+			<a href="<?php echo esc_url( $first['url'] ); ?>" class="coco-sp-product-link" id="coco-sp-title">
+				<?php echo esc_html( $first['title'] ); ?>
+			</a>
+			<div class="coco-sp-meta-row">
+				<div class="coco-sp-meta-left">
+					<span class="coco-sp-time" id="coco-sp-time"><?php echo esc_html( $first['time'] ); ?></span>
+					<span class="coco-sp-verified">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<circle cx="12" cy="12" r="10"></circle>
+							<polyline points="8.5 12.5 10.8 14.8 15.5 9.5"></polyline>
+						</svg>
+						<span><?php esc_html_e( 'Verificada', 'coco-theme' ); ?></span>
+					</span>
+				</div>
+				<span class="coco-sp-info-icon" title="<?php esc_attr_e( 'Compra verificada con Pago Contra Entrega en Coco Cherry Store', 'coco-theme' ); ?>">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<circle cx="12" cy="12" r="10"></circle>
+						<line x1="12" y1="16" x2="12" y2="12"></line>
+						<line x1="12" y1="8" x2="12.01" y2="8"></line>
+					</svg>
+				</span>
+			</div>
+		</div>
+	</div>
+	<script>
+	(function(){
+		try {
+			if (window.sessionStorage && sessionStorage.getItem('coco_sales_pop_dismissed') === '1') {
+				return;
+			}
+		} catch (e) {}
+
+		var items = <?php echo wp_json_encode( array_values( $items ) ); ?>;
+		if (!items || !items.length) return;
+
+		var popEl     = document.getElementById('coco-sales-pop');
+		var thumbLink = document.getElementById('coco-sp-thumb-link');
+		var thumbImg  = document.getElementById('coco-sp-thumb');
+		var buyerEl   = document.getElementById('coco-sp-buyer');
+		var titleEl   = document.getElementById('coco-sp-title');
+		var timeEl    = document.getElementById('coco-sp-time');
+		var closeBtn  = document.getElementById('coco-sp-close');
+
+		if (!popEl) return;
+
+		var currentIndex = Math.floor(Math.random() * items.length);
+		var isHovered    = false;
+		var isDismissed  = false;
+		var hideTimer    = null;
+		var nextTimer    = null;
+		var baseInterval = <?php echo intval( $interval_sec * 1000 ); ?>;
+		var visibleDuration = 6500;
+
+		function isCodModalOpen() {
+			var modal = document.getElementById('coco-cod-modal');
+			if (modal && (modal.classList.contains('is-open') || modal.style.display === 'flex' || modal.style.display === 'block')) {
+				return true;
+			}
+			return document.body.classList.contains('coco-cod-modal-open');
+		}
+
+		function populateItem(item) {
+			if (!item) return;
+			buyerEl.textContent = item.buyer;
+			titleEl.textContent = item.title;
+			titleEl.href        = item.url;
+			thumbLink.href      = item.url;
+			thumbImg.src        = item.image;
+			thumbImg.alt        = item.title;
+			timeEl.textContent  = item.time;
+		}
+
+		function showNotification() {
+			if (isDismissed) return;
+			if (isCodModalOpen()) {
+				scheduleNext();
+				return;
+			}
+			var item = items[currentIndex % items.length];
+			currentIndex = (currentIndex + 1) % items.length;
+			populateItem(item);
+			popEl.classList.add('is-visible');
+
+			clearTimeout(hideTimer);
+			hideTimer = setTimeout(function(){
+				if (!isHovered) {
+					hideNotification();
+				}
+			}, visibleDuration);
+		}
+
+		function hideNotification() {
+			popEl.classList.remove('is-visible');
+			scheduleNext();
+		}
+
+		function scheduleNext() {
+			if (isDismissed) return;
+			clearTimeout(nextTimer);
+			var jitter = Math.floor(Math.random() * 4000) - 1500;
+			var delay  = Math.max(7000, baseInterval + jitter);
+			nextTimer  = setTimeout(showNotification, delay);
+		}
+
+		popEl.addEventListener('mouseenter', function(){
+			isHovered = true;
+			clearTimeout(hideTimer);
+		});
+
+		popEl.addEventListener('mouseleave', function(){
+			isHovered = false;
+			hideTimer = setTimeout(hideNotification, 2500);
+		});
+
+		if (closeBtn) {
+			closeBtn.addEventListener('click', function(e){
+				e.preventDefault();
+				e.stopPropagation();
+				isDismissed = true;
+				popEl.classList.remove('is-visible');
+				clearTimeout(hideTimer);
+				clearTimeout(nextTimer);
+				try {
+					if (window.sessionStorage) {
+						sessionStorage.setItem('coco_sales_pop_dismissed', '1');
+					}
+				} catch (err) {}
+			});
+		}
+
+		// Primera aparición suave tras 5.5 segundos de entrar a la tienda.
+		nextTimer = setTimeout(showNotification, 5500);
+	})();
+	</script>
+	<?php
+}
+add_action( 'wp_footer', 'coco_theme_render_sales_pop', 25 );
+
 

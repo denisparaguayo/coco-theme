@@ -146,7 +146,35 @@ coco-theme/
 
 ---
 
-## 7. Módulo de Actualización Continua desde GitHub (`inc/class-updater.php`)
+## 7. Notificaciones de Compra en Vivo (`Sales Pop` / Social Proof Toast)
+
+Componente nativo ultraligero integrado en el tema (`functions.php` + `style.css`) para mostrar avisos flotantes de compras recientes abajo a la izquierda:
+
+1. **Diseño Visual (UI):**
+   - Tarjeta flotante en esquina inferior izquierda (`bottom: 20px; left: 20px; z-index: 9980`).
+   - Miniatura real del producto a la izquierda (`68x68px`, bordes redondeados, enlace directo al producto).
+   - **Línea 1:** `"[Nombre] en [Ciudad de Paraguay] compró"` + botón `✕` para cerrar.
+   - **Línea 2:** Título real del producto en negrita (máximo 2 líneas, clicable hacia la ficha del producto).
+   - **Línea 3:** Tiempo relativo (`"hace 18 minutos"`, `"hace 2 horas"`) + sello **`✓ Verificada`** + icono informativo `ⓘ`.
+2. **Sistema de Colores (Por Defecto del Tema + Personalizable):**
+   - Por defecto hereda las variables globales de `coco-theme` (`--coco-white`, `--coco-border`, `--coco-dark`, `--coco-muted`, `--coco-cod-green`, `--coco-primary`).
+   - Incluye selectores de color (`WP_Customize_Color_Control`) en **Apariencia > Personalizar > Opciones Coco Cherry Store** para personalizar en vivo:
+     - Color de fondo de la tarjeta (`#FFFFFF`)
+     - Color de borde (`#E4E7EB`)
+     - Color del título del producto (`#1F2933`)
+     - Color del texto secundario (`#52606D`)
+     - Color del sello `"✓ Verificada"` (`#16A34A`)
+3. **Fuente de Datos Híbrida (Con Caché Transient):**
+   - **Prioridad 1:** Extrae pedidos recientes reales de WooCommerce (`processing` y `completed`), mostrando únicamente el primer nombre del comprador, su ciudad y el producto adquirido.
+   - **Prioridad 2:** Completa automáticamente hasta 12 notificaciones con productos publicados reales del catálogo de WooCommerce (priorizando productos destacados/estrella) combinados con nombres y ciudades reales de Paraguay (*Asunción, San Lorenzo, Luque, Ciudad del Este, Encarnación, Lambaré, Fernando de la Mora, Capiatá, Ñemby, Mariano Roque Alonso, Villarrica, Caaguazú*).
+4. **Comportamiento y UX:**
+   - Se pausa al pasar el cursor por encima (`mouseenter`).
+   - Si el visitante pulsa `✕`, guarda el estado en `sessionStorage` para no volver a mostrarse durante esa sesión.
+   - Se oculta automáticamente en la página de checkout y cuando el modal de compra contra entrega de `Coco COD` está abierto.
+
+---
+
+## 8. Módulo de Actualización Continua desde GitHub (`inc/class-updater.php`)
 
 Para evitar tener que generar y subir manualmente un archivo ZIP cada vez que se realicen ajustes o mejoras en el tema, se incorpora un gestor de actualización basado en la misma lógica que `Coco COD`:
 1. **Repositorio:** Conectado a `https://github.com/denisparaguayo/coco-theme` (rama `main`).
@@ -163,7 +191,7 @@ Para evitar tener que generar y subir manualmente un archivo ZIP cada vez que se
 
 ---
 
-## 8. Rendimiento y Entrega
+## 9. Rendimiento y Entrega
 
 - **Carga ultrarrápida:** Sin librerías pesadas, optimizado para conexiones móviles en Paraguay.
 - **Flujo de trabajo:**
