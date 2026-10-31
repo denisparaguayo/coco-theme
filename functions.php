@@ -996,6 +996,30 @@ function coco_theme_customize_register( $wp_customize ) {
 	);
 
 	$wp_customize->add_setting(
+		'coco_theme_sales_pop_mobile_pos',
+		array(
+			'default'           => 'top',
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'sanitize_key',
+			'transport'         => 'refresh',
+		)
+	);
+
+	$wp_customize->add_control(
+		'coco_theme_sales_pop_mobile_pos',
+		array(
+			'label'       => __( 'Posición del Sales Pop en celulares', 'coco-theme' ),
+			'description' => __( 'En celulares se recomienda arriba (tipo notificación de WhatsApp/iOS) para no tapar los botones de compra.', 'coco-theme' ),
+			'section'     => 'coco_theme_options',
+			'type'        => 'select',
+			'choices'     => array(
+				'top'    => __( 'Arriba (Recomendado - No tapa botones)', 'coco-theme' ),
+				'bottom' => __( 'Abajo', 'coco-theme' ),
+			),
+		)
+	);
+
+	$wp_customize->add_setting(
 		'coco_theme_sales_pop_interval',
 		array(
 			'default'           => 16,
@@ -1302,15 +1326,19 @@ function coco_theme_render_sales_pop() {
 	}
 
 	$show_mobile  = get_theme_mod( 'coco_theme_sales_pop_mobile', true );
+	$mobile_pos   = get_theme_mod( 'coco_theme_sales_pop_mobile_pos', 'top' );
 	$interval_sec = absint( get_theme_mod( 'coco_theme_sales_pop_interval', 16 ) );
 	if ( $interval_sec < 8 ) {
 		$interval_sec = 16;
 	}
 
-	$first = $items[0];
+	$first   = $items[0];
 	$classes = 'coco-sales-pop';
 	if ( ! $show_mobile ) {
 		$classes .= ' hide-on-mobile';
+	}
+	if ( 'bottom' === $mobile_pos ) {
+		$classes .= ' mobile-pos-bottom';
 	}
 	?>
 	<div id="coco-sales-pop" class="<?php echo esc_attr( $classes ); ?>" role="status" aria-live="polite">

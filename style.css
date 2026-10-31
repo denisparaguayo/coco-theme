@@ -7,7 +7,7 @@ Description: Tema WordPress Full Site Editing (FSE) ultraligero y de alta conver
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 7.4
-Version: 1.1.6
+Version: 1.1.7
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: coco-theme
@@ -2359,34 +2359,54 @@ body.coco-cod-modal-open .coco-sales-pop {
 		display: none !important;
 	}
 
+	/* En móvil aparece arriba (estilo notificación push de celular) para no tapar el pulgar ni botones de compra */
 	.coco-sales-pop {
+		top: 12px;
+		bottom: auto;
 		left: 12px;
 		right: 12px;
-		bottom: 14px;
 		width: auto;
 		max-width: calc(100vw - 24px);
 		padding: 10px 12px;
 		gap: 11px;
+		transform: translateY(-22px) scale(0.98);
+		z-index: 9999;
+	}
+
+	/* Si está logueado el admin en móvil, respetar la barra superior de WordPress */
+	body.admin-bar .coco-sales-pop {
+		top: 54px;
+	}
+
+	/* Opción alternativa desde el Personalizador si se elige mostrar abajo en móvil */
+	.coco-sales-pop.mobile-pos-bottom {
+		top: auto !important;
+		bottom: 14px !important;
+		transform: translateY(20px) scale(0.98);
+	}
+
+	.coco-sales-pop.is-visible {
+		transform: translateY(0) scale(1) !important;
 	}
 
 	.coco-sp-thumb-link {
-		flex: 0 0 58px;
-		width: 58px;
-		height: 58px;
+		flex: 0 0 54px;
+		width: 54px;
+		height: 54px;
 	}
 
 	.coco-sp-buyer {
-		font-size: 0.78rem;
+		font-size: 0.77rem;
 	}
 
 	.coco-sp-product-link {
-		font-size: 0.85rem;
-		-webkit-line-clamp: 2;
+		font-size: 0.84rem;
+		-webkit-line-clamp: 1;
 	}
 
 	.coco-sp-time,
 	.coco-sp-verified {
-		font-size: 0.72rem;
+		font-size: 0.71rem;
 	}
 }
 
