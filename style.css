@@ -7,7 +7,7 @@ Description: Tema WordPress Full Site Editing (FSE) ultraligero y de alta conver
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 7.4
-Version: 1.2.2
+Version: 1.2.3
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: coco-theme
@@ -168,79 +168,338 @@ body {
 	z-index: 990;
 	background-color: rgba(255, 255, 255, 0.98);
 	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
 	border-bottom: 1px solid var(--coco-border);
-	box-shadow: 0 2px 12px rgba(31, 41, 51, 0.03);
+	box-shadow: 0 2px 14px rgba(31, 41, 51, 0.04);
 	padding: 0 !important;
 }
 
-.coco-header-top-row {
-	display: flex !important;
-	justify-content: center !important;
-	align-items: center !important;
-	padding: 0.85rem 1.25rem !important;
-	border-bottom: 1px solid #F1F5F9;
+/* Header Boutique: 1 fila balanceada con logo, navegación con íconos sobre texto y acciones */
+.coco-header-container {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	max-width: 1400px;
+	margin: 0 auto;
+	padding: 0.65rem 1.75rem;
 	width: 100%;
+	gap: 1.5rem;
 }
 
-.coco-header-nav-row {
-	display: flex !important;
-	justify-content: center !important;
-	align-items: center !important;
-	padding: 0.55rem 1.25rem !important;
-	width: 100%;
-	background-color: #FFFFFF;
-}
-
-.coco-header-logo {
-	display: inline-flex;
+.coco-header-logo-area {
+	display: flex;
 	align-items: center;
-	justify-content: center;
-	gap: 0.75rem;
+	min-width: 160px;
 }
 
-.coco-header-logo .wp-block-site-logo,
-.wp-block-site-logo {
-	display: inline-flex;
-	align-items: center;
-	line-height: 0;
-}
-
-.coco-header-logo .custom-logo-link,
-.wp-block-site-logo .custom-logo-link {
+.coco-header-logo-area .wp-block-site-logo,
+.coco-header-logo-area .custom-logo-link {
 	display: inline-flex;
 	align-items: center;
 }
 
-.coco-header-logo img,
-.wp-block-site-logo img,
-.custom-logo {
-	height: 54px !important;
-	width: 118px !important;
-	min-width: 112px !important;
-	max-height: 58px !important;
-	max-width: 220px !important;
+.coco-header-logo-area img,
+.coco-header-logo-area .custom-logo {
+	height: 50px !important;
+	width: auto !important;
+	max-width: 180px !important;
 	object-fit: contain !important;
 	display: block !important;
 }
 
-/* Ocultar el título de texto cuando el logo con imagen está presente para evitar duplicidad */
-.coco-header-logo:has(.wp-block-site-logo img) .wp-block-site-title,
-.coco-footer-logo:has(.wp-block-site-logo img) .wp-block-site-title {
+.coco-header-logo-area:has(img) .wp-block-site-title {
 	display: none;
 }
 
-.coco-main-nav .wp-block-navigation-item__content,
-.coco-classic-menu-list li a {
-	font-weight: 500;
-	font-size: 0.93rem;
-	color: #111827;
+/* Navegación central con íconos sobre etiquetas */
+.coco-header-nav-center {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex: 1;
+}
+
+.coco-boutique-nav-list {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 2.25rem;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.coco-boutique-nav-list .coco-nav-item {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.coco-boutique-nav-list .coco-nav-link {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 4px;
 	text-decoration: none;
-	padding: 0.35rem 0.7rem;
-	border-radius: 6px;
-	transition: var(--coco-transition);
+	color: #374151;
+	padding: 0.35rem 0.4rem 0.65rem;
+	transition: all 0.2s ease;
+	position: relative;
+}
+
+.coco-boutique-nav-list .coco-nav-icon {
+	stroke: #4B5563;
+	transition: stroke 0.2s ease, transform 0.2s ease;
+}
+
+.coco-boutique-nav-list .coco-nav-label {
+	font-size: 0.83rem;
+	font-weight: 500;
+	letter-spacing: -0.01em;
+	transition: color 0.2s ease;
+}
+
+/* Estados Hover y Activo: Tono Caramelo Dorado (#B87B1D) y barra indicadora inferior */
+.coco-boutique-nav-list .coco-nav-item:hover .coco-nav-label,
+.coco-boutique-nav-list .coco-nav-item.active .coco-nav-label {
+	color: #B87B1D;
+	font-weight: 600;
+}
+
+.coco-boutique-nav-list .coco-nav-item:hover .coco-nav-icon,
+.coco-boutique-nav-list .coco-nav-item.active .coco-nav-icon {
+	stroke: #B87B1D;
+}
+
+.coco-boutique-nav-list .coco-nav-item.active .coco-nav-link::after {
+	content: "";
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 2.5px;
+	background-color: #B87B1D;
+	border-radius: 4px 4px 0 0;
+}
+
+/* Acciones a la derecha: Lupa, WhatsApp/Perfil y Hamburguesa (SIN CARRITO) */
+.coco-header-actions-right {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 0.75rem;
+	min-width: 140px;
+}
+
+.coco-header-action-btn {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
 	display: inline-flex;
 	align-items: center;
-	gap: 0.3rem;
+	justify-content: center;
+	border: 1px solid transparent;
+	background: transparent;
+	color: #374151;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	text-decoration: none;
+}
+
+.coco-header-action-btn:hover {
+	background-color: #FAF6ED;
+	color: #B87B1D;
+	border-color: #F0E8DD;
+}
+
+.coco-header-mobile-toggle {
+	display: none;
+	width: 40px;
+	height: 40px;
+	border-radius: 8px;
+	background: transparent;
+	border: 1px solid #E5E7EB;
+	color: #1F2933;
+	cursor: pointer;
+	align-items: center;
+	justify-content: center;
+}
+
+/* Buscador desplegable animado */
+.coco-header-search-drawer {
+	background: #FFFFFF;
+	border-top: 1px solid #EFEAE1;
+	border-bottom: 1px solid #EFEAE1;
+	padding: 1rem 1.5rem;
+	box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+}
+
+.coco-header-search-inner {
+	max-width: 720px;
+	margin: 0 auto;
+}
+
+.coco-header-search-form {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	position: relative;
+	background: #FAF7F2;
+	border: 1.5px solid #E5DFD5;
+	border-radius: 999px;
+	padding: 0.35rem 0.5rem 0.35rem 1.25rem;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.coco-header-search-form:focus-within {
+	border-color: #B87B1D;
+	background: #FFFFFF;
+	box-shadow: 0 0 0 4px rgba(184, 123, 29, 0.12);
+}
+
+.coco-search-input-icon {
+	color: #94A3B8;
+	flex-shrink: 0;
+}
+
+.coco-header-search-input {
+	border: none !important;
+	outline: none !important;
+	background: transparent !important;
+	width: 100%;
+	font-size: 0.95rem;
+	color: #1F2933;
+	padding: 0.5rem 0;
+}
+
+.coco-header-search-submit {
+	background: #B87B1D;
+	color: #FFFFFF;
+	border: none;
+	border-radius: 999px;
+	padding: 0.55rem 1.35rem;
+	font-weight: 600;
+	font-size: 0.88rem;
+	cursor: pointer;
+	transition: background 0.2s ease;
+	white-space: nowrap;
+}
+
+.coco-header-search-submit:hover {
+	background: #9E6715;
+}
+
+.coco-header-search-close {
+	background: none;
+	border: none;
+	font-size: 1.15rem;
+	color: #64748B;
+	cursor: pointer;
+	padding: 0 0.5rem;
+}
+
+/* Cajón móvil de navegación (Off-Canvas Drawer) */
+.coco-mobile-nav-drawer {
+	position: fixed;
+	inset: 0;
+	z-index: 9999;
+	display: none;
+}
+
+.coco-mobile-nav-drawer.is-open {
+	display: block;
+}
+
+.coco-mobile-drawer-backdrop {
+	position: absolute;
+	inset: 0;
+	background: rgba(15, 23, 42, 0.55);
+	backdrop-filter: blur(4px);
+}
+
+.coco-mobile-drawer-content {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	width: 85%;
+	max-width: 340px;
+	background: #FFFFFF;
+	box-shadow: -4px 0 24px rgba(0,0,0,0.15);
+	display: flex;
+	flex-direction: column;
+	padding: 1.5rem;
+	z-index: 2;
+}
+
+.coco-mobile-drawer-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding-bottom: 1rem;
+	border-bottom: 1px solid #F1EFEA;
+	margin-bottom: 1.25rem;
+}
+
+.coco-mobile-drawer-title {
+	font-weight: 700;
+	font-size: 1.1rem;
+	color: #1F2933;
+}
+
+.coco-mobile-drawer-close {
+	background: none;
+	border: none;
+	font-size: 1.3rem;
+	cursor: pointer;
+	color: #64748B;
+}
+
+.coco-mobile-nav-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+	flex: 1;
+}
+
+.coco-mobile-nav-list li a {
+	display: flex;
+	align-items: center;
+	gap: 0.85rem;
+	padding: 0.75rem 1rem;
+	border-radius: 10px;
+	color: #374151;
+	text-decoration: none;
+	font-weight: 600;
+	font-size: 0.95rem;
+	transition: all 0.2s ease;
+}
+
+.coco-mobile-nav-list li a:hover {
+	background: #FAF6ED;
+	color: #B87B1D;
+}
+
+.coco-mobile-drawer-footer {
+	padding-top: 1.25rem;
+	border-top: 1px solid #F1EFEA;
+}
+
+.coco-mobile-wa-btn {
+	display: block;
+	text-align: center;
+	background: #16A34A;
+	color: #FFFFFF;
+	text-decoration: none;
+	padding: 0.85rem 1rem;
+	border-radius: 12px;
+	font-weight: 700;
+	font-size: 0.92rem;
+	box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
 }
 
 .coco-classic-menu-list li.menu-item-has-children > a::after {
@@ -747,20 +1006,110 @@ ul.products::after,
 	line-height: 1.6 !important;
 }
 
-/* Fila de navegación horizontal por categorías (Chips) */
-.coco-catalog-chips-wrapper {
-	margin-top: 1.25rem;
+/* ==========================================================================
+   BANNER HERO EDITORIAL DE COLECCIÓN (ESTILO BOUTIQUE DE LUJO)
+   ========================================================================== */
+.coco-collection-hero-banner {
 	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background: linear-gradient(135deg, #FAF7F2 0%, #F5ECE0 100%);
+	border: 1px solid #EBE2D3;
+	border-radius: 20px;
+	padding: 2.5rem 3rem;
+	margin: 1.25rem 0 2rem 0;
+	position: relative;
+	overflow: hidden;
+	box-shadow: 0 4px 20px rgba(184, 123, 29, 0.04);
+}
+
+.coco-collection-hero-content {
+	max-width: 660px;
+	position: relative;
+	z-index: 2;
+}
+
+.coco-collection-kicker {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: 0.78rem;
+	font-weight: 700;
+	letter-spacing: 0.22em;
+	color: #A66B15;
+	text-transform: uppercase;
+	margin-bottom: 0.5rem;
+}
+
+.coco-collection-kicker::before {
+	content: "—";
+	font-weight: 700;
+	color: #A66B15;
+}
+
+.coco-collection-title {
+	font-family: 'Playfair Display', Georgia, serif !important;
+	font-size: clamp(2.2rem, 4.5vw, 3.4rem) !important;
+	font-weight: 700 !important;
+	color: #1A1A1A !important;
+	line-height: 1.15 !important;
+	margin: 0.25rem 0 0.85rem 0 !important;
+	letter-spacing: -0.02em !important;
+}
+
+.coco-collection-desc {
+	font-size: 1.02rem;
+	line-height: 1.65;
+	color: #52606D;
+	margin: 0;
+}
+
+.coco-collection-hero-art {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	align-items: center;
 	justify-content: center;
+	width: 140px;
+	height: 140px;
+	color: #D9A038;
+	opacity: 0.9;
+	flex-shrink: 0;
+}
+
+.coco-collection-art-glow {
+	position: absolute;
+	width: 170px;
+	height: 170px;
+	background: radial-gradient(circle, rgba(217, 160, 56, 0.28) 0%, rgba(250, 247, 242, 0) 72%);
+	border-radius: 50%;
+	pointer-events: none;
+}
+
+.coco-collection-art-gem svg {
+	filter: drop-shadow(0 4px 12px rgba(184, 123, 29, 0.2));
+}
+
+/* ==========================================================================
+   CARRUSEL DE PÍLDORAS DE CATEGORÍAS (CON ÍCONOS Y BOTÓN DESLIZABLE)
+   ========================================================================== */
+.coco-catalog-chips-wrapper {
+	display: flex;
+	align-items: center;
 	width: 100%;
+	margin-bottom: 2.25rem;
+	position: relative;
+	gap: 0.75rem;
 }
 
 .coco-catalog-chips-scroll {
-	display: inline-flex;
-	gap: 0.5rem;
+	display: flex;
+	align-items: center;
+	gap: 0.65rem;
 	overflow-x: auto;
-	max-width: 100%;
-	padding: 0.25rem 0.5rem;
+	scroll-behavior: smooth;
+	padding: 4px 2px;
+	flex: 1;
 	scrollbar-width: none;
 	-ms-overflow-style: none;
 }
@@ -770,41 +1119,320 @@ ul.products::after,
 }
 
 .coco-cat-chip {
-	display: inline-block;
-	font-size: 0.82rem;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45rem;
+	font-size: 0.86rem;
 	font-weight: 600;
-	color: #334155;
+	color: #374151;
 	background: #FFFFFF;
-	border: 1px solid #CBD5E1;
-	padding: 0.45rem 1rem;
+	border: 1px solid #E5DFD5;
+	padding: 0.55rem 1.2rem;
 	border-radius: 999px;
 	text-decoration: none;
 	white-space: nowrap;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.02);
 	transition: all 0.2s ease;
+	flex-shrink: 0;
+}
+
+.coco-cat-chip svg {
+	stroke: #64748B;
+	transition: stroke 0.2s ease;
 }
 
 .coco-cat-chip:hover {
-	border-color: #0F172A;
-	color: #0F172A;
-	background: #F8FAFC;
+	border-color: #B87B1D;
+	color: #B87B1D;
+	background: #FFFDF9;
+}
+
+.coco-cat-chip:hover svg {
+	stroke: #B87B1D;
 }
 
 .coco-cat-chip.active {
-	background: #0F172A !important;
+	background: #B87B1D !important;
 	color: #FFFFFF !important;
-	border-color: #0F172A !important;
+	border-color: #B87B1D !important;
+	box-shadow: 0 4px 14px rgba(184, 123, 29, 0.28) !important;
 }
 
-/* Barra de herramientas y controles del catálogo (Toolbar) */
+.coco-cat-chip.active svg {
+	stroke: #FFFFFF !important;
+	fill: transparent;
+}
+
+.coco-chips-scroll-btn {
+	width: 38px;
+	height: 38px;
+	border-radius: 50%;
+	background: #FFFFFF;
+	border: 1px solid #E5DFD5;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	color: #4B5563;
+	flex-shrink: 0;
+	transition: all 0.2s ease;
+}
+
+.coco-chips-scroll-btn:hover {
+	background: #B87B1D;
+	color: #FFFFFF;
+	border-color: #B87B1D;
+	box-shadow: 0 4px 12px rgba(184, 123, 29, 0.25);
+}
+
+/* ==========================================================================
+   ESTRUCTURA DE 2 COLUMNAS (SIDEBAR DE FILTROS + CONTENIDO PRINCIPAL)
+   ========================================================================== */
+.coco-catalog-split-container {
+	display: grid;
+	grid-template-columns: 260px 1fr;
+	gap: 2.25rem;
+	align-items: start;
+	width: 100%;
+}
+
+.coco-mobile-filter-bar {
+	display: none;
+	margin-bottom: 1rem;
+}
+
+.coco-mobile-filter-trigger {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	background: #FFFFFF;
+	border: 1px solid #E5DFD5;
+	color: #1F2933;
+	font-weight: 600;
+	font-size: 0.92rem;
+	padding: 0.65rem 1.25rem;
+	border-radius: 999px;
+	cursor: pointer;
+	box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.coco-catalog-sidebar {
+	background: #FFFFFF;
+	border: 1px solid #EFEAE1;
+	border-radius: 18px;
+	padding: 1.5rem;
+	box-shadow: 0 2px 12px rgba(0,0,0,0.02);
+	position: sticky;
+	top: 110px;
+}
+
+.coco-sidebar-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding-bottom: 0.85rem;
+	border-bottom: 1px solid #F1EFEA;
+	margin-bottom: 1.25rem;
+}
+
+.coco-sidebar-title {
+	font-size: 1.05rem;
+	font-weight: 700;
+	color: #1F2933;
+	margin: 0;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.coco-sidebar-title svg {
+	color: #B87B1D;
+}
+
+.coco-sidebar-close-btn {
+	display: none;
+	background: none;
+	border: none;
+	font-size: 1.3rem;
+	color: #64748B;
+	cursor: pointer;
+}
+
+.coco-sidebar-accordion {
+	border-bottom: 1px solid #F1EFEA;
+	padding-bottom: 1rem;
+	margin-bottom: 1rem;
+}
+
+.coco-sidebar-accordion:last-of-type {
+	border-bottom: none;
+	padding-bottom: 0;
+	margin-bottom: 0;
+}
+
+.coco-accordion-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	font-weight: 700;
+	font-size: 0.94rem;
+	color: #1F2933;
+	cursor: pointer;
+	user-select: none;
+	padding: 0.35rem 0;
+}
+
+.coco-accordion-chevron {
+	color: #94A3B8;
+	transition: transform 0.25s ease;
+}
+
+.coco-sidebar-accordion.is-open .coco-accordion-chevron {
+	transform: rotate(180deg);
+}
+
+.coco-accordion-body {
+	display: none;
+	padding-top: 0.75rem;
+}
+
+.coco-sidebar-accordion.is-open .coco-accordion-body {
+	display: block;
+}
+
+.coco-sidebar-filter-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 0.65rem;
+}
+
+.coco-sidebar-filter-list li.coco-filter-item-extra {
+	display: none;
+}
+
+.coco-sidebar-filter-list.show-all li.coco-filter-item-extra {
+	display: block;
+}
+
+.coco-filter-checkbox {
+	display: flex;
+	align-items: center;
+	gap: 0.65rem;
+	font-size: 0.88rem;
+	color: #374151;
+	text-decoration: none;
+	cursor: pointer;
+	transition: color 0.2s ease;
+}
+
+.coco-filter-checkbox:hover {
+	color: #B87B1D;
+}
+
+.coco-custom-check {
+	width: 18px;
+	height: 18px;
+	border: 1.8px solid #CBD5E1;
+	border-radius: 5px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	transition: all 0.2s ease;
+	background: #FFFFFF;
+}
+
+.coco-filter-checkbox.is-checked .coco-custom-check {
+	background: #B87B1D;
+	border-color: #B87B1D;
+}
+
+.coco-filter-checkbox.is-checked .coco-custom-check::after {
+	content: "";
+	width: 4.5px;
+	height: 8px;
+	border: solid white;
+	border-width: 0 2px 2px 0;
+	transform: rotate(45deg);
+	margin-top: -2px;
+}
+
+.coco-filter-checkbox.is-checked .coco-filter-label {
+	font-weight: 600;
+	color: #B87B1D;
+}
+
+.coco-filter-count {
+	margin-left: auto;
+	color: #94A3B8;
+	font-size: 0.82rem;
+}
+
+.coco-sidebar-toggle-more {
+	background: none;
+	border: none;
+	padding: 0.5rem 0 0 0;
+	color: #B87B1D;
+	font-size: 0.84rem;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.coco-sidebar-trust-box {
+	margin-top: 1.5rem;
+	padding: 1.15rem;
+	background: #FAF7F2;
+	border: 1px solid #ECE3D4;
+	border-radius: 14px;
+	display: flex;
+	align-items: center;
+	gap: 0.85rem;
+	color: #1F2933;
+}
+
+.coco-trust-box-icon {
+	color: #B87B1D;
+	flex-shrink: 0;
+}
+
+.coco-trust-box-content strong {
+	display: block;
+	font-size: 0.88rem;
+	font-weight: 700;
+	line-height: 1.3;
+}
+
+.coco-trust-box-content span {
+	display: block;
+	font-size: 0.78rem;
+	color: #64748B;
+	margin-top: 2px;
+}
+
+.coco-sidebar-backdrop {
+	display: none;
+}
+
+.coco-catalog-main-area {
+	width: 100%;
+}
+
+/* ==========================================================================
+   BARRA DE HERRAMIENTAS Y CONTROLES DEL CATÁLOGO (TOOLBAR)
+   ========================================================================== */
 .coco-catalog-toolbar-wrap {
 	display: flex !important;
 	align-items: center !important;
 	justify-content: space-between !important;
 	flex-wrap: wrap !important;
 	gap: 1rem !important;
-	margin-bottom: 2rem !important;
-	padding-bottom: 1.15rem !important;
-	border-bottom: 1px solid #E2E8F0 !important;
+	margin-bottom: 1.75rem !important;
+	padding-bottom: 1rem !important;
+	border-bottom: 1px solid #EFEAE1 !important;
 	width: 100% !important;
 	clear: both !important;
 }
@@ -812,7 +1440,7 @@ ul.products::after,
 .woocommerce .woocommerce-result-count {
 	float: none !important;
 	margin: 0 !important;
-	font-size: 0.88rem !important;
+	font-size: 0.9rem !important;
 	color: #64748B !important;
 	font-weight: 500 !important;
 	line-height: 1.4 !important;
@@ -827,12 +1455,12 @@ ul.products::after,
 .woocommerce .woocommerce-ordering select {
 	height: 38px !important;
 	padding: 0 2.2rem 0 0.95rem !important;
-	border: 1px solid #CBD5E1 !important;
-	border-radius: 8px !important;
+	border: 1px solid #E5DFD5 !important;
+	border-radius: 999px !important;
 	font-size: 0.86rem !important;
 	font-weight: 500 !important;
 	color: #1E293B !important;
-	background: #FFFFFF url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 0.75rem center !important;
+	background: #FFFFFF url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 0.85rem center !important;
 	appearance: none !important;
 	-webkit-appearance: none !important;
 	cursor: pointer !important;
@@ -841,9 +1469,9 @@ ul.products::after,
 }
 
 .woocommerce .woocommerce-ordering select:focus {
-	border-color: #0F172A !important;
+	border-color: #B87B1D !important;
 	outline: none !important;
-	box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08) !important;
+	box-shadow: 0 0 0 3px rgba(184, 123, 29, 0.12) !important;
 }
 
 /* Conmutador de columnas [ 4 col | 2 col ] */
@@ -851,10 +1479,10 @@ ul.products::after,
 	display: inline-flex;
 	align-items: center;
 	gap: 0.25rem;
-	background: #F1F5F9;
+	background: #F8F6F0;
 	padding: 3px;
 	border-radius: 8px;
-	border: 1px solid #E2E8F0;
+	border: 1px solid #EFEAE1;
 }
 
 .coco-grid-btn {
@@ -872,22 +1500,24 @@ ul.products::after,
 }
 
 .coco-grid-btn:hover {
-	color: #0F172A;
+	color: #B87B1D;
 }
 
 .coco-grid-btn.active {
 	background: #FFFFFF;
-	color: #0F172A;
+	color: #B87B1D;
 	box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 
-/* Grilla global de productos del catálogo */
+/* ==========================================================================
+   GRILLA Y TARJETAS DE PRODUCTO MINIMALISTAS (LOOKBOOK BOUTIQUE)
+   (SIN PRECIO, SIN BOTÓN, SIN SKU, 100% CLICKEABLE)
+   ========================================================================== */
 .woocommerce ul.products,
 .woocommerce-page ul.products {
 	display: grid !important;
 	grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
 	gap: 1.5rem !important;
-	column-gap: 1.5rem !important;
 	row-gap: 2rem !important;
 	padding: 0 !important;
 	margin: 0 0 2.5rem 0 !important;
@@ -903,7 +1533,7 @@ ul.products::after,
 	gap: 2rem !important;
 }
 
-/* Tarjeta de producto: fotografía a sangre (Full-bleed 1:1) y 100% clickeable */
+/* Tarjeta de producto: Blanca, bordes refinados y elevación suave */
 .woocommerce ul.products li.product,
 .woocommerce-page ul.products li.product,
 .wp-block-post-template li.wc-block-product,
@@ -915,10 +1545,10 @@ ul.products::after,
 	float: none !important;
 	clear: none !important;
 	background: #FFFFFF !important;
-	border: 1px solid rgba(226, 232, 240, 0.95) !important;
-	border-radius: 14px !important;
+	border: 1px solid #ECE5D8 !important;
+	border-radius: 18px !important;
 	padding: 0 !important;
-	box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04) !important;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03) !important;
 	transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.25s ease !important;
 	display: flex !important;
 	flex-direction: column !important;
@@ -933,8 +1563,92 @@ ul.products::after,
 .wp-block-post-template li.wc-block-product:hover,
 .wc-block-grid__product:hover {
 	transform: translateY(-5px) !important;
-	box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08) !important;
-	border-color: rgba(228, 123, 2, 0.4) !important;
+	box-shadow: 0 16px 32px rgba(184, 123, 29, 0.1) !important;
+	border-color: #E2D3BE !important;
+}
+
+/* Barra superior de la tarjeta: Badges boutique + Botón de Wishlist */
+.coco-card-top-bar {
+	position: absolute;
+	top: 12px;
+	left: 12px;
+	right: 12px;
+	z-index: 10;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	pointer-events: none;
+}
+
+.coco-card-tag {
+	pointer-events: auto;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.3rem;
+	padding: 0.32rem 0.75rem;
+	border-radius: 999px;
+	font-size: 0.72rem;
+	font-weight: 700;
+	letter-spacing: 0.01em;
+	box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.coco-card-tag.tag-featured {
+	background: #FEF3C7;
+	color: #92400E;
+	border: 1px solid #FDE68A;
+}
+
+.coco-card-tag.tag-new {
+	background: #DCFCE7;
+	color: #166534;
+	border: 1px solid #BBF7D0;
+}
+
+.coco-card-tag.tag-sale {
+	background: #FEE2E2;
+	color: #991B1B;
+	border: 1px solid #FECACA;
+}
+
+.coco-card-tag-placeholder {
+	width: 1px;
+	height: 1px;
+}
+
+.coco-card-wishlist-btn {
+	pointer-events: auto;
+	width: 34px;
+	height: 34px;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.94);
+	backdrop-filter: blur(4px);
+	-webkit-backdrop-filter: blur(4px);
+	border: 1px solid #EFEAE1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	color: #64748B;
+	transition: all 0.2s ease;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.coco-card-wishlist-btn:hover {
+	color: #CE1322;
+	background: #FFFFFF;
+	transform: scale(1.08);
+}
+
+.coco-card-wishlist-btn.active {
+	color: #CE1322;
+	border-color: #FECACA;
+	background: #FFF1F2;
+}
+
+.coco-card-wishlist-btn.active svg {
+	fill: #CE1322;
+	stroke: #CE1322;
 }
 
 /* Enlace expandido: el clic en cualquier parte de la tarjeta lleva directo a la ficha del producto */
@@ -956,12 +1670,12 @@ ul.products::after,
 	cursor: pointer !important;
 }
 
-/* Fotografía a sangre: ocupa el 100% del ancho superior sin márgenes interiores */
+/* Fotografía a sangre 1:1 con esquinas superiores redondeadas */
 .woocommerce ul.products li.product a img,
 .woocommerce-page ul.products li.product a img,
 .wp-block-woocommerce-product-image img {
-	border-top-left-radius: 13px !important;
-	border-top-right-radius: 13px !important;
+	border-top-left-radius: 17px !important;
+	border-top-right-radius: 17px !important;
 	border-bottom-left-radius: 0 !important;
 	border-bottom-right-radius: 0 !important;
 	aspect-ratio: 1 / 1 !important;
@@ -969,12 +1683,12 @@ ul.products::after,
 	width: 100% !important;
 	height: auto !important;
 	display: block;
-	background-color: #F8FAFC;
+	background-color: #FAF7F2;
 	transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
 }
 
 .woocommerce ul.products li.product:hover a img {
-	transform: scale(1.035);
+	transform: scale(1.04);
 }
 
 /* Segunda imagen de galería en hover fluida (si existe) */
@@ -984,8 +1698,8 @@ ul.products::after,
 	left: 0;
 	right: 0;
 	aspect-ratio: 1 / 1;
-	border-top-left-radius: 13px;
-	border-top-right-radius: 13px;
+	border-top-left-radius: 17px;
+	border-top-right-radius: 17px;
 	overflow: hidden;
 	opacity: 0;
 	pointer-events: none;
@@ -1003,48 +1717,19 @@ ul.products::after,
 
 .woocommerce ul.products li.product:hover .coco-loop-second-img-wrap {
 	opacity: 1;
-	transform: scale(1.035);
+	transform: scale(1.04);
 }
 
-/* Indicador sobrio "Ver producto" con flecha SVG que se revela en hover */
-.coco-card-action-pill {
-	position: absolute;
-	bottom: 12px;
-	left: 50%;
-	transform: translate(-50%, 8px);
-	background: rgba(15, 23, 42, 0.88);
-	backdrop-filter: blur(8px);
-	-webkit-backdrop-filter: blur(8px);
-	color: #FFFFFF;
-	font-size: 0.76rem;
-	font-weight: 600;
-	padding: 0.4rem 0.85rem;
-	border-radius: 999px;
-	display: inline-flex;
-	align-items: center;
-	gap: 0.35rem;
-	opacity: 0;
-	pointer-events: none;
-	transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-	z-index: 6;
-	letter-spacing: 0.01em;
-}
-
-.woocommerce ul.products li.product:hover .coco-card-action-pill {
-	opacity: 1;
-	transform: translate(-50%, 0);
-}
-
-/* Título de producto limpio, sobrio y de máxima legibilidad */
+/* Título de producto limpio, sobrio y centrado */
 .woocommerce ul.products li.product .woocommerce-loop-product__title,
 .woocommerce-page ul.products li.product .woocommerce-loop-product__title,
 .wp-block-post-title a {
-	font-size: 0.94rem !important;
-	font-weight: 600 !important;
-	color: #1E293B !important;
-	line-height: 1.4 !important;
+	font-size: 0.96rem !important;
+	font-weight: 700 !important;
+	color: #1F2933 !important;
+	line-height: 1.35 !important;
 	text-align: center !important;
-	padding: 0.95rem 0.85rem 1rem 0.85rem !important;
+	padding: 1.15rem 1rem 1.35rem 1rem !important;
 	margin: 0 !important;
 	display: -webkit-box !important;
 	-webkit-line-clamp: 2 !important;
@@ -1054,21 +1739,36 @@ ul.products::after,
 }
 
 .woocommerce ul.products li.product:hover .woocommerce-loop-product__title {
-	color: var(--coco-primary) !important;
+	color: #B87B1D !important;
 }
 
-/* Ocultación estricta y defensiva de precios, botones y elementos no deseados en el catálogo */
+/* ==========================================================================
+   SUPRESIÓN ESTRICTA: SIN PRECIO, SIN BOTÓN, SIN SKU, SIN CARRITO
+   ========================================================================== */
 .woocommerce ul.products li.product .price,
 .woocommerce-page ul.products li.product .price,
 .wp-block-woocommerce-product-price,
 .woocommerce ul.products li.product .button,
 .woocommerce-page ul.products li.product .button,
 .wp-block-button.wc-block-components-product-button,
+.woocommerce ul.products li.product .sku,
+.woocommerce-page ul.products li.product .sku,
+.woocommerce ul.products li.product .product_sku,
+.wc-block-grid__product-sku,
 .woocommerce ul.products li.product .star-rating,
 .woocommerce ul.products li.product .coco-product-cod-badge,
 .woocommerce ul.products li.product .coco-star-product-badge,
 .woocommerce ul.products li.product .onsale,
-.woocommerce-page ul.products li.product .onsale {
+.woocommerce-page ul.products li.product .onsale,
+.coco-card-action-pill {
+	display: none !important;
+}
+
+/* Ocultación global de cualquier icono o enlace de carrito en el tema */
+.coco-header-cart-icon,
+.coco-mini-cart,
+.coco-cart-count,
+.cart-contents {
 	display: none !important;
 }
 
@@ -2243,6 +2943,85 @@ main.has-surface-background-color {
 		display: flex !important;
 		align-items: center !important;
 		justify-content: flex-start !important;
+	}
+
+	/* Adaptación Boutique en Tablets y Móviles */
+	.coco-header-nav-center {
+		display: none !important;
+	}
+
+	.coco-header-mobile-toggle {
+		display: inline-flex !important;
+	}
+
+	.coco-header-container {
+		padding: 0.55rem 1rem !important;
+		gap: 0.75rem !important;
+	}
+
+	.coco-header-logo-area img,
+	.coco-header-logo-area .custom-logo {
+		height: 38px !important;
+		max-width: 130px !important;
+	}
+
+	/* Layout Split en móvil */
+	.coco-catalog-split-container {
+		grid-template-columns: 1fr !important;
+		gap: 1.25rem !important;
+	}
+
+	.coco-mobile-filter-bar {
+		display: block !important;
+	}
+
+	.coco-catalog-sidebar {
+		position: fixed !important;
+		top: 0 !important;
+		bottom: 0 !important;
+		left: 0 !important;
+		width: 85% !important;
+		max-width: 320px !important;
+		z-index: 99999 !important;
+		border-radius: 0 20px 20px 0 !important;
+		box-shadow: 4px 0 30px rgba(0, 0, 0, 0.2) !important;
+		overflow-y: auto !important;
+		transform: translateX(-105%) !important;
+		transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+		margin: 0 !important;
+	}
+
+	.coco-catalog-sidebar.is-active {
+		transform: translateX(0) !important;
+	}
+
+	.coco-sidebar-close-btn {
+		display: block !important;
+	}
+
+	.coco-sidebar-backdrop.is-active {
+		display: block !important;
+		position: fixed !important;
+		inset: 0 !important;
+		background: rgba(15, 23, 42, 0.5) !important;
+		backdrop-filter: blur(4px) !important;
+		z-index: 99998 !important;
+	}
+
+	.coco-collection-hero-banner {
+		padding: 1.75rem 1.35rem !important;
+		flex-direction: column !important;
+		align-items: flex-start !important;
+		gap: 1rem !important;
+		margin: 0.75rem 0 1.5rem 0 !important;
+	}
+
+	.coco-collection-hero-art {
+		display: none !important;
+	}
+
+	.coco-collection-title {
+		font-size: 2rem !important;
 	}
 
 	.coco-header-logo img,

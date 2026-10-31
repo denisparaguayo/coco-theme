@@ -365,7 +365,7 @@ add_filter( 'render_block', 'coco_theme_render_header_navigation', 10, 2 );
 function coco_theme_enqueue_assets() {
 	wp_enqueue_style(
 		'coco-theme-fonts',
-		'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap',
+		'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap',
 		array(),
 		null
 	);
@@ -604,11 +604,12 @@ function coco_theme_product_cod_guarantees() {
 add_action( 'woocommerce_after_add_to_cart_form', 'coco_theme_product_cod_guarantees', 25 );
 
 /**
- * Catálogo minimalista tipo revista / editorial:
- * En todo el loop de productos (catálogo, categorías, etiquetas, búsquedas y relacionados),
- * se muestra ÚNICAMENTE la imagen cuadrada (1:1) y el nombre del producto.
- * El precio, botón de carrito, valoraciones y badges se retiran para que el cliente
- * haga clic directamente sobre el producto y acceda a la ficha detallada.
+ * Catálogo Boutique de Alta Gama (Sin precios, sin botón, sin SKU y sin carrito):
+ * En todo el catálogo, categorías, búsquedas y relacionados se retiran el precio,
+ * el botón de carrito, valoraciones, SKU y flash genérico.
+ * Las tarjetas muestran una estética limpia tipo lookbook/revista:
+ * foto en alta definición (con hover a segunda imagen), badges sutiles (Más vendido / Nuevo / Oferta),
+ * botón de favoritos e interactividad fluida al hacer clic.
  */
 function coco_theme_catalog_minimal_loop() {
 	remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_price', 10 );
@@ -627,6 +628,35 @@ add_action( 'woocommerce_before_template_part', function( $template_name ) {
 		remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
 	}
 } );
+
+/**
+ * Elementos superiores de las cards: Badges boutique (Más vendido / Nuevo / Oferta) y botón de Wishlist.
+ */
+function coco_theme_loop_card_top_elements() {
+	global $product;
+	if ( ! $product instanceof \WC_Product ) {
+		return;
+	}
+
+	echo '<div class="coco-card-top-bar">';
+
+	// Badge dinámico a la izquierda
+	if ( $product->is_featured() ) {
+		echo '<span class="coco-card-tag tag-featured"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Más vendido</span>';
+	} elseif ( ( time() - strtotime( get_the_date( 'Y-m-d', $product->get_id() ) ) ) < ( 30 * DAY_IN_SECONDS ) ) {
+		echo '<span class="coco-card-tag tag-new">Nuevo</span>';
+	} elseif ( $product->is_on_sale() ) {
+		echo '<span class="coco-card-tag tag-sale">Oferta</span>';
+	} else {
+		echo '<span class="coco-card-tag-placeholder"></span>';
+	}
+
+	// Botón de Favoritos / Wishlist a la derecha
+	echo '<button type="button" class="coco-card-wishlist-btn" aria-label="Guardar en favoritos" onclick="event.preventDefault(); event.stopPropagation(); this.classList.toggle(\'active\');"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></button>';
+
+	echo '</div>';
+}
+add_action( 'woocommerce_before_shop_loop_item_title', 'coco_theme_loop_card_top_elements', 9 );
 
 /**
  * Segunda imagen fluida al hacer hover en el catálogo (si existe en la galería del producto).
@@ -657,18 +687,91 @@ function coco_theme_loop_second_image() {
 add_action( 'woocommerce_before_shop_loop_item_title', 'coco_theme_loop_second_image', 11 );
 
 /**
- * Micro-indicador sobrio en hover: "Ver producto" con flecha lineal SVG.
+ * Banner Hero Editorial de Colección (Estilo Revista de Lujo).
  */
-function coco_theme_loop_hover_action_pill() {
-	if ( function_exists( 'is_product' ) && is_product() ) {
+function coco_theme_render_category_banner() {
+	if ( ! is_shop() && ! is_product_taxonomy() ) {
 		return;
 	}
-	echo '<span class="coco-card-action-pill"><span>Ver producto</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></span>';
+
+	$title       = 'Colección Exclusiva';
+	$description = 'Aretes, bijouterie, moda y accesorios con modelos pensados para iluminar tu rostro y combinar con cualquier estilo.';
+
+	if ( is_product_category() ) {
+		$term = get_queried_object();
+		if ( $term && ! is_wp_error( $term ) ) {
+			$title = $term->name;
+			if ( ! empty( $term->description ) ) {
+				$description = wp_strip_all_tags( $term->description );
+			} else {
+				$description = sprintf( 'Descubrí los modelos más exclusivos de %s pensados para realzar tu estilo y con entrega rápida en todo el país.', esc_html( $term->name ) );
+			}
+		}
+	} elseif ( is_product_tag() ) {
+		$term = get_queried_object();
+		if ( $term && ! is_wp_error( $term ) ) {
+			$title = $term->name;
+		}
+	}
+	?>
+	<section class="coco-collection-hero-banner" aria-label="Cabecera de Colección">
+		<div class="coco-collection-hero-content">
+			<span class="coco-collection-kicker">NUESTRA COLECCIÓN</span>
+			<h1 class="coco-collection-title"><?php echo esc_html( $title ); ?></h1>
+			<p class="coco-collection-desc"><?php echo esc_html( $description ); ?></p>
+		</div>
+		<div class="coco-collection-hero-art" aria-hidden="true">
+			<div class="coco-collection-art-glow"></div>
+			<div class="coco-collection-art-gem">
+				<svg width="68" height="68" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M6 3h12l4 6-10 13L2 9z"></path>
+					<path d="M11 3 8 9l4 13 4-13-3-6"></path>
+					<path d="M2 9h20"></path>
+				</svg>
+			</div>
+		</div>
+	</section>
+	<?php
 }
-add_action( 'woocommerce_before_shop_loop_item_title', 'coco_theme_loop_hover_action_pill', 15 );
+add_action( 'woocommerce_archive_description', 'coco_theme_render_category_banner', 15 );
 
 /**
- * Píldoras de navegación rápida entre categorías hermanas en la cabecera del catálogo.
+ * Helper para asociar íconos vectoriales SVG a cada categoría.
+ */
+function coco_theme_get_category_icon_svg( $slug, $name ) {
+	$slug = strtolower( $slug );
+	$name = strtolower( $name );
+
+	if ( strpos( $slug, 'aro' ) !== false || strpos( $name, 'aro' ) !== false || strpos( $slug, 'bijou' ) !== false ) {
+		return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12l4 6-10 13L2 9z"></path><path d="M11 3 8 9l4 13 4-13-3-6"></path><path d="M2 9h20"></path></svg>';
+	}
+	if ( strpos( $slug, 'belleza' ) !== false || strpos( $name, 'belleza' ) !== false || strpos( $slug, 'cosmet' ) !== false ) {
+		return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>';
+	}
+	if ( strpos( $slug, 'collar' ) !== false || strpos( $name, 'collar' ) !== false ) {
+		return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>';
+	}
+	if ( strpos( $slug, 'crop' ) !== false || strpos( $slug, 'top' ) !== false || strpos( $name, 'top' ) !== false ) {
+		return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"></path></svg>';
+	}
+	if ( strpos( $slug, 'electro' ) !== false || strpos( $name, 'electro' ) !== false ) {
+		return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>';
+	}
+	if ( strpos( $slug, 'tecno' ) !== false || strpos( $name, 'tecno' ) !== false || strpos( $slug, 'celular' ) !== false ) {
+		return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>';
+	}
+	if ( strpos( $slug, 'moda' ) !== false || strpos( $name, 'moda' ) !== false || strpos( $slug, 'faja' ) !== false || strpos( $name, 'faja' ) !== false ) {
+		return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line></svg>';
+	}
+	if ( strpos( $slug, 'hogar' ) !== false || strpos( $name, 'hogar' ) !== false ) {
+		return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>';
+	}
+
+	return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>';
+}
+
+/**
+ * Píldoras de navegación rápida con scroll horizontal y flecha deslizable.
  */
 function coco_theme_render_category_chips() {
 	if ( ! is_shop() && ! is_product_taxonomy() ) {
@@ -698,26 +801,145 @@ function coco_theme_render_category_chips() {
 	$is_all_active = is_shop() && ! is_product_category();
 
 	echo '<div class="coco-catalog-chips-wrapper">';
-	echo '<div class="coco-catalog-chips-scroll">';
+	echo '<div class="coco-catalog-chips-scroll" id="coco-chips-scroll-container">';
+
+	// Opción "Todas las colecciones" con ícono de grilla
 	printf(
-		'<a href="%s" class="coco-cat-chip %s">Todas las colecciones</a>',
+		'<a href="%s" class="coco-cat-chip %s"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg><span>Todas las colecciones</span></a>',
 		esc_url( $shop_url ),
 		$is_all_active ? 'active' : ''
 	);
 
 	foreach ( $cats as $cat ) {
 		$is_active = ( $cat->term_id === $current_cat_id );
+		$icon_svg  = coco_theme_get_category_icon_svg( $cat->slug, $cat->name );
 		printf(
-			'<a href="%s" class="coco-cat-chip %s">%s</a>',
+			'<a href="%s" class="coco-cat-chip %s">%s<span>%s</span></a>',
 			esc_url( get_term_link( $cat ) ),
 			$is_active ? 'active' : '',
+			$icon_svg,
 			esc_html( $cat->name )
 		);
 	}
-	echo '</div>';
-	echo '</div>';
+
+	echo '</div>'; // /.coco-catalog-chips-scroll
+
+	// Botón flecha derecha para deslizar
+	echo '<button type="button" class="coco-chips-scroll-btn" aria-label="Deslizar categorías" onclick="cocoScrollChips(220)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>';
+
+	echo '</div>'; // /.coco-catalog-chips-wrapper
 }
 add_action( 'woocommerce_archive_description', 'coco_theme_render_category_chips', 25 );
+
+/**
+ * Apertura del Contenedor Split de 2 Columnas (Sidebar Filtros + Contenido Principal).
+ */
+function coco_theme_catalog_split_open() {
+	if ( function_exists( 'is_product' ) && is_product() ) {
+		return;
+	}
+
+	$current_cat_id = 0;
+	if ( is_product_category() ) {
+		$current_cat    = get_queried_object();
+		$current_cat_id = $current_cat ? $current_cat->term_id : 0;
+	}
+
+	$cats = get_terms(
+		array(
+			'taxonomy'   => 'product_cat',
+			'hide_empty' => true,
+			'parent'     => 0,
+			'exclude'    => array( get_option( 'default_product_cat' ) ),
+		)
+	);
+
+	// Total en stock aproximado
+	$total_products = wp_count_posts( 'product' );
+	$publish_count  = isset( $total_products->publish ) ? intval( $total_products->publish ) : 28;
+
+	echo '<div class="coco-catalog-split-container">';
+
+	// Barra móvil para abrir filtros
+	echo '<div class="coco-mobile-filter-bar"><button type="button" class="coco-mobile-filter-trigger" onclick="cocoToggleSidebarFilters(true)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg> <span>Filtrar por</span></button></div>';
+
+	// ASIDE: Barra lateral de filtros
+	echo '<aside class="coco-catalog-sidebar" id="coco-catalog-sidebar">';
+	echo '<div class="coco-sidebar-inner">';
+
+	// Cabecera sidebar con botón cerrar en móvil
+	echo '<div class="coco-sidebar-header">';
+	echo '<h3 class="coco-sidebar-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg> <span>Filtrar por</span></h3>';
+	echo '<button type="button" class="coco-sidebar-close-btn" aria-label="Cerrar filtros" onclick="cocoToggleSidebarFilters(false)">✕</button>';
+	echo '</div>';
+
+	// Sección Categorías (Acordeón)
+	if ( ! empty( $cats ) && ! is_wp_error( $cats ) ) {
+		echo '<div class="coco-sidebar-accordion is-open">';
+		echo '<div class="coco-accordion-head" onclick="this.parentElement.classList.toggle(\'is-open\')"><span>Categoría</span><svg class="coco-accordion-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg></div>';
+		echo '<div class="coco-accordion-body">';
+		echo '<ul class="coco-sidebar-filter-list">';
+
+		$counter = 0;
+		foreach ( $cats as $cat ) {
+			$counter++;
+			$is_checked = ( $cat->term_id === $current_cat_id );
+			$item_class = ( $counter > 6 ) ? 'coco-filter-item-extra' : '';
+
+			printf(
+				'<li class="%s"><a href="%s" class="coco-filter-checkbox %s"><span class="coco-custom-check"></span><span class="coco-filter-label">%s</span><span class="coco-filter-count">(%d)</span></a></li>',
+				esc_attr( $item_class ),
+				esc_url( get_term_link( $cat ) ),
+				$is_checked ? 'is-checked' : '',
+				esc_html( $cat->name ),
+				intval( $cat->count )
+			);
+		}
+
+		echo '</ul>';
+		if ( count( $cats ) > 6 ) {
+			echo '<button type="button" class="coco-sidebar-toggle-more" onclick="this.previousElementSibling.classList.toggle(\'show-all\'); this.textContent = this.textContent === \'Ver más +\' ? \'Ver menos −\' : \'Ver más +\';">Ver más +</button>';
+		}
+		echo '</div>'; // /.coco-accordion-body
+		echo '</div>'; // /.coco-sidebar-accordion
+	}
+
+	// Sección Disponibilidad (Acordeón)
+	echo '<div class="coco-sidebar-accordion is-open">';
+	echo '<div class="coco-accordion-head" onclick="this.parentElement.classList.toggle(\'is-open\')"><span>Disponibilidad</span><svg class="coco-accordion-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg></div>';
+	echo '<div class="coco-accordion-body">';
+	echo '<div class="coco-filter-checkbox is-checked"><span class="coco-custom-check"></span><span class="coco-filter-label">En stock</span><span class="coco-filter-count">(' . esc_html( $publish_count ) . ')</span></div>';
+	echo '</div>';
+	echo '</div>';
+
+	// Badge de Confianza: Envíos a todo Paraguay
+	echo '<div class="coco-sidebar-trust-box">';
+	echo '<div class="coco-trust-box-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg></div>';
+	echo '<div class="coco-trust-box-content"><strong>Envíos a todo Paraguay</strong><span>Comprá con confianza</span></div>';
+	echo '</div>';
+
+	echo '</div><!-- /.coco-sidebar-inner -->';
+	echo '</aside><!-- /.coco-catalog-sidebar -->';
+
+	// Backdrop para móvil
+	echo '<div class="coco-sidebar-backdrop" onclick="cocoToggleSidebarFilters(false)"></div>';
+
+	// Apertura del área principal de cuadrícula
+	echo '<div class="coco-catalog-main-area">';
+}
+add_action( 'woocommerce_before_shop_loop', 'coco_theme_catalog_split_open', 5 );
+
+/**
+ * Cierre del Contenedor Split de 2 Columnas.
+ */
+function coco_theme_catalog_split_close() {
+	if ( function_exists( 'is_product' ) && is_product() ) {
+		return;
+	}
+	echo '</div><!-- /.coco-catalog-main-area -->';
+	echo '</div><!-- /.coco-catalog-split-container -->';
+}
+add_action( 'woocommerce_after_shop_loop', 'coco_theme_catalog_split_close', 999 );
 
 /**
  * Envoltorio para la barra de herramientas del catálogo y conmutador visual de cuadrícula [ 2 col | 4 col ].
@@ -736,7 +958,7 @@ function coco_theme_catalog_grid_switcher() {
 	}
 	?>
 	<div class="coco-grid-switcher" aria-label="Cambiar columnas">
-		<button type="button" class="coco-grid-btn coco-grid-btn-4 active" data-columns="4" title="4 Columnas">
+		<button type="button" class="coco-grid-btn coco-grid-btn-4 active" data-columns="4" title="Cuadrícula 4 Columnas">
 			<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 				<rect x="3" y="3" width="7" height="7"></rect>
 				<rect x="14" y="3" width="7" height="7"></rect>
@@ -744,10 +966,14 @@ function coco_theme_catalog_grid_switcher() {
 				<rect x="3" y="14" width="7" height="7"></rect>
 			</svg>
 		</button>
-		<button type="button" class="coco-grid-btn coco-grid-btn-2" data-columns="2" title="2 Columnas">
+		<button type="button" class="coco-grid-btn coco-grid-btn-2" data-columns="2" title="Cuadrícula 2 Columnas">
 			<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-				<rect x="3" y="3" width="8" height="18" rx="1"></rect>
-				<rect x="13" y="3" width="8" height="18" rx="1"></rect>
+				<line x1="8" y1="6" x2="21" y2="6"></line>
+				<line x1="8" y1="12" x2="21" y2="12"></line>
+				<line x1="8" y1="18" x2="21" y2="18"></line>
+				<line x1="3" y1="6" x2="3.01" y2="6"></line>
+				<line x1="3" y1="12" x2="3.01" y2="12"></line>
+				<line x1="3" y1="18" x2="3.01" y2="18"></line>
 			</svg>
 		</button>
 	</div>
@@ -818,9 +1044,71 @@ function coco_theme_catalog_trust_band() {
 add_action( 'woocommerce_after_shop_loop', 'coco_theme_catalog_trust_band', 25 );
 
 /**
- * Script de inicialización para conmutar columnas y persistencia en catálogo.
+ * Scripts de interactividad para filtros laterales, conmutador de columnas y scroll de píldoras.
  */
 function coco_theme_catalog_scripts() {
+	if ( ! is_shop() && ! is_product_taxonomy() ) {
+		return;
+	}
+	?>
+	<script>
+	function cocoScrollChips(offset) {
+		var container = document.getElementById('coco-chips-scroll-container');
+		if (container) {
+			container.scrollBy({ left: offset, behavior: 'smooth' });
+		}
+	}
+	function cocoToggleSidebarFilters(open) {
+		var sidebar = document.getElementById('coco-catalog-sidebar');
+		var backdrop = document.querySelector('.coco-sidebar-backdrop');
+		if (!sidebar) return;
+		if (open) {
+			sidebar.classList.add('is-active');
+			if (backdrop) backdrop.classList.add('is-active');
+			document.body.style.overflow = 'hidden';
+		} else {
+			sidebar.classList.remove('is-active');
+			if (backdrop) backdrop.classList.remove('is-active');
+			document.body.style.overflow = '';
+		}
+	}
+	(function(){
+		function initGridSwitcher() {
+			var grid = document.querySelector('.woocommerce ul.products, .woocommerce-page ul.products');
+			var buttons = document.querySelectorAll('.coco-grid-switcher .coco-grid-btn');
+			if (!grid || !buttons.length) return;
+
+			var saved = localStorage.getItem('coco_catalog_cols') || '4';
+			if (saved === '2') {
+				grid.classList.add('coco-grid-cols-2');
+				buttons.forEach(function(b){ b.classList.toggle('active', b.dataset.columns === '2'); });
+			}
+
+			buttons.forEach(function(btn){
+				btn.addEventListener('click', function(e){
+					e.preventDefault();
+					var cols = this.dataset.columns;
+					buttons.forEach(function(b){ b.classList.remove('active'); });
+					this.classList.add('active');
+					if (cols === '2') {
+						grid.classList.add('coco-grid-cols-2');
+						localStorage.setItem('coco_catalog_cols', '2');
+					} else {
+						grid.classList.remove('coco-grid-cols-2');
+						localStorage.setItem('coco_catalog_cols', '4');
+					}
+				});
+			});
+		}
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', initGridSwitcher);
+		} else {
+			initGridSwitcher();
+		}
+	})();
+	</script>
+	<?php
+}
 	if ( ! is_shop() && ! is_product_taxonomy() ) {
 		return;
 	}

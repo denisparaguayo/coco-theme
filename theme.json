@@ -97,6 +97,16 @@
 					"name": "Blanco Puro",
 					"slug": "white",
 					"color": "#FFFFFF"
+				},
+				{
+					"name": "Boutique Caramel Gold",
+					"slug": "caramel",
+					"color": "#B87B1D"
+				},
+				{
+					"name": "Boutique Cream Background",
+					"slug": "cream",
+					"color": "#FAF7F2"
 				}
 			]
 		},
@@ -112,6 +122,11 @@
 					"fontFamily": "'Poppins', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
 					"name": "Display / Títulos",
 					"slug": "heading"
+				},
+				{
+					"fontFamily": "'Playfair Display', Georgia, serif",
+					"name": "Serif Elegante / Colección",
+					"slug": "serif"
 				}
 			],
 			"fontSizes": [
