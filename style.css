@@ -7,7 +7,7 @@ Description: Tema WordPress Full Site Editing (FSE) ultraligero y de alta conver
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 7.4
-Version: 1.2.1
+Version: 1.2.2
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: coco-theme
@@ -700,6 +700,187 @@ ul.products::after,
 	content: none !important;
 }
 
+/* Cabecera Hero de Colección con superficie institucional sobria */
+.woocommerce-products-header {
+	background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%) !important;
+	border: 1px solid #E2E8F0 !important;
+	border-radius: 16px !important;
+	padding: 2.25rem 1.5rem 1.75rem 1.5rem !important;
+	margin-bottom: 2rem !important;
+	text-align: center !important;
+	box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03) !important;
+}
+
+.woocommerce-breadcrumb {
+	font-size: 0.8rem !important;
+	color: #64748B !important;
+	margin: 0 auto 0.85rem auto !important;
+	text-align: center !important;
+	font-weight: 500;
+}
+
+.woocommerce-breadcrumb a {
+	color: #1E293B !important;
+	text-decoration: none !important;
+	transition: color 0.2s ease;
+}
+
+.woocommerce-breadcrumb a:hover {
+	color: var(--coco-primary) !important;
+}
+
+.woocommerce-products-header .page-title,
+.woocommerce-products-header__title {
+	font-size: 2.3rem !important;
+	font-weight: 800 !important;
+	color: #0F172A !important;
+	letter-spacing: -0.025em;
+	margin: 0.25rem 0 0.5rem 0 !important;
+	line-height: 1.2 !important;
+}
+
+.woocommerce-products-header .term-description {
+	font-size: 0.95rem !important;
+	color: #475569 !important;
+	max-width: 640px !important;
+	margin: 0 auto 1.25rem auto !important;
+	line-height: 1.6 !important;
+}
+
+/* Fila de navegación horizontal por categorías (Chips) */
+.coco-catalog-chips-wrapper {
+	margin-top: 1.25rem;
+	display: flex;
+	justify-content: center;
+	width: 100%;
+}
+
+.coco-catalog-chips-scroll {
+	display: inline-flex;
+	gap: 0.5rem;
+	overflow-x: auto;
+	max-width: 100%;
+	padding: 0.25rem 0.5rem;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+.coco-catalog-chips-scroll::-webkit-scrollbar {
+	display: none;
+}
+
+.coco-cat-chip {
+	display: inline-block;
+	font-size: 0.82rem;
+	font-weight: 600;
+	color: #334155;
+	background: #FFFFFF;
+	border: 1px solid #CBD5E1;
+	padding: 0.45rem 1rem;
+	border-radius: 999px;
+	text-decoration: none;
+	white-space: nowrap;
+	transition: all 0.2s ease;
+}
+
+.coco-cat-chip:hover {
+	border-color: #0F172A;
+	color: #0F172A;
+	background: #F8FAFC;
+}
+
+.coco-cat-chip.active {
+	background: #0F172A !important;
+	color: #FFFFFF !important;
+	border-color: #0F172A !important;
+}
+
+/* Barra de herramientas y controles del catálogo (Toolbar) */
+.coco-catalog-toolbar-wrap {
+	display: flex !important;
+	align-items: center !important;
+	justify-content: space-between !important;
+	flex-wrap: wrap !important;
+	gap: 1rem !important;
+	margin-bottom: 2rem !important;
+	padding-bottom: 1.15rem !important;
+	border-bottom: 1px solid #E2E8F0 !important;
+	width: 100% !important;
+	clear: both !important;
+}
+
+.woocommerce .woocommerce-result-count {
+	float: none !important;
+	margin: 0 !important;
+	font-size: 0.88rem !important;
+	color: #64748B !important;
+	font-weight: 500 !important;
+	line-height: 1.4 !important;
+}
+
+.woocommerce .woocommerce-ordering {
+	float: none !important;
+	margin: 0 !important;
+	margin-left: auto !important;
+}
+
+.woocommerce .woocommerce-ordering select {
+	height: 38px !important;
+	padding: 0 2.2rem 0 0.95rem !important;
+	border: 1px solid #CBD5E1 !important;
+	border-radius: 8px !important;
+	font-size: 0.86rem !important;
+	font-weight: 500 !important;
+	color: #1E293B !important;
+	background: #FFFFFF url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 0.75rem center !important;
+	appearance: none !important;
+	-webkit-appearance: none !important;
+	cursor: pointer !important;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.02) !important;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.woocommerce .woocommerce-ordering select:focus {
+	border-color: #0F172A !important;
+	outline: none !important;
+	box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08) !important;
+}
+
+/* Conmutador de columnas [ 4 col | 2 col ] */
+.coco-grid-switcher {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+	background: #F1F5F9;
+	padding: 3px;
+	border-radius: 8px;
+	border: 1px solid #E2E8F0;
+}
+
+.coco-grid-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	border-radius: 6px;
+	border: none;
+	background: transparent;
+	color: #64748B;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.coco-grid-btn:hover {
+	color: #0F172A;
+}
+
+.coco-grid-btn.active {
+	background: #FFFFFF;
+	color: #0F172A;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
 /* Grilla global de productos del catálogo */
 .woocommerce ul.products,
 .woocommerce-page ul.products {
@@ -715,7 +896,14 @@ ul.products::after,
 	clear: both !important;
 }
 
-/* Tarjeta de producto: limpia, minimalista y 100% clickeable */
+/* Modo 2 columnas en desktop activado por el selector */
+.woocommerce ul.products.coco-grid-cols-2,
+.woocommerce-page ul.products.coco-grid-cols-2 {
+	grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+	gap: 2rem !important;
+}
+
+/* Tarjeta de producto: fotografía a sangre (Full-bleed 1:1) y 100% clickeable */
 .woocommerce ul.products li.product,
 .woocommerce-page ul.products li.product,
 .wp-block-post-template li.wc-block-product,
@@ -726,17 +914,17 @@ ul.products::after,
 	margin: 0 !important;
 	float: none !important;
 	clear: none !important;
-	background: var(--coco-white);
-	border: 1px solid rgba(226, 232, 240, 0.8);
-	border-radius: 14px;
-	padding: 0.75rem !important;
-	box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
-	transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+	background: #FFFFFF !important;
+	border: 1px solid rgba(226, 232, 240, 0.95) !important;
+	border-radius: 14px !important;
+	padding: 0 !important;
+	box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04) !important;
+	transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.25s ease !important;
 	display: flex !important;
 	flex-direction: column !important;
 	justify-content: flex-start !important;
 	position: relative !important;
-	overflow: hidden;
+	overflow: hidden !important;
 	cursor: pointer !important;
 }
 
@@ -744,9 +932,9 @@ ul.products::after,
 .woocommerce-page ul.products li.product:hover,
 .wp-block-post-template li.wc-block-product:hover,
 .wc-block-grid__product:hover {
-	transform: translateY(-4px);
-	box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
-	border-color: rgba(228, 123, 2, 0.35);
+	transform: translateY(-5px) !important;
+	box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08) !important;
+	border-color: rgba(228, 123, 2, 0.4) !important;
 }
 
 /* Enlace expandido: el clic en cualquier parte de la tarjeta lleva directo a la ficha del producto */
@@ -768,11 +956,14 @@ ul.products::after,
 	cursor: pointer !important;
 }
 
-/* Contenedor y proporciones de imagen: 1:1 estricta */
+/* Fotografía a sangre: ocupa el 100% del ancho superior sin márgenes interiores */
 .woocommerce ul.products li.product a img,
 .woocommerce-page ul.products li.product a img,
 .wp-block-woocommerce-product-image img {
-	border-radius: 10px;
+	border-top-left-radius: 13px !important;
+	border-top-right-radius: 13px !important;
+	border-bottom-left-radius: 0 !important;
+	border-bottom-right-radius: 0 !important;
 	aspect-ratio: 1 / 1 !important;
 	object-fit: cover !important;
 	width: 100% !important;
@@ -789,11 +980,12 @@ ul.products::after,
 /* Segunda imagen de galería en hover fluida (si existe) */
 .coco-loop-second-img-wrap {
 	position: absolute;
-	top: 0.75rem;
-	left: 0.75rem;
-	right: 0.75rem;
+	top: 0;
+	left: 0;
+	right: 0;
 	aspect-ratio: 1 / 1;
-	border-radius: 10px;
+	border-top-left-radius: 13px;
+	border-top-right-radius: 13px;
 	overflow: hidden;
 	opacity: 0;
 	pointer-events: none;
@@ -814,17 +1006,46 @@ ul.products::after,
 	transform: scale(1.035);
 }
 
-/* Título de producto limpio, elegante y de máxima legibilidad */
+/* Indicador sobrio "Ver producto" con flecha SVG que se revela en hover */
+.coco-card-action-pill {
+	position: absolute;
+	bottom: 12px;
+	left: 50%;
+	transform: translate(-50%, 8px);
+	background: rgba(15, 23, 42, 0.88);
+	backdrop-filter: blur(8px);
+	-webkit-backdrop-filter: blur(8px);
+	color: #FFFFFF;
+	font-size: 0.76rem;
+	font-weight: 600;
+	padding: 0.4rem 0.85rem;
+	border-radius: 999px;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+	z-index: 6;
+	letter-spacing: 0.01em;
+}
+
+.woocommerce ul.products li.product:hover .coco-card-action-pill {
+	opacity: 1;
+	transform: translate(-50%, 0);
+}
+
+/* Título de producto limpio, sobrio y de máxima legibilidad */
 .woocommerce ul.products li.product .woocommerce-loop-product__title,
 .woocommerce-page ul.products li.product .woocommerce-loop-product__title,
 .wp-block-post-title a {
-	font-size: 0.96rem !important;
+	font-size: 0.94rem !important;
 	font-weight: 600 !important;
-	color: #1F2933 !important;
-	line-height: 1.35 !important;
+	color: #1E293B !important;
+	line-height: 1.4 !important;
 	text-align: center !important;
-	margin: 0.75rem 0 0.35rem 0 !important;
-	padding: 0 0.25rem !important;
+	padding: 0.95rem 0.85rem 1rem 0.85rem !important;
+	margin: 0 !important;
 	display: -webkit-box !important;
 	-webkit-line-clamp: 2 !important;
 	-webkit-box-orient: vertical !important;
@@ -851,59 +1072,58 @@ ul.products::after,
 	display: none !important;
 }
 
-/* Cabecera de Categoría y Catálogo editorial */
-.woocommerce-products-header {
-	margin-bottom: 2rem !important;
-	text-align: center;
+/* Banda de confianza y servicios (Footer Trust Band) */
+.coco-catalog-trust-band {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 1.5rem;
+	margin-top: 3.5rem;
+	margin-bottom: 1.5rem;
+	padding: 2rem 2.25rem;
+	background: #F8FAFC;
+	border: 1px solid #E2E8F0;
+	border-radius: 16px;
+	width: 100%;
+	box-sizing: border-box;
 }
 
-.woocommerce-products-header .page-title,
-.woocommerce-products-header__title {
-	font-size: 2.1rem !important;
-	font-weight: 800 !important;
-	color: #0F172A !important;
-	letter-spacing: -0.025em;
-	margin: 0.5rem 0 !important;
+.coco-trust-col {
+	display: flex;
+	align-items: flex-start;
+	gap: 1rem;
 }
 
-.woocommerce-products-header .term-description {
-	font-size: 0.95rem;
-	color: #64748B;
-	max-width: 640px;
-	margin: 0 auto;
-	line-height: 1.5;
-}
-
-/* Barra superior de catálogo (Conteo y Ordenación) */
-.woocommerce .woocommerce-result-count {
-	float: left;
-	margin: 0 0 1.5rem 0 !important;
-	font-size: 0.88rem !important;
-	color: #64748B !important;
-	font-weight: 500;
-	padding-top: 0.4rem;
-}
-
-.woocommerce .woocommerce-ordering {
-	float: right;
-	margin: 0 0 1.5rem 0 !important;
-}
-
-.woocommerce .woocommerce-ordering select {
-	padding: 0.5rem 1.8rem 0.5rem 0.85rem !important;
-	border: 1px solid #E2E8F0 !important;
-	border-radius: 8px !important;
-	font-size: 0.88rem !important;
-	color: #334155 !important;
-	background-color: #FFFFFF !important;
-	outline: none;
-	cursor: pointer;
+.coco-trust-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	border-radius: 10px;
+	background: #FFFFFF;
+	border: 1px solid #E2E8F0;
+	color: #0F172A;
+	flex-shrink: 0;
 	box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-	transition: border-color 0.2s ease;
 }
 
-.woocommerce .woocommerce-ordering select:focus {
-	border-color: var(--coco-primary) !important;
+.coco-trust-content {
+	flex: 1;
+}
+
+.coco-trust-title {
+	font-size: 0.94rem;
+	font-weight: 700;
+	color: #0F172A;
+	margin: 0 0 0.25rem 0;
+	line-height: 1.3;
+}
+
+.coco-trust-desc {
+	font-size: 0.82rem;
+	color: #64748B;
+	margin: 0;
+	line-height: 1.45;
 }
 
 /* Paginación minimalista */
@@ -946,15 +1166,15 @@ ul.products::after,
 }
 
 .woocommerce nav.woocommerce-pagination ul li a:hover {
-	border-color: var(--coco-primary) !important;
-	color: var(--coco-primary) !important;
+	border-color: #0F172A !important;
+	color: #0F172A !important;
 }
 
 .woocommerce nav.woocommerce-pagination ul li span.current {
-	background: var(--coco-primary) !important;
+	background: #0F172A !important;
 	color: #FFFFFF !important;
-	border-color: var(--coco-primary) !important;
-	box-shadow: 0 4px 10px rgba(228, 123, 2, 0.25);
+	border-color: #0F172A !important;
+	box-shadow: 0 4px 10px rgba(15, 23, 42, 0.2);
 }
 
 /* ==========================================================================
@@ -2215,6 +2435,30 @@ main.has-surface-background-color {
 		margin: 0 !important;
 	}
 
+	.woocommerce-products-header {
+		padding: 1.5rem 1rem !important;
+		margin-bottom: 1.5rem !important;
+		border-radius: 12px !important;
+	}
+
+	.woocommerce-products-header .page-title,
+	.woocommerce-products-header__title {
+		font-size: 1.75rem !important;
+	}
+
+	.coco-catalog-chips-wrapper {
+		justify-content: flex-start !important;
+	}
+
+	.coco-catalog-toolbar-wrap {
+		margin-bottom: 1.25rem !important;
+		padding-bottom: 0.85rem !important;
+	}
+
+	.coco-grid-switcher {
+		display: none !important;
+	}
+
 	.woocommerce ul.products,
 	.woocommerce-page ul.products,
 	.single-product .related.products ul.products,
@@ -2227,15 +2471,20 @@ main.has-surface-background-color {
 	.woocommerce-page ul.products li.product,
 	.single-product .related.products ul.products li.product,
 	.single-product .upsells.products ul.products li.product {
-		padding: 0.5rem !important;
+		padding: 0 !important;
 		border-radius: 12px !important;
 	}
 
+	.coco-card-action-pill {
+		display: none !important;
+	}
+
 	.coco-loop-second-img-wrap {
-		top: 0.5rem !important;
-		left: 0.5rem !important;
-		right: 0.5rem !important;
-		border-radius: 8px !important;
+		top: 0 !important;
+		left: 0 !important;
+		right: 0 !important;
+		border-top-left-radius: 11px !important;
+		border-top-right-radius: 11px !important;
 	}
 
 	.woocommerce ul.products li.product .woocommerce-loop-product__title,
@@ -2243,7 +2492,8 @@ main.has-surface-background-color {
 	.single-product .related.products ul.products li.product .woocommerce-loop-product__title,
 	.single-product .upsells.products ul.products li.product .woocommerce-loop-product__title {
 		font-size: 0.82rem !important;
-		margin: 0.45rem 0 0.15rem 0 !important;
+		padding: 0.65rem 0.5rem 0.75rem 0.5rem !important;
+		margin: 0 !important;
 	}
 
 	.woocommerce ul.products li.product .price,
@@ -2251,6 +2501,13 @@ main.has-surface-background-color {
 	.single-product .related.products ul.products li.product .price,
 	.single-product .upsells.products ul.products li.product .price {
 		display: none !important;
+	}
+
+	.coco-catalog-trust-band {
+		grid-template-columns: 1fr !important;
+		gap: 1.25rem !important;
+		padding: 1.5rem 1.25rem !important;
+		margin-top: 2.25rem !important;
 	}
 
 	.coco-sticky-top-marquee {

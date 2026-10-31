@@ -638,7 +638,7 @@ function coco_theme_loop_second_image() {
 	}
 	$gallery = $product->get_gallery_image_ids();
 	if ( ! empty( $gallery ) ) {
-		$second_id = $gallery[0];
+		$second_id  = $gallery[0];
 		$second_img = wp_get_attachment_image(
 			$second_id,
 			'woocommerce_thumbnail',
@@ -655,6 +655,215 @@ function coco_theme_loop_second_image() {
 	}
 }
 add_action( 'woocommerce_before_shop_loop_item_title', 'coco_theme_loop_second_image', 11 );
+
+/**
+ * Micro-indicador sobrio en hover: "Ver producto" con flecha lineal SVG.
+ */
+function coco_theme_loop_hover_action_pill() {
+	if ( function_exists( 'is_product' ) && is_product() ) {
+		return;
+	}
+	echo '<span class="coco-card-action-pill"><span>Ver producto</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></span>';
+}
+add_action( 'woocommerce_before_shop_loop_item_title', 'coco_theme_loop_hover_action_pill', 15 );
+
+/**
+ * Píldoras de navegación rápida entre categorías hermanas en la cabecera del catálogo.
+ */
+function coco_theme_render_category_chips() {
+	if ( ! is_shop() && ! is_product_taxonomy() ) {
+		return;
+	}
+
+	$current_cat_id = 0;
+	if ( is_product_category() ) {
+		$current_cat    = get_queried_object();
+		$current_cat_id = $current_cat ? $current_cat->term_id : 0;
+	}
+
+	$cats = get_terms(
+		array(
+			'taxonomy'   => 'product_cat',
+			'hide_empty' => true,
+			'parent'     => 0,
+			'exclude'    => array( get_option( 'default_product_cat' ) ),
+		)
+	);
+
+	if ( empty( $cats ) || is_wp_error( $cats ) ) {
+		return;
+	}
+
+	$shop_url      = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/tienda/' );
+	$is_all_active = is_shop() && ! is_product_category();
+
+	echo '<div class="coco-catalog-chips-wrapper">';
+	echo '<div class="coco-catalog-chips-scroll">';
+	printf(
+		'<a href="%s" class="coco-cat-chip %s">Todas las colecciones</a>',
+		esc_url( $shop_url ),
+		$is_all_active ? 'active' : ''
+	);
+
+	foreach ( $cats as $cat ) {
+		$is_active = ( $cat->term_id === $current_cat_id );
+		printf(
+			'<a href="%s" class="coco-cat-chip %s">%s</a>',
+			esc_url( get_term_link( $cat ) ),
+			$is_active ? 'active' : '',
+			esc_html( $cat->name )
+		);
+	}
+	echo '</div>';
+	echo '</div>';
+}
+add_action( 'woocommerce_archive_description', 'coco_theme_render_category_chips', 25 );
+
+/**
+ * Envoltorio para la barra de herramientas del catálogo y conmutador visual de cuadrícula [ 2 col | 4 col ].
+ */
+function coco_theme_catalog_toolbar_open() {
+	if ( function_exists( 'is_product' ) && is_product() ) {
+		return;
+	}
+	echo '<div class="coco-catalog-toolbar-wrap">';
+}
+add_action( 'woocommerce_before_shop_loop', 'coco_theme_catalog_toolbar_open', 15 );
+
+function coco_theme_catalog_grid_switcher() {
+	if ( function_exists( 'is_product' ) && is_product() ) {
+		return;
+	}
+	?>
+	<div class="coco-grid-switcher" aria-label="Cambiar columnas">
+		<button type="button" class="coco-grid-btn coco-grid-btn-4 active" data-columns="4" title="4 Columnas">
+			<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+				<rect x="3" y="3" width="7" height="7"></rect>
+				<rect x="14" y="3" width="7" height="7"></rect>
+				<rect x="14" y="14" width="7" height="7"></rect>
+				<rect x="3" y="14" width="7" height="7"></rect>
+			</svg>
+		</button>
+		<button type="button" class="coco-grid-btn coco-grid-btn-2" data-columns="2" title="2 Columnas">
+			<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+				<rect x="3" y="3" width="8" height="18" rx="1"></rect>
+				<rect x="13" y="3" width="8" height="18" rx="1"></rect>
+			</svg>
+		</button>
+	</div>
+	<?php
+}
+add_action( 'woocommerce_before_shop_loop', 'coco_theme_catalog_grid_switcher', 35 );
+
+function coco_theme_catalog_toolbar_close() {
+	if ( function_exists( 'is_product' ) && is_product() ) {
+		return;
+	}
+	echo '</div><!-- /.coco-catalog-toolbar-wrap -->';
+}
+add_action( 'woocommerce_before_shop_loop', 'coco_theme_catalog_toolbar_close', 40 );
+
+/**
+ * Banda de confianza y servicios al pie del catálogo (iconografía lineal SVG sobria).
+ */
+function coco_theme_catalog_trust_band() {
+	if ( function_exists( 'is_product' ) && is_product() ) {
+		return;
+	}
+	?>
+	<section class="coco-catalog-trust-band" aria-label="Servicios y garantías de Coco Cherry">
+		<div class="coco-trust-col">
+			<div class="coco-trust-icon">
+				<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+					<rect x="1" y="3" width="15" height="13"></rect>
+					<polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+					<circle cx="5.5" cy="18.5" r="2.5"></circle>
+					<circle cx="18.5" cy="18.5" r="2.5"></circle>
+				</svg>
+			</div>
+			<div class="coco-trust-content">
+				<h4 class="coco-trust-title">Cobertura Nacional</h4>
+				<p class="coco-trust-desc">24 a 48 hs en Asunción y Gran Asunción; 2 a 4 días en el interior.</p>
+			</div>
+		</div>
+
+		<div class="coco-trust-col">
+			<div class="coco-trust-icon">
+				<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+					<rect x="2" y="5" width="20" height="14" rx="2"></rect>
+					<line x1="2" y1="10" x2="22" y2="10"></line>
+				</svg>
+			</div>
+			<div class="coco-trust-content">
+				<h4 class="coco-trust-title">Pago Contra Entrega</h4>
+				<p class="coco-trust-desc">Aboná en tu puerta en efectivo, transferencias bancarias o código QR.</p>
+			</div>
+		</div>
+
+		<div class="coco-trust-col">
+			<div class="coco-trust-icon">
+				<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+					<polyline points="9 12 11 14 15 10"></polyline>
+				</svg>
+			</div>
+			<div class="coco-trust-content">
+				<h4 class="coco-trust-title">Garantía Asegurada</h4>
+				<p class="coco-trust-desc">Cobertura directa de cambio ante cualquier defecto de fábrica.</p>
+			</div>
+		</div>
+	</section>
+	<?php
+}
+add_action( 'woocommerce_after_shop_loop', 'coco_theme_catalog_trust_band', 25 );
+
+/**
+ * Script de inicialización para conmutar columnas y persistencia en catálogo.
+ */
+function coco_theme_catalog_scripts() {
+	if ( ! is_shop() && ! is_product_taxonomy() ) {
+		return;
+	}
+	?>
+	<script>
+	(function(){
+		function initGridSwitcher() {
+			var grid = document.querySelector('.woocommerce ul.products, .woocommerce-page ul.products');
+			var buttons = document.querySelectorAll('.coco-grid-switcher .coco-grid-btn');
+			if (!grid || !buttons.length) return;
+
+			var saved = localStorage.getItem('coco_catalog_cols') || '4';
+			if (saved === '2') {
+				grid.classList.add('coco-grid-cols-2');
+				buttons.forEach(function(b){ b.classList.toggle('active', b.dataset.columns === '2'); });
+			}
+
+			buttons.forEach(function(btn){
+				btn.addEventListener('click', function(e){
+					e.preventDefault();
+					var cols = this.dataset.columns;
+					buttons.forEach(function(b){ b.classList.remove('active'); });
+					this.classList.add('active');
+					if (cols === '2') {
+						grid.classList.add('coco-grid-cols-2');
+						localStorage.setItem('coco_catalog_cols', '2');
+					} else {
+						grid.classList.remove('coco-grid-cols-2');
+						localStorage.setItem('coco_catalog_cols', '4');
+					}
+				});
+			});
+		}
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', initGridSwitcher);
+		} else {
+			initGridSwitcher();
+		}
+	})();
+	</script>
+	<?php
+}
+add_action( 'wp_footer', 'coco_theme_catalog_scripts' );
 
 /**
  * Shortcode [coco_star_products]: Muestra los 2 productos estrella destacados con diseño de alta conversión.
