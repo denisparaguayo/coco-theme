@@ -7,7 +7,7 @@ Description: Tema WordPress Full Site Editing (FSE) ultraligero y de alta conver
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 7.4
-Version: 1.2.5
+Version: 1.2.6
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: coco-theme
@@ -1004,15 +1004,25 @@ ul.products::after,
 /* ==========================================================================
    BANNER HERO EDITORIAL DE COLECCIÓN DE ANCHO COMPLETO (ESTILO BOUTIQUE DE LUJO)
    ========================================================================== */
+.post-type-archive-product main,
+.tax-product_cat main,
+.tax-product_tag main {
+	max-width: 100% !important;
+	width: 100% !important;
+	padding-top: 0 !important;
+	overflow-x: visible !important;
+}
+
 .coco-collection-hero-banner {
-	width: 100vw;
-	position: relative;
-	left: 50%;
-	right: 50%;
-	margin-left: -50vw;
-	margin-right: -50vw;
-	margin-top: 0;
-	margin-bottom: 0;
+	width: 100vw !important;
+	max-width: 100vw !important;
+	position: relative !important;
+	left: 0 !important;
+	right: 0 !important;
+	margin-left: calc(50% - 50vw) !important;
+	margin-right: calc(50% - 50vw) !important;
+	margin-top: 0 !important;
+	margin-bottom: 0 !important;
 	background-color: #F6EFE4;
 	background-image: linear-gradient(90deg, rgba(251, 246, 238, 0.92) 0%, rgba(251, 246, 238, 0.65) 48%, rgba(251, 246, 238, 0) 72%), var(--coco-hero-bg, url('assets/images/hero-collection-bg.jpg'));
 	background-size: cover;
@@ -1697,25 +1707,40 @@ ul.products::after,
 	transform: scale(1.04);
 }
 
-/* Título de producto limpio, sobrio y centrado */
+/* Título de producto y de categoría limpio, sobrio y bien espaciado dentro de su tarjeta */
 .woocommerce ul.products li.product .woocommerce-loop-product__title,
 .woocommerce-page ul.products li.product .woocommerce-loop-product__title,
+.woocommerce ul.products li.product .woocommerce-loop-category__title,
+.woocommerce-page ul.products li.product .woocommerce-loop-category__title,
 .wp-block-post-title a {
 	font-size: 0.96rem !important;
 	font-weight: 700 !important;
 	color: #1F2933 !important;
 	line-height: 1.35 !important;
 	text-align: center !important;
-	padding: 1.15rem 1rem 1.35rem 1rem !important;
+	padding: 1.15rem 1.25rem 1.35rem 1.25rem !important;
 	margin: 0 !important;
 	display: -webkit-box !important;
 	-webkit-line-clamp: 2 !important;
 	-webkit-box-orient: vertical !important;
 	overflow: hidden !important;
+	box-sizing: border-box !important;
+	width: 100% !important;
 	transition: color 0.2s ease;
 }
 
-.woocommerce ul.products li.product:hover .woocommerce-loop-product__title {
+.woocommerce ul.products li.product .woocommerce-loop-category__title .count,
+.woocommerce-page ul.products li.product .woocommerce-loop-category__title .count {
+	background: transparent !important;
+	color: #94A3B8 !important;
+	font-weight: 500 !important;
+	font-size: 0.88em !important;
+	padding: 0 !important;
+	margin-left: 2px !important;
+}
+
+.woocommerce ul.products li.product:hover .woocommerce-loop-product__title,
+.woocommerce ul.products li.product:hover .woocommerce-loop-category__title {
 	color: #B87B1D !important;
 }
 
@@ -1857,9 +1882,8 @@ ul.products::after,
 /* ==========================================================================
    7. FICHA DE PRODUCTO ESTILO ECOMUS + INTEGRACIÓN COCO COD
    ========================================================================== */
-.single-product main,
-main.has-surface-background-color {
-	max-width: 1200px !important;
+.single-product main {
+	max-width: 1360px !important;
 	margin-left: auto !important;
 	margin-right: auto !important;
 	width: 100% !important;
@@ -1872,7 +1896,7 @@ main.has-surface-background-color {
 	border-radius: var(--coco-radius-lg);
 	padding: 2.25rem 2.5rem;
 	box-shadow: var(--coco-shadow-sm);
-	max-width: 1140px !important;
+	max-width: 1320px !important;
 	width: 100% !important;
 	margin-left: auto !important;
 	margin-right: auto !important;
@@ -3154,31 +3178,41 @@ main.has-surface-background-color {
 }
 
 @media (max-width: 781px) {
-	.single-product main,
-	main.has-surface-background-color {
-		padding-top: 1rem !important;
-		padding-bottom: 2.5rem !important;
-		padding-left: 0.65rem !important;
-		padding-right: 0.65rem !important;
+	.single-product main {
+		padding: 0 0 2.5rem 0 !important;
 		width: 100% !important;
 		max-width: 100% !important;
 		box-sizing: border-box !important;
+		background: #FFFFFF !important;
 		overflow-x: hidden !important;
 	}
 
 	.single-product .coco-single-product-wrap {
-		padding: 0.95rem !important;
-		border-radius: var(--coco-radius-md) !important;
+		padding: 0 !important;
+		border: none !important;
+		border-radius: 0 !important;
+		box-shadow: none !important;
 		width: 100% !important;
 		max-width: 100% !important;
 		box-sizing: border-box !important;
 		overflow: hidden !important;
 	}
 
+	.single-product .woocommerce-breadcrumb {
+		padding: 0.75rem 1.1rem 0.65rem 1.1rem !important;
+		margin: 0 !important;
+		text-align: left !important;
+	}
+
 	.single-product div.product .woocommerce-product-gallery {
 		padding: 0 !important;
+		margin: 0 0 0.5rem 0 !important;
+		width: 100% !important;
+		max-width: 100% !important;
+		flex: 0 0 100% !important;
 		background: transparent !important;
 		border: none !important;
+		border-radius: 0 !important;
 		opacity: 1 !important;
 		visibility: visible !important;
 	}
@@ -3189,6 +3223,16 @@ main.has-surface-background-color {
 		height: auto !important;
 		display: block !important;
 		margin: 0 !important;
+		border-radius: 0 !important;
+	}
+
+	.single-product div.product .summary.entry-summary,
+	.single-product div.product .woocommerce-tabs,
+	.single-product div.product .related.products,
+	.single-product div.product .upsells.products {
+		padding-left: 1.1rem !important;
+		padding-right: 1.1rem !important;
+		box-sizing: border-box !important;
 	}
 
 	.woocommerce-products-header {
@@ -3199,8 +3243,14 @@ main.has-surface-background-color {
 	}
 
 	.coco-collection-hero-banner {
-		background-image: linear-gradient(90deg, rgba(251, 246, 238, 0.94) 0%, rgba(251, 246, 238, 0.82) 60%, rgba(251, 246, 238, 0.35) 100%), var(--coco-hero-bg, url('assets/images/hero-collection-bg.jpg'));
-		background-position: 72% center;
+		width: 100vw !important;
+		max-width: 100vw !important;
+		left: 0 !important;
+		right: 0 !important;
+		margin-left: calc(50% - 50vw) !important;
+		margin-right: calc(50% - 50vw) !important;
+		background-image: linear-gradient(90deg, rgba(251, 246, 238, 0.94) 0%, rgba(251, 246, 238, 0.82) 62%, rgba(251, 246, 238, 0.38) 100%), var(--coco-hero-bg, url('assets/images/hero-collection-bg.jpg'));
+		background-position: 74% center;
 	}
 
 	.coco-collection-hero-inner {
@@ -3209,7 +3259,7 @@ main.has-surface-background-color {
 	}
 
 	.coco-collection-title {
-		font-size: 2.25rem !important;
+		font-size: 2.2rem !important;
 	}
 
 	.coco-collection-desc {
@@ -3265,10 +3315,13 @@ main.has-surface-background-color {
 
 	.woocommerce ul.products li.product .woocommerce-loop-product__title,
 	.woocommerce-page ul.products li.product .woocommerce-loop-product__title,
+	.woocommerce ul.products li.product .woocommerce-loop-category__title,
+	.woocommerce-page ul.products li.product .woocommerce-loop-category__title,
 	.single-product .related.products ul.products li.product .woocommerce-loop-product__title,
 	.single-product .upsells.products ul.products li.product .woocommerce-loop-product__title {
-		font-size: 0.82rem !important;
-		padding: 0.65rem 0.5rem 0.75rem 0.5rem !important;
+		font-size: 0.86rem !important;
+		text-align: center !important;
+		padding: 0.8rem 0.75rem 0.9rem 0.75rem !important;
 		margin: 0 !important;
 	}
 

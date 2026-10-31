@@ -703,40 +703,90 @@ add_action( 'wp', 'coco_theme_clean_archive_headers' );
 
 /**
  * Banner Hero Editorial de Colección de Ancho Completo (Estilo Boutique de Lujo).
+ * Soporta edición directa desde:
+ * - Apariencia > Personalizar > Opciones Coco Cherry Store (texto e imagen general de /shop/)
+ * - Páginas > Shop (extracto/contenido e imagen destacada para /shop/)
+ * - Productos > Categorías (nombre, descripción y miniatura de cada categoría individual)
  */
 function coco_theme_render_category_banner() {
 	if ( ! is_shop() && ! is_product_taxonomy() ) {
 		return;
 	}
 
-	$title       = 'Nuestra Colección';
-	$description = 'Aretes, aros colgantes, argollas y modelos con brillo pensados para iluminar tu rostro y combinar con cualquier estilo.';
+	$default_bg  = COCO_THEME_URI . '/assets/images/hero-collection-bg.jpg';
+	$custom_bg   = get_theme_mod( 'coco_theme_shop_hero_bg', '' );
+	$bg_url      = ! empty( $custom_bg ) ? $custom_bg : $default_bg;
 
+	$kicker      = get_theme_mod( 'coco_theme_hero_kicker', 'CATÁLOGO OFICIAL' );
+	$title       = get_theme_mod( 'coco_theme_shop_hero_title', 'Nuestra Tienda' );
+	$description = get_theme_mod(
+		'coco_theme_shop_hero_desc',
+		'Descubrí nuestra selección en bijouterie, moda femenina, belleza, artículos para el hogar y tecnología con envíos a todo Paraguay y pago al recibir.'
+	);
+
+	// Si estamos en /shop/, permitir también sobreescribir desde Páginas > Shop (extracto/contenido e imagen destacada)
+	if ( is_shop() && ! is_product_category() && function_exists( 'wc_get_page_id' ) ) {
+		$shop_page_id = wc_get_page_id( 'shop' );
+		if ( $shop_page_id > 0 ) {
+			$page_thumb = get_the_post_thumbnail_url( $shop_page_id, 'full' );
+			if ( $page_thumb ) {
+				$bg_url = $page_thumb;
+			}
+			$shop_post = get_post( $shop_page_id );
+			if ( $shop_post instanceof \WP_Post ) {
+				if ( ! empty( $shop_post->post_title ) && strtolower( trim( $shop_post->post_title ) ) !== 'shop' ) {
+					$title = $shop_post->post_title;
+				}
+				if ( ! empty( $shop_post->post_excerpt ) ) {
+					$description = wp_strip_all_tags( $shop_post->post_excerpt );
+				}
+			}
+		}
+	}
+
+	// Si estamos en una categoría específica (ej. Aros, Belleza, Hogar, Moda)
 	if ( is_product_category() ) {
-		$term = get_queried_object();
+		$kicker = 'NUESTRA COLECCIÓN';
+		$term   = get_queried_object();
 		if ( $term && ! is_wp_error( $term ) ) {
 			$title = $term->name;
 			if ( ! empty( $term->description ) ) {
 				$description = wp_strip_all_tags( $term->description );
 			} elseif ( stripos( $term->name, 'aro' ) !== false ) {
 				$description = 'Aretes, aros colgantes, argollas y modelos con brillo pensados para iluminar tu rostro y combinar con cualquier estilo.';
+			} elseif ( stripos( $term->name, 'bijou' ) !== false ) {
+				$description = 'Accesorios, aros, collares y piezas con brillo pensadas para realzar tu look en cada ocasión.';
+			} elseif ( stripos( $term->name, 'hogar' ) !== false ) {
+				$description = 'Artículos prácticos, decoración y soluciones modernas pensadas para darle más confort a tu hogar.';
+			} elseif ( stripos( $term->name, 'moda' ) !== false ) {
+				$description = 'Prendas, conjuntos y tendencias seleccionadas para combinar comodidad y estilo todos los días.';
+			} elseif ( stripos( $term->name, 'belleza' ) !== false ) {
+				$description = 'Cuidado personal, maquillaje y aliados de belleza pensados para resaltar tu brillo natural.';
 			} else {
-				$description = sprintf( 'Modelos exclusivos de %s seleccionados para iluminar tu estilo y combinar con cualquier ocasión.', $term->name );
+				$description = sprintf( 'Modelos exclusivos de %s seleccionados con envíos a todo Paraguay y pago contra entrega.', $term->name );
+			}
+
+			// Si la categoría tiene una imagen (Miniatura) cargada en Productos > Categorías, usarla como fondo
+			$cat_thumb_id = get_term_meta( $term->term_id, 'thumbnail_id', true );
+			if ( $cat_thumb_id ) {
+				$cat_img_url = wp_get_attachment_image_url( $cat_thumb_id, 'full' );
+				if ( $cat_img_url ) {
+					$bg_url = $cat_img_url;
+				}
 			}
 		}
 	} elseif ( is_product_tag() ) {
-		$term = get_queried_object();
+		$kicker = 'COLECCIÓN';
+		$term   = get_queried_object();
 		if ( $term && ! is_wp_error( $term ) ) {
 			$title = $term->name;
 		}
 	}
-
-	$bg_url = COCO_THEME_URI . '/assets/images/hero-collection-bg.jpg';
 	?>
 	<section class="coco-collection-hero-banner" aria-label="Cabecera de Colección" style="--coco-hero-bg: url('<?php echo esc_url( $bg_url ); ?>');">
 		<div class="coco-collection-hero-inner">
 			<div class="coco-collection-hero-content">
-				<span class="coco-collection-kicker"><span class="coco-kicker-line" aria-hidden="true"></span>NUESTRA COLECCIÓN</span>
+				<span class="coco-collection-kicker"><span class="coco-kicker-line" aria-hidden="true"></span><?php echo esc_html( $kicker ); ?></span>
 				<h1 class="coco-collection-title"><?php echo esc_html( $title ); ?></h1>
 				<p class="coco-collection-desc"><?php echo esc_html( $description ); ?></p>
 				<span class="coco-collection-bottom-line" aria-hidden="true"></span>
@@ -1289,6 +1339,86 @@ function coco_theme_customize_register( $wp_customize ) {
 			'priority' => 30,
 		)
 	);
+
+	// Controles para editar fácilmente el Hero Banner de la Tienda (/shop/)
+	$wp_customize->add_setting(
+		'coco_theme_hero_kicker',
+		array(
+			'default'           => 'CATÁLOGO OFICIAL',
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'sanitize_text_field',
+			'transport'         => 'refresh',
+		)
+	);
+	$wp_customize->add_control(
+		'coco_theme_hero_kicker',
+		array(
+			'label'   => __( 'Hero Tienda: Etiqueta Superior', 'coco-theme' ),
+			'section' => 'coco_theme_options',
+			'type'    => 'text',
+		)
+	);
+
+	$wp_customize->add_setting(
+		'coco_theme_shop_hero_title',
+		array(
+			'default'           => 'Nuestra Tienda',
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'sanitize_text_field',
+			'transport'         => 'refresh',
+		)
+	);
+	$wp_customize->add_control(
+		'coco_theme_shop_hero_title',
+		array(
+			'label'       => __( 'Hero Tienda (/shop/): Título Principal', 'coco-theme' ),
+			'description' => __( 'Título general cuando estás en /shop/. En cada categoría se mostrará automáticamente el nombre de esa categoría.', 'coco-theme' ),
+			'section'     => 'coco_theme_options',
+			'type'        => 'text',
+		)
+	);
+
+	$wp_customize->add_setting(
+		'coco_theme_shop_hero_desc',
+		array(
+			'default'           => 'Descubrí nuestra selección en bijouterie, moda femenina, belleza, artículos para el hogar y tecnología con envíos a todo Paraguay y pago al recibir.',
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'sanitize_textarea_field',
+			'transport'         => 'refresh',
+		)
+	);
+	$wp_customize->add_control(
+		'coco_theme_shop_hero_desc',
+		array(
+			'label'       => __( 'Hero Tienda (/shop/): Descripción', 'coco-theme' ),
+			'description' => __( 'Texto descriptivo general para /shop/. Para cambiar el texto de una categoría, edita la "Descripción" en Productos > Categorías.', 'coco-theme' ),
+			'section'     => 'coco_theme_options',
+			'type'        => 'textarea',
+		)
+	);
+
+	$wp_customize->add_setting(
+		'coco_theme_shop_hero_bg',
+		array(
+			'default'           => '',
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'esc_url_raw',
+			'transport'         => 'refresh',
+		)
+	);
+	if ( class_exists( '\WP_Customize_Image_Control' ) ) {
+		$wp_customize->add_control(
+			new \WP_Customize_Image_Control(
+				$wp_customize,
+				'coco_theme_shop_hero_bg',
+				array(
+					'label'       => __( 'Hero Tienda: Imagen de Fondo', 'coco-theme' ),
+					'description' => __( 'Sube o cambia la foto de fondo del banner de la tienda (si se deja vacío usa la imagen boutique por defecto).', 'coco-theme' ),
+					'section'     => 'coco_theme_options',
+				)
+			)
+		);
+	}
 
 	// Selector de Menú Principal para la cabecera.
 	$menus        = wp_get_nav_menus();
