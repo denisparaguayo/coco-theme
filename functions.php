@@ -2376,16 +2376,265 @@ add_action( 'wp_footer', 'coco_theme_render_mobile_sticky_buy_bar', 35 );
 
 /**
  * Limpiar automáticamente cualquier plantilla de portada corrupta guardada por el Editor del Sitio
- * en la base de datos (wp_template) para restaurar inmediatamente la visualización limpia del tema.
+ * en la base de datos (wp_template) para que la web se edite como una página normal en Páginas > Inicio.
  */
 function coco_theme_clear_corrupted_fse_front_page() {
 	global $wpdb;
 	$wpdb->query( "DELETE FROM {$wpdb->posts} WHERE post_type = 'wp_template' AND (post_name = 'front-page' OR post_name LIKE '%front-page%')" );
 }
+
+/**
+ * Generar el contenido de bloques predeterminado para la página de inicio (Páginas > Inicio).
+ */
+function coco_theme_get_default_home_content() {
+	$theme_uri = get_template_directory_uri();
+	ob_start();
+	?>
+<!-- wp:html -->
+<div class="coco-hero-luxury-section" style="padding-top:3.5rem;padding-right:1.25rem;padding-bottom:3.5rem;padding-left:1.25rem">
+	<div class="coco-hero-luxury-inner alignwide">
+		<!-- Columna Izquierda: Mensaje y Llamado a la Acción -->
+		<div class="coco-hero-luxury-left">
+			<div class="coco-hero-pill-badge">
+				<span class="coco-hero-pill-icon">📦</span>
+				<span class="coco-hero-pill-text">PAGO CONTRA ENTREGA EN TODO PARAGUAY</span>
+			</div>
+
+			<h1 class="coco-hero-headline">Productos que<br>hacen tu día mejor</h1>
+
+			<p class="coco-hero-subhead">
+				Moda, belleza y hogar, todo en un solo lugar. Comprá fácil, con envío y pago contra entrega.
+			</p>
+
+			<div class="coco-hero-cta-wrap">
+				<a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>" class="coco-hero-btn-catalog">
+					<svg class="coco-cta-bag-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+						<line x1="3" y1="6" x2="21" y2="6"></line>
+						<path d="M16 10a4 4 0 0 1-8 0"></path>
+					</svg>
+					<span>EXPLORAR CATÁLOGO</span>
+					<span class="coco-cta-arrow">&rarr;</span>
+				</a>
+
+				<svg class="coco-hero-heart-doodle" width="140" height="70" viewBox="0 0 140 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M10 45 C 35 40, 55 25, 75 16 C 82 8, 98 8, 105 22 C 112 36, 90 56, 75 62 C 60 66, 54 50, 64 38 C 74 26, 90 32, 84 46 C 76 60, 105 52, 130 40" stroke="#E2B268" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+				</svg>
+			</div>
+		</div>
+
+		<!-- Columna Derecha: Producto Destacado -->
+		<div class="coco-hero-luxury-right">
+			<div class="coco-hero-spotlight-box">
+				<div class="coco-hero-featured-tag">
+					<span>PRODUCTO DESTACADO</span>
+				</div>
+
+				<div class="coco-hero-serif-header">
+					<span class="coco-serif-sub">Protector Solar</span>
+					<span class="coco-serif-title">Oro 24K</span>
+					<span class="coco-serif-fps">FPS 90+</span>
+				</div>
+
+				<a href="<?php echo esc_url( home_url( '/shop/?s=Protector+Solar' ) ); ?>" class="coco-hero-stage-link" title="Protector Solar Oro 24K FPS 90+">
+					<img src="<?php echo esc_url( $theme_uri . '/assets/images/hero-sunscreen-beach.jpg' ); ?>" alt="Protector Solar Oro 24K FPS 90+ - Coco Cherry Store" class="coco-hero-stage-img" loading="eager" />
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /wp:html -->
+
+<!-- wp:pattern {"slug":"coco-theme/star-products"} /-->
+
+<!-- wp:pattern {"slug":"coco-theme/trust-badges"} /-->
+
+<!-- wp:pattern {"slug":"coco-theme/category-grid"} /-->
+
+<!-- wp:group {"anchor":"catalogo-destacado","style":{"spacing":{"padding":{"top":"4.5rem","bottom":"4.5rem","left":"1.25rem","right":"1.25rem"}}},"backgroundColor":"white","layout":{"type":"constrained"}} -->
+<div id="catalogo-destacado" class="wp-block-group has-white-background-color has-background" style="padding-top:4.5rem;padding-right:1.25rem;padding-bottom:4.5rem;padding-left:1.25rem">
+	<div class="wp-block-group alignwide" style="margin-bottom:2.5rem">
+		<div class="wp-block-group">
+			<h2 class="wp-block-heading has-2-xl-font-size">Productos Destacados</h2>
+			<p class="has-muted-color has-text-color">Hacé clic en cualquier producto para pedirlo con <strong>Pago al Recibir en Casa</strong></p>
+		</div>
+		<div class="wp-block-buttons">
+			<div class="wp-block-button coco-btn-primary"><a class="wp-block-button__link wp-element-button" href="/shop/">Ver Todo el Catálogo &rarr;</a></div>
+		</div>
+	</div>
+	<div class="wp-block-group alignwide">
+		[products limit="8" columns="4" orderby="date" order="DESC"]
+	</div>
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"4rem","bottom":"4rem","left":"1.25rem","right":"1.25rem"}}},"backgroundColor":"primary-soft","layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-primary-soft-background-color has-background" style="padding-top:4rem;padding-right:1.25rem;padding-bottom:4rem;padding-left:1.25rem">
+	<div class="wp-block-group alignwide" style="margin-bottom:2.5rem">
+		<h2 class="wp-block-heading has-text-align-center has-2-xl-font-size">¿Cómo Comprar con Pago Contra Entrega?</h2>
+		<p class="has-text-align-center has-slate-color has-text-color">Sin carritos complicados ni tarjetas de crédito. Tu pedido listo en menos de 1 minuto.</p>
+	</div>
+	<div class="wp-block-columns alignwide">
+		<div class="wp-block-column">
+			<div class="wp-block-group coco-trust-card has-white-background-color has-background" style="padding-top:2rem;padding-right:1.75rem;padding-bottom:2rem;padding-left:1.75rem">
+				<p class="has-primary-color has-text-color has-xl-font-size" style="font-weight:800">PASO 1</p>
+				<h3 class="wp-block-heading has-lg-font-size">Elegí tu Producto</h3>
+				<p class="has-muted-color has-text-color has-sm-font-size">Entrá al artículo que más te guste y presioná el botón <strong>"Pagar al recibir en casa"</strong> (o escribinos por WhatsApp).</p>
+			</div>
+		</div>
+		<div class="wp-block-column">
+			<div class="wp-block-group coco-trust-card has-white-background-color has-background" style="padding-top:2rem;padding-right:1.75rem;padding-bottom:2rem;padding-left:1.75rem">
+				<p class="has-primary-color has-text-color has-xl-font-size" style="font-weight:800">PASO 2</p>
+				<h3 class="wp-block-heading has-lg-font-size">Indicá tu Ciudad y Dirección</h3>
+				<p class="has-muted-color has-text-color has-sm-font-size">Seleccioná tu Departamento y Ciudad en la ventana rápida para conocer el costo de envío exacto y cargá tu número de celular.</p>
+			</div>
+		</div>
+		<div class="wp-block-column">
+			<div class="wp-block-group coco-trust-card has-white-background-color has-background" style="padding-top:2rem;padding-right:1.75rem;padding-bottom:2rem;padding-left:1.75rem">
+				<p class="has-cod-green-color has-text-color has-xl-font-size" style="font-weight:800">PASO 3</p>
+				<h3 class="wp-block-heading has-lg-font-size">Recibí y Aboná en tu Puerta</h3>
+				<p class="has-muted-color has-text-color has-sm-font-size">Coordinamos la entrega con vos y abonás en <strong>efectivo o transferencia QR</strong> recién cuando recibís tu pedido.</p>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"4.5rem","bottom":"4.5rem","left":"1.25rem","right":"1.25rem"}}},"backgroundColor":"white","layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-white-background-color has-background" style="padding-top:4.5rem;padding-right:1.25rem;padding-bottom:4.5rem;padding-left:1.25rem">
+	<div class="wp-block-group alignwide" style="margin-bottom:2.5rem">
+		<h2 class="wp-block-heading has-text-align-center has-2-xl-font-size">Lo Que Dicen Nuestras Clientas en Paraguay</h2>
+		<p class="has-text-align-center has-muted-color has-text-color">Cientos de entregas realizadas con éxito en Asunción, Central e Interior</p>
+	</div>
+	<div class="wp-block-columns alignwide">
+		<div class="wp-block-column">
+			<div class="wp-block-group coco-review-card" style="padding-top:1.75rem;padding-right:1.75rem;padding-bottom:1.75rem;padding-left:1.75rem">
+				<p class="coco-review-stars">★★★★★</p>
+				<p class="has-slate-color has-text-color has-sm-font-size">"Pedí el Protector Solar Oro 24K y unos aros. Me encantó que pude pagar recién cuando el delivery llegó a mi casa en San Lorenzo. Súper amables por WhatsApp."</p>
+				<p class="has-sm-font-size" style="font-weight:700">— Leticia G. &bull; San Lorenzo</p>
+			</div>
+		</div>
+		<div class="wp-block-column">
+			<div class="wp-block-group coco-review-card" style="padding-top:1.75rem;padding-right:1.75rem;padding-bottom:1.75rem;padding-left:1.75rem">
+				<p class="coco-review-stars">★★★★★</p>
+				<p class="has-slate-color has-text-color has-sm-font-size">"Excelente calidad de las prendas y la lencería. Hice el pedido en la web en tres pasos y al día siguiente ya lo tenía en mi oficina en Asunción. 100% recomendados."</p>
+				<p class="has-sm-font-size" style="font-weight:700">— Camila R. &bull; Asunción</p>
+			</div>
+		</div>
+		<div class="wp-block-column">
+			<div class="wp-block-group coco-review-card" style="padding-top:1.75rem;padding-right:1.75rem;padding-bottom:1.75rem;padding-left:1.75rem">
+				<p class="coco-review-stars">★★★★★</p>
+				<p class="has-slate-color has-text-color has-sm-font-size">"Compré el matamosquitos eléctrico para mi casa y funciona de maravilla. Da mucha confianza no tener que girar plata antes de recibir el producto."</p>
+				<p class="has-sm-font-size" style="font-weight:700">— Marcos V. &bull; Luque</p>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"4rem","bottom":"4rem","left":"1.25rem","right":"1.25rem"}}},"backgroundColor":"surface","layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-surface-background-color has-background" style="padding-top:4rem;padding-right:1.25rem;padding-bottom:4rem;padding-left:1.25rem">
+	<div class="wp-block-group" style="margin-bottom:2rem">
+		<h2 class="wp-block-heading has-text-align-center has-2-xl-font-size">Preguntas Frecuentes</h2>
+		<p class="has-text-align-center has-muted-color has-text-color">Resolvemos tus dudas sobre envíos y pagos contra entrega</p>
+	</div>
+	<details class="wp-block-details">
+		<summary>¿Cómo funciona el Pago Contra Entrega?</summary>
+		<p>Es muy simple y 100% seguro: hacés tu pedido en la web eligiendo tu ciudad y dirección. Nuestro repartidor te lleva el paquete hasta tu casa o trabajo y abonás recién en ese momento en efectivo o vía código QR / transferencia.</p>
+	</details>
+	<details class="wp-block-details">
+		<summary>¿A qué ciudades de Paraguay realizan envíos?</summary>
+		<p>Realizamos entregas con delivery en toda Asunción y Gran Asunción (Central), y enviamos a todos los departamentos del país. Al hacer clic en "Pagar al recibir en casa" en cualquier producto, podés seleccionar tu departamento y ciudad para ver el costo exacto al instante.</p>
+	</details>
+	<details class="wp-block-details">
+		<summary>¿Cuánto tiempo demora la entrega de mi pedido?</summary>
+		<p>En Asunción y Central las entregas se realizan habitualmente entre 24 y 48 horas hábiles. Para ciudades del interior, el plazo promedio es de 48 a 72 horas hábiles dependiendo de la localidad.</p>
+	</details>
+	<details class="wp-block-details">
+		<summary>¿Puedo hacer mi pedido o consultar talles por WhatsApp?</summary>
+		<p>¡Por supuesto! Nuestro equipo te atiende de forma personalizada en el WhatsApp <strong>0981 531503</strong> para asesorarte con talles, colores o tomar tu pedido directamente.</p>
+	</details>
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"4.5rem","bottom":"4.5rem","left":"1.25rem","right":"1.25rem"}}},"backgroundColor":"cod-green-soft","layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-cod-green-soft-background-color has-background" style="padding-top:4.5rem;padding-right:1.25rem;padding-bottom:4.5rem;padding-left:1.25rem">
+	<h2 class="wp-block-heading has-text-align-center has-2-xl-font-size">¿Tenés alguna consulta o querés pedir por WhatsApp?</h2>
+	<p class="has-text-align-center has-slate-color has-text-color has-lg-font-size">Escribinos ahora mismo al <strong>0981 531503</strong> y te ayudamos a elegir tus productos con entrega en puerta.</p>
+	<div class="wp-block-buttons" style="margin-top:1.75rem">
+		<div class="wp-block-button coco-btn-whatsapp"><a class="wp-block-button__link wp-element-button" href="https://wa.me/595981531503?text=Hola%20Coco%20Cherry%20Store!%20Quiero%20asesoramiento%20para%20hacer%20un%20pedido" target="_blank" rel="noreferrer noopener">📲 Hablar por WhatsApp (0981 531503)</a></div>
+		<div class="wp-block-button coco-btn-primary"><a class="wp-block-button__link wp-element-button" href="/shop/">🛍️ Ver Todo el Catálogo</a></div>
+	</div>
+</div>
+<!-- /wp:group -->
+	<?php
+	return ob_get_clean();
+}
+
+/**
+ * Conectar la portada al sistema normal de Páginas de WordPress.
+ * Si la página "Inicio" está vacía, mostrar el diseño completo de Coco Cherry.
+ */
+add_filter( 'the_content', function( $content ) {
+	if ( is_front_page() && is_page() ) {
+		if ( empty( trim( strip_tags( $content, '<img><svg><video><audio><input><form>' ) ) ) ) {
+			return do_blocks( coco_theme_get_default_home_content() );
+		}
+	}
+	return $content;
+} );
+
+/**
+ * Asegurar que la página "Inicio" existe y tiene el contenido cargado para editar en Páginas > Inicio.
+ */
 add_action( 'admin_init', function() {
-	if ( ! get_option( 'coco_theme_cleared_fse_front_page_v131' ) ) {
-		coco_theme_clear_corrupted_fse_front_page();
-		update_option( 'coco_theme_cleared_fse_front_page_v131', 1 );
+	coco_theme_clear_corrupted_fse_front_page();
+
+	$front_id = get_option( 'page_on_front' );
+	if ( ! $front_id ) {
+		$existing = get_page_by_path( 'inicio' );
+		if ( ! $existing ) {
+			$existing = get_page_by_path( 'home' );
+		}
+		if ( $existing ) {
+			$front_id = $existing->ID;
+		} else {
+			$front_id = wp_insert_post(
+				array(
+					'post_title'   => 'Inicio',
+					'post_name'    => 'inicio',
+					'post_status'  => 'publish',
+					'post_type'    => 'page',
+					'post_content' => coco_theme_get_default_home_content(),
+				)
+			);
+		}
+		if ( $front_id && ! is_wp_error( $front_id ) ) {
+			update_option( 'show_on_front', 'page' );
+			update_option( 'page_on_front', $front_id );
+		}
+	} else {
+		$post = get_post( $front_id );
+		if ( $post && ( empty( trim( $post->post_content ) ) || ( isset( $_GET['coco_reload_home'] ) && current_user_can( 'edit_pages' ) ) ) ) {
+			wp_update_post(
+				array(
+					'ID'           => $front_id,
+					'post_content' => coco_theme_get_default_home_content(),
+				)
+			);
+		}
+	}
+} );
+
+/**
+ * Aviso explicativo y botón de recarga rápida en Páginas > Inicio.
+ */
+add_action( 'admin_notices', function() {
+	$screen   = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+	$front_id = get_option( 'page_on_front' );
+	if ( $screen && 'page' === $screen->post_type && isset( $_GET['post'] ) && intval( $_GET['post'] ) === intval( $front_id ) ) {
+		$reload_url = add_query_arg( 'coco_reload_home', '1' );
+		echo '<div class="notice notice-info is-dismissible"><p><strong>Coco Cherry Store:</strong> Estás editando la <strong>Portada (Home)</strong> de tu tienda. Modificá cualquier texto, imagen o bloque y hacé clic en "Actualizar" para ver los cambios en la web. <a class="button button-secondary button-small" style="margin-left:8px;" href="' . esc_url( $reload_url ) . '" onclick="return confirm(\'¿Restaurar el contenido predeterminado completo de la portada?\');">Restaurar diseño predeterminado</a></p></div>';
 	}
 } );
 
