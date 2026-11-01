@@ -6,66 +6,78 @@
  */
 $theme_uri = get_template_directory_uri();
 ?>
-<!-- wp:group {"className":"coco-category-showcase-section","style":{"spacing":{"padding":{"top":"3.5rem","bottom":"3.5rem","left":"1.25rem","right":"1.25rem"}}},"backgroundColor":"white","layout":{"type":"constrained"}} -->
-<div class="wp-block-group coco-category-showcase-section has-white-background-color has-background" style="padding-top:3.5rem;padding-right:1.25rem;padding-bottom:3.5rem;padding-left:1.25rem">
-	<div class="coco-flanked-header alignwide">
-		<span class="coco-flank-line"></span>
-		<h2 class="coco-flank-title">EXPLORÁ NUESTRO CATÁLOGO</h2>
-		<span class="coco-flank-line"></span>
-	</div>
+<!-- wp:group {"className":"coco-category-showcase-section"} -->
+<div class="wp-block-group coco-category-showcase-section">
+<!-- wp:heading {"className":"coco-flank-title"} -->
+<h2 class="wp-block-heading coco-flank-title">EXPLORÁ NUESTRO CATÁLOGO</h2>
+<!-- /wp:heading -->
 
-	<div class="coco-catalog-grid alignwide">
-		<!-- Categoría 1: Belleza -->
-		<div class="coco-catalog-card">
-			<a href="<?php echo esc_url( home_url( '/categoria-producto/belleza/' ) ); ?>" class="coco-catalog-card-link">
-				<div class="coco-catalog-img-container">
-					<img src="<?php echo esc_url( $theme_uri . '/assets/images/cat-belleza.jpg' ); ?>" alt="Categoría Belleza - Coco Cherry Store" loading="lazy" />
-				</div>
-				<span class="coco-catalog-pill">
-					<span>Belleza</span>
-					<span class="coco-pill-arrow">&rarr;</span>
-				</span>
-			</a>
-		</div>
+<!-- wp:columns {"className":"coco-catalog-grid"} -->
+<div class="wp-block-columns coco-catalog-grid">
+<!-- wp:column {"className":"coco-catalog-card"} -->
+<div class="wp-block-column coco-catalog-card">
+<!-- wp:image {"sizeSlug":"large","linkDestination":"custom","className":"coco-catalog-img-container"} -->
+<figure class="wp-block-image size-large coco-catalog-img-container"><a href="<?php echo esc_url( home_url( '/categoria-producto/belleza/' ) ); ?>"><img src="<?php echo esc_url( $theme_uri . '/assets/images/cat-belleza.jpg' ); ?>" alt="Categoría Belleza - Coco Cherry Store"/></a></figure>
+<!-- /wp:image -->
 
-		<!-- Categoría 2: Moda -->
-		<div class="coco-catalog-card">
-			<a href="<?php echo esc_url( home_url( '/categoria-producto/moda/' ) ); ?>" class="coco-catalog-card-link">
-				<div class="coco-catalog-img-container">
-					<img src="<?php echo esc_url( $theme_uri . '/assets/images/cat-moda.jpg' ); ?>" alt="Categoría Moda - Coco Cherry Store" loading="lazy" />
-				</div>
-				<span class="coco-catalog-pill">
-					<span>Moda</span>
-					<span class="coco-pill-arrow">&rarr;</span>
-				</span>
-			</a>
-		</div>
+<!-- wp:buttons {"className":"coco-catalog-pill-wrap"} -->
+<div class="wp-block-buttons coco-catalog-pill-wrap">
+<!-- wp:button {"className":"coco-catalog-pill-btn"} -->
+<div class="wp-block-button coco-catalog-pill-btn"><a class="wp-block-button__link wp-element-button" href="<?php echo esc_url( home_url( '/categoria-producto/belleza/' ) ); ?>">Belleza &rarr;</a></div>
+<!-- /wp:button -->
+</div>
+<!-- /wp:buttons -->
+</div>
+<!-- /wp:column -->
 
-		<!-- Categoría 3: Hogar -->
-		<div class="coco-catalog-card">
-			<a href="<?php echo esc_url( home_url( '/categoria-producto/hogar/' ) ); ?>" class="coco-catalog-card-link">
-				<div class="coco-catalog-img-container">
-					<img src="<?php echo esc_url( $theme_uri . '/assets/images/cat-hogar.jpg' ); ?>" alt="Categoría Hogar - Coco Cherry Store" loading="lazy" />
-				</div>
-				<span class="coco-catalog-pill">
-					<span>Hogar</span>
-					<span class="coco-pill-arrow">&rarr;</span>
-				</span>
-			</a>
-		</div>
+<!-- wp:column {"className":"coco-catalog-card"} -->
+<div class="wp-block-column coco-catalog-card">
+<!-- wp:image {"sizeSlug":"large","linkDestination":"custom","className":"coco-catalog-img-container"} -->
+<figure class="wp-block-image size-large coco-catalog-img-container"><a href="<?php echo esc_url( home_url( '/categoria-producto/moda/' ) ); ?>"><img src="<?php echo esc_url( $theme_uri . '/assets/images/cat-moda.jpg' ); ?>" alt="Categoría Moda - Coco Cherry Store"/></a></figure>
+<!-- /wp:image -->
 
-		<!-- Categoría 4: Accesorios -->
-		<div class="coco-catalog-card">
-			<a href="<?php echo esc_url( home_url( '/categoria-producto/bijouterie/' ) ); ?>" class="coco-catalog-card-link">
-				<div class="coco-catalog-img-container">
-					<img src="<?php echo esc_url( $theme_uri . '/assets/images/cat-accesorios.jpg' ); ?>" alt="Categoría Accesorios - Coco Cherry Store" loading="lazy" />
-				</div>
-				<span class="coco-catalog-pill">
-					<span>Accesorios</span>
-					<span class="coco-pill-arrow">&rarr;</span>
-				</span>
-			</a>
-		</div>
-	</div>
+<!-- wp:buttons {"className":"coco-catalog-pill-wrap"} -->
+<div class="wp-block-buttons coco-catalog-pill-wrap">
+<!-- wp:button {"className":"coco-catalog-pill-btn"} -->
+<div class="wp-block-button coco-catalog-pill-btn"><a class="wp-block-button__link wp-element-button" href="<?php echo esc_url( home_url( '/categoria-producto/moda/' ) ); ?>">Moda &rarr;</a></div>
+<!-- /wp:button -->
+</div>
+<!-- /wp:buttons -->
+</div>
+<!-- /wp:column -->
+
+<!-- wp:column {"className":"coco-catalog-card"} -->
+<div class="wp-block-column coco-catalog-card">
+<!-- wp:image {"sizeSlug":"large","linkDestination":"custom","className":"coco-catalog-img-container"} -->
+<figure class="wp-block-image size-large coco-catalog-img-container"><a href="<?php echo esc_url( home_url( '/categoria-producto/hogar/' ) ); ?>"><img src="<?php echo esc_url( $theme_uri . '/assets/images/cat-hogar.jpg' ); ?>" alt="Categoría Hogar - Coco Cherry Store"/></a></figure>
+<!-- /wp:image -->
+
+<!-- wp:buttons {"className":"coco-catalog-pill-wrap"} -->
+<div class="wp-block-buttons coco-catalog-pill-wrap">
+<!-- wp:button {"className":"coco-catalog-pill-btn"} -->
+<div class="wp-block-button coco-catalog-pill-btn"><a class="wp-block-button__link wp-element-button" href="<?php echo esc_url( home_url( '/categoria-producto/hogar/' ) ); ?>">Hogar &rarr;</a></div>
+<!-- /wp:button -->
+</div>
+<!-- /wp:buttons -->
+</div>
+<!-- /wp:column -->
+
+<!-- wp:column {"className":"coco-catalog-card"} -->
+<div class="wp-block-column coco-catalog-card">
+<!-- wp:image {"sizeSlug":"large","linkDestination":"custom","className":"coco-catalog-img-container"} -->
+<figure class="wp-block-image size-large coco-catalog-img-container"><a href="<?php echo esc_url( home_url( '/categoria-producto/bijouterie/' ) ); ?>"><img src="<?php echo esc_url( $theme_uri . '/assets/images/cat-accesorios.jpg' ); ?>" alt="Categoría Accesorios - Coco Cherry Store"/></a></figure>
+<!-- /wp:image -->
+
+<!-- wp:buttons {"className":"coco-catalog-pill-wrap"} -->
+<div class="wp-block-buttons coco-catalog-pill-wrap">
+<!-- wp:button {"className":"coco-catalog-pill-btn"} -->
+<div class="wp-block-button coco-catalog-pill-btn"><a class="wp-block-button__link wp-element-button" href="<?php echo esc_url( home_url( '/categoria-producto/bijouterie/' ) ); ?>">Accesorios &rarr;</a></div>
+<!-- /wp:button -->
+</div>
+<!-- /wp:buttons -->
+</div>
+<!-- /wp:column -->
+</div>
+<!-- /wp:columns -->
 </div>
 <!-- /wp:group -->
