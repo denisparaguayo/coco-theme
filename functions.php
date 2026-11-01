@@ -2401,7 +2401,7 @@ add_action( 'enqueue_block_editor_assets', 'coco_theme_enqueue_block_editor_styl
  */
 function coco_theme_clear_corrupted_fse_front_page() {
 	global $wpdb;
-	$wpdb->query( "DELETE FROM {$wpdb->posts} WHERE post_type = 'wp_template' AND (post_name = 'front-page' OR post_name LIKE '%front-page%')" );
+	$wpdb->query( "DELETE FROM {$wpdb->posts} WHERE post_type IN ('wp_template', 'wp_template_part') AND (post_name LIKE '%front-page%' OR post_name LIKE '%header%' OR post_name LIKE '%footer%')" );
 }
 
 /**

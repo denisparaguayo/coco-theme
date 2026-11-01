@@ -1,0 +1,44 @@
+<?php
+/**
+ * Title: Cabecera Principal (Header)
+ * Slug: coco-theme/header
+ * Categories: header, coco-cherry
+ * Block Types: core/template-part/header
+ * Description: Cabecera 100% nativa con barra superior de avisos, logo, menú y botón de WhatsApp, con colores de fondo editables.
+ */
+?>
+<!-- wp:group {"tagName":"div","className":"coco-sticky-top-marquee","backgroundColor":"dark","textColor":"white","layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"center"}} -->
+<div class="wp-block-group coco-sticky-top-marquee has-white-color has-dark-background-color has-text-color has-background"><p class="has-text-align-center coco-top-marquee-text has-xs-font-size" style="margin:0;padding:0.4rem 1rem;">💵 Pago Contra Entrega en efectivo o QR &bull; 🚚 Envíos a todo Paraguay &bull; 📲 WhatsApp: 0981 531503 &bull; 🛡️ 100% Compra Segura</p></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"tagName":"header","className":"coco-site-header coco-boutique-header","backgroundColor":"white","layout":{"type":"constrained"}} -->
+<header class="wp-block-group coco-site-header coco-boutique-header has-white-background-color has-background">
+	<!-- wp:group {"align":"wide","className":"coco-header-container","layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"space-between","verticalAlignment":"center"}} -->
+	<div class="wp-block-group alignwide coco-header-container">
+		<!-- wp:group {"className":"coco-header-logo-area","layout":{"type":"flex","flexWrap":"nowrap","verticalAlignment":"center"}} -->
+		<div class="wp-block-group coco-header-logo-area">
+			<!-- wp:site-logo {"width":140,"shouldSyncIcon":false} /-->
+			<!-- wp:site-title {"level":0,"style":{"typography":{"fontWeight":"800","fontSize":"1.35rem"}}} /-->
+		</div>
+		<!-- /wp:group -->
+
+		<!-- wp:navigation {"className":"coco-header-nav-center coco-boutique-nav","overlayMenu":"mobile","layout":{"type":"flex","justifyContent":"center","flexWrap":"nowrap"}} -->
+			<!-- wp:navigation-link {"label":"Tienda","url":"/shop/"} /-->
+			<!-- wp:navigation-link {"label":"Bijouterie & Accesorios","url":"/categoria-producto/bijouterie/"} /-->
+			<!-- wp:navigation-link {"label":"Hogar","url":"/categoria-producto/hogar/"} /-->
+			<!-- wp:navigation-link {"label":"Moda & Indumentaria","url":"/categoria-producto/moda/"} /-->
+			<!-- wp:navigation-link {"label":"Preguntas Frecuentes","url":"/faq/"} /-->
+			<!-- wp:navigation-link {"label":"Contacto","url":"https://wa.me/595981531503"} /-->
+		<!-- /wp:navigation -->
+
+		<!-- wp:buttons {"className":"coco-header-actions-right","layout":{"type":"flex","flexWrap":"nowrap","verticalAlignment":"center"}} -->
+		<div class="wp-block-buttons coco-header-actions-right">
+			<!-- wp:button {"className":"coco-header-action-btn coco-btn-wa-header","style":{"spacing":{"padding":{"top":"0.45rem","bottom":"0.45rem","left":"0.85rem","right":"0.85rem"}},"typography":{"fontSize":"0.84rem","fontWeight":"700"}},"backgroundColor":"primary","textColor":"white"} -->
+			<div class="wp-block-button coco-header-action-btn coco-btn-wa-header"><a class="wp-block-button__link has-white-color has-primary-background-color has-text-color has-background wp-element-button" href="https://wa.me/595981531503" target="_blank" rel="noreferrer noopener" style="padding-top:0.45rem;padding-right:0.85rem;padding-bottom:0.45rem;padding-left:0.85rem;font-size:0.84rem;font-weight:700">📲 Pedir por WhatsApp</a></div>
+			<!-- /wp:button -->
+		</div>
+		<!-- /wp:buttons -->
+	</div>
+	<!-- /wp:group -->
+</header>
+<!-- /wp:group -->

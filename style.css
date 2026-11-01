@@ -7,7 +7,7 @@ Description: Tema WordPress Full Site Editing (FSE) ultraligero y de alta conver
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 7.4
-Version: 1.3.6
+Version: 1.3.7
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: coco-theme
@@ -83,17 +83,32 @@ body {
 	top: 0;
 	z-index: 999;
 	width: 100%;
-	background: #111827;
-	color: #FFFFFF;
 	display: flex;
 	align-items: center;
+	justify-content: center;
 	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 	overflow: hidden;
-	height: 36px;
+	min-height: 34px;
 	margin: 0;
 	padding: 0;
 	border-radius: 0 !important;
+}
+
+.coco-sticky-top-marquee:not(.has-background) {
+	background: #111827;
+}
+
+.coco-sticky-top-marquee:not(.has-text-color) {
+	color: #FFFFFF;
+}
+
+.coco-top-marquee-text {
+	margin: 0;
+	padding: 0.35rem 1rem;
+	font-weight: 500;
+	letter-spacing: 0.01em;
+	width: 100%;
 }
 
 .coco-top-marquee-container {
@@ -166,10 +181,13 @@ body {
 	position: sticky;
 	top: 0;
 	z-index: 990;
-	background-color: #FFFFFF !important;
 	border-bottom: 1.5px solid #DFC79C;
 	box-shadow: 0 2px 14px rgba(31, 41, 51, 0.04);
 	padding: 0 !important;
+}
+
+.coco-site-header:not(.has-background) {
+	background-color: #FFFFFF;
 }
 
 /* Header Boutique: 1 fila balanceada con logo, navegación con íconos sobre texto y acciones */
@@ -279,6 +297,46 @@ body {
 	height: 2.5px;
 	background-color: #B87B1D;
 	border-radius: 4px 4px 0 0;
+}
+
+/* Soporte para el bloque de navegación nativo de Gutenberg (wp:navigation) */
+.coco-boutique-nav .wp-block-navigation__container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 1.5rem;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.coco-boutique-nav .wp-block-navigation-item__content {
+	font-size: 0.88rem;
+	font-weight: 600;
+	color: #374151;
+	text-decoration: none;
+	padding: 0.4rem 0.65rem;
+	border-radius: 8px;
+	transition: all 0.2s ease;
+	display: inline-flex;
+	align-items: center;
+}
+
+.coco-boutique-nav .wp-block-navigation-item__content:hover,
+.coco-boutique-nav .wp-block-navigation-item.current-menu-item .wp-block-navigation-item__content {
+	color: #B87B1D;
+	background: #FAF6ED;
+}
+
+.coco-btn-wa-header .wp-block-button__link {
+	border-radius: 999px !important;
+	box-shadow: 0 4px 12px rgba(206, 19, 34, 0.2);
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.coco-btn-wa-header .wp-block-button__link:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 6px 16px rgba(206, 19, 34, 0.3);
 }
 
 /* Acciones a la derecha: Lupa, WhatsApp/Perfil y Hamburguesa (SIN CARRITO) */
@@ -3033,20 +3091,26 @@ ul.products::after,
    10. FOOTER Y BOTÓN FLOTANTE DE WHATSAPP
    ========================================================================== */
 .coco-site-footer {
-	background-color: var(--coco-dark) !important;
-	color: #cbd5e1 !important;
 	border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.coco-site-footer .wp-block-site-title a {
-	color: var(--coco-white) !important;
-	text-decoration: none !important;
+.coco-site-footer:not(.has-background) {
+	background-color: var(--coco-dark);
+}
+
+.coco-site-footer:not(.has-text-color) {
+	color: #cbd5e1;
+}
+
+.coco-site-footer:not(.has-text-color) .wp-block-site-title a {
+	color: var(--coco-white);
+	text-decoration: none;
 	font-weight: 800;
 	transition: var(--coco-transition);
 }
 
 .coco-site-footer .wp-block-site-title a:hover {
-	color: var(--coco-primary) !important;
+	color: var(--coco-primary);
 }
 
 .coco-site-footer .coco-footer-logo {
@@ -3062,9 +3126,9 @@ ul.products::after,
 	object-fit: contain;
 }
 
-.coco-site-footer .wp-block-heading {
-	color: var(--coco-white) !important;
-	margin-bottom: 1.15rem !important;
+.coco-site-footer:not(.has-text-color) .wp-block-heading {
+	color: var(--coco-white);
+	margin-bottom: 1.15rem;
 	position: relative;
 	padding-bottom: 0.5rem;
 	letter-spacing: -0.01em;
@@ -3094,15 +3158,15 @@ ul.products::after,
 	font-size: 0.92rem;
 }
 
-.coco-site-footer a {
-	color: #cbd5e1 !important;
-	text-decoration: none !important;
+.coco-site-footer:not(.has-text-color) a {
+	color: #cbd5e1;
+	text-decoration: none;
 	transition: var(--coco-transition);
 	display: inline-block;
 }
 
 .coco-site-footer a:hover {
-	color: var(--coco-primary) !important;
+	color: var(--coco-primary);
 	transform: translateX(2px);
 }
 
