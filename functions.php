@@ -376,6 +376,65 @@ function coco_theme_enqueue_assets() {
 		array( 'coco-theme-fonts' ),
 		COCO_THEME_VERSION
 	);
+
+	$header_js = "
+window.cocoToggleSearch = function(force) {
+	var bar = document.getElementById('coco-header-search-bar');
+	if (!bar) return;
+	var willOpen = (typeof force === 'boolean') ? force : (bar.style.display === 'none' || !bar.style.display);
+	bar.style.display = willOpen ? 'block' : 'none';
+	if (willOpen) {
+		var inp = bar.querySelector('.coco-header-search-input');
+		if (inp) inp.focus();
+	}
+};
+window.cocoToggleMobileNav = function(force) {
+	var drawer = document.getElementById('coco-mobile-drawer');
+	if (!drawer) return;
+	var willOpen = (typeof force === 'boolean') ? force : !drawer.classList.contains('is-open');
+	if (willOpen) {
+		drawer.classList.add('is-open');
+		drawer.style.display = 'block';
+		drawer.setAttribute('aria-hidden', 'false');
+		document.body.style.overflow = 'hidden';
+	} else {
+		drawer.classList.remove('is-open');
+		drawer.style.display = 'none';
+		drawer.setAttribute('aria-hidden', 'true');
+		document.body.style.overflow = '';
+	}
+};
+window.cocoDismissTopBar = function() {
+	var m = document.getElementById('coco-sticky-marquee-top');
+	if (m) {
+		m.style.display = 'none';
+		try { sessionStorage.setItem('coco_topbar_dismissed', '1'); } catch(e){}
+	}
+};
+(function(){
+	try {
+		if (sessionStorage.getItem('coco_topbar_dismissed') === '1') {
+			var m = document.getElementById('coco-sticky-marquee-top');
+			if (m) m.style.display = 'none';
+		}
+	} catch(e){}
+	try {
+		var loc = window.location.pathname;
+		var items = document.querySelectorAll('.coco-boutique-nav-list .coco-nav-item');
+		items.forEach(function(item){
+			var a = item.querySelector('a');
+			if (!a) return;
+			var h = a.getAttribute('href');
+			if (h && (loc === h || (h !== '/' && h !== '/shop/' && loc.indexOf(h) !== -1))) {
+				item.classList.add('active');
+			} else if (h === '/shop/' && (loc === '/' || loc === '/shop/' || loc === '/shop')) {
+				item.classList.add('active');
+			}
+		});
+	} catch(e){}
+})();
+";
+	wp_add_inline_script( 'coco-theme-style', $header_js );
 }
 add_action( 'wp_enqueue_scripts', 'coco_theme_enqueue_assets' );
 
@@ -2401,7 +2460,7 @@ add_action( 'enqueue_block_editor_assets', 'coco_theme_enqueue_block_editor_styl
  */
 function coco_theme_clear_corrupted_fse_front_page() {
 	global $wpdb;
-	$wpdb->query( "DELETE FROM {$wpdb->posts} WHERE post_type IN ('wp_template', 'wp_template_part') AND (post_name LIKE '%front-page%' OR post_name LIKE '%header%' OR post_name LIKE '%footer%')" );
+	$wpdb->query( "DELETE FROM {$wpdb->posts} WHERE post_type = 'wp_template' AND (post_name = 'front-page' OR post_name LIKE '%front-page%')" );
 }
 
 /**
@@ -2936,6 +2995,10 @@ add_filter( 'the_content', function( $content ) {
  * Asegurar que la página "Inicio" existe y se actualiza con los bloques 100% nativos de Gutenberg.
  */
 function coco_theme_sync_native_front_page() {
+	if ( ! is_admin() ) {
+		return;
+	}
+
 	coco_theme_clear_corrupted_fse_front_page();
 
 	$front_id = get_option( 'page_on_front' );
@@ -2981,7 +3044,7 @@ function coco_theme_sync_native_front_page() {
 		}
 	}
 }
-add_action( 'init', 'coco_theme_sync_native_front_page', 20 );
+add_action( 'admin_init', 'coco_theme_sync_native_front_page', 20 );
 
 /**
  * Aviso explicativo y botón de recarga rápida en Páginas > Inicio.
