@@ -8,7 +8,6 @@ $theme_uri = get_template_directory_uri();
 ?>
 <!-- wp:group {"className":"coco-hero-luxury-section","style":{"spacing":{"padding":{"top":"3.5rem","bottom":"3.5rem","left":"1.25rem","right":"1.25rem"}}},"layout":{"type":"constrained"}} -->
 <div class="wp-block-group coco-hero-luxury-section" style="padding-top:3.5rem;padding-right:1.25rem;padding-bottom:3.5rem;padding-left:1.25rem">
-<!-- wp:html -->
 	<div class="coco-hero-luxury-inner alignwide">
 		<!-- Columna Izquierda: Mensaje y Llamado a la Acción -->
 		<div class="coco-hero-luxury-left">
@@ -60,6 +59,5 @@ $theme_uri = get_template_directory_uri();
 			</div>
 		</div>
 	</div>
-<!-- /wp:html -->
 </div>
 <!-- /wp:group -->

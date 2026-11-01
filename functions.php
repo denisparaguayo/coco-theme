@@ -2374,5 +2374,21 @@ function coco_theme_render_mobile_sticky_buy_bar() {
 }
 add_action( 'wp_footer', 'coco_theme_render_mobile_sticky_buy_bar', 35 );
 
+/**
+ * Limpiar automáticamente cualquier plantilla de portada corrupta guardada por el Editor del Sitio
+ * en la base de datos (wp_template) para restaurar inmediatamente la visualización limpia del tema.
+ */
+function coco_theme_clear_corrupted_fse_front_page() {
+	global $wpdb;
+	$wpdb->query( "DELETE FROM {$wpdb->posts} WHERE post_type = 'wp_template' AND (post_name = 'front-page' OR post_name LIKE '%front-page%')" );
+}
+add_action( 'admin_init', function() {
+	if ( ! get_option( 'coco_theme_cleared_fse_front_page_v131' ) ) {
+		coco_theme_clear_corrupted_fse_front_page();
+		update_option( 'coco_theme_cleared_fse_front_page_v131', 1 );
+	}
+} );
+
+
 
 

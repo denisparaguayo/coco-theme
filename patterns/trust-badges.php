@@ -7,7 +7,6 @@
 ?>
 <!-- wp:group {"className":"coco-trust-strip-wrapper","style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1.25rem","right":"1.25rem"}}},"backgroundColor":"white","layout":{"type":"constrained"}} -->
 <div class="wp-block-group coco-trust-strip-wrapper has-white-background-color has-background" style="padding-top:1.5rem;padding-right:1.25rem;padding-bottom:1.5rem;padding-left:1.25rem">
-<!-- wp:html -->
 	<div class="coco-trust-strip alignwide">
 		<!-- Pilar 1: Pago contra entrega -->
 		<div class="coco-trust-strip-item">
@@ -48,6 +47,5 @@
 			<span class="coco-trust-strip-text">Compra fácil y segura</span>
 		</div>
 	</div>
-<!-- /wp:html -->
 </div>
 <!-- /wp:group -->

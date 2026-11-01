@@ -278,6 +278,10 @@ class Updater {
 
 		wp_clean_themes_cache();
 
+		// Limpiar plantillas personalizadas corruptas de FSE para garantizar que siempre se use la última versión del código
+		global $wpdb;
+		$wpdb->query( "DELETE FROM {$wpdb->posts} WHERE post_type = 'wp_template' AND (post_name = 'front-page' OR post_name LIKE '%front-page%')" );
+
 		$new_ver   = $this->get_local_version();
 		$style_php = $destination . '/style.css';
 		if ( file_exists( $style_php ) ) {
