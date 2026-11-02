@@ -7,7 +7,7 @@ Description: Tema WordPress Full Site Editing (FSE) ultraligero y de alta conver
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 7.4
-Version: 1.4.1
+Version: 1.4.2
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: coco-theme
@@ -299,6 +299,90 @@ body {
 	border-radius: 4px 4px 0 0;
 }
 
+/* ==========================================================================
+   DROPDOWN SUBMENUS BOUTIQUE (DESKTOP)
+   ========================================================================== */
+.coco-boutique-nav-list .coco-nav-item {
+	position: relative;
+}
+
+.coco-dropdown-arrow {
+	display: inline-block;
+	font-size: 0.68rem;
+	margin-left: 3px;
+	transition: transform 0.2s ease;
+	vertical-align: middle;
+	color: #6B7280;
+}
+
+.coco-nav-item:hover .coco-dropdown-arrow {
+	transform: rotate(180deg);
+	color: #B87B1D;
+}
+
+.coco-dropdown-menu {
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	transform: translateX(-50%) translateY(10px);
+	min-width: 220px;
+	background: #FFFFFF;
+	border: 1px solid #E5E7EB;
+	border-radius: 12px;
+	box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.12), 0 4px 10px rgba(0, 0, 0, 0.04);
+	padding: 0.5rem 0;
+	margin: 0;
+	list-style: none;
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.22s ease;
+	z-index: 1000;
+}
+
+/* Puente invisible para mantener el hover */
+.coco-dropdown-menu::before {
+	content: "";
+	position: absolute;
+	top: -12px;
+	left: 0;
+	right: 0;
+	height: 12px;
+}
+
+.coco-nav-item.has-dropdown:hover .coco-dropdown-menu,
+.coco-nav-item.has-dropdown:focus-within .coco-dropdown-menu {
+	opacity: 1;
+	visibility: visible;
+	transform: translateX(-50%) translateY(0);
+	pointer-events: auto;
+}
+
+.coco-dropdown-item {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.coco-dropdown-link {
+	display: flex;
+	align-items: center;
+	padding: 0.65rem 1.25rem;
+	color: #374151;
+	font-size: 0.88rem;
+	font-weight: 500;
+	text-decoration: none;
+	transition: all 0.18s ease;
+	white-space: nowrap;
+}
+
+.coco-dropdown-link:hover {
+	background-color: #FAF6ED;
+	color: #B87B1D;
+	font-weight: 600;
+	padding-left: 1.45rem;
+}
+
 /* Soporte para el bloque de navegación nativo de Gutenberg (wp:navigation) */
 .coco-boutique-nav .wp-block-navigation__container {
 	display: flex;
@@ -544,6 +628,21 @@ body.admin-bar .coco-mobile-drawer-content {
 	gap: 0.5rem;
 }
 
+.coco-mobile-nav-item {
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+}
+
+.coco-mobile-nav-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background: #FFFFFF;
+	border-radius: 10px;
+	transition: background 0.2s ease;
+}
+
 .coco-mobile-nav-list li a {
 	display: flex;
 	align-items: center;
@@ -556,6 +655,73 @@ body.admin-bar .coco-mobile-drawer-content {
 	font-weight: 600;
 	font-size: 0.96rem;
 	transition: all 0.2s ease;
+}
+
+.coco-mobile-nav-row .coco-mobile-nav-link {
+	flex: 1;
+	background: transparent;
+}
+
+.coco-mobile-submenu-toggle {
+	background: transparent;
+	border: none;
+	padding: 0.85rem 1rem;
+	cursor: pointer;
+	color: #6B7280;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: color 0.2s ease;
+}
+
+.coco-submenu-caret {
+	transition: transform 0.25s ease;
+}
+
+.coco-mobile-nav-item.is-open .coco-submenu-caret {
+	transform: rotate(180deg);
+	stroke: #B87B1D;
+}
+
+.coco-mobile-submenu {
+	display: none;
+	list-style: none;
+	margin: 0.35rem 0 0.5rem 1rem;
+	padding: 0.35rem 0 0.35rem 0.75rem;
+	border-left: 2px solid #E5E7EB;
+	flex-direction: column;
+	gap: 0.35rem;
+}
+
+.coco-mobile-nav-item.is-open .coco-mobile-submenu {
+	display: flex;
+}
+
+.coco-mobile-sublink {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.55rem 0.75rem !important;
+	color: #4B5563 !important;
+	text-decoration: none;
+	font-size: 0.9rem !important;
+	font-weight: 500 !important;
+	background: transparent !important;
+	border-radius: 8px;
+	transition: all 0.15s ease;
+}
+
+.coco-sublink-bullet {
+	color: #B87B1D;
+	font-size: 1.1rem;
+	line-height: 1;
+}
+
+.coco-mobile-sublink:hover,
+.coco-mobile-sublink:active {
+	background: #FAF6ED !important;
+	color: #B87B1D !important;
+	font-weight: 600 !important;
 }
 
 .coco-mobile-nav-list li a:hover,

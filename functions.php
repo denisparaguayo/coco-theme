@@ -68,6 +68,7 @@ function coco_theme_setup() {
 	register_nav_menus(
 		array(
 			'primary' => __( 'Menú Principal (Cabecera)', 'coco-theme' ),
+			'mobile'  => __( 'Menú Móvil (Cajón Lateral)', 'coco-theme' ),
 			'footer'  => __( 'Menú de Pie de Página (Footer)', 'coco-theme' ),
 		)
 	);
@@ -424,14 +425,19 @@ function coco_theme_get_nav_icon_html( $title, $url = '', $is_mobile = false ) {
 }
 
 /**
- * Obtener elementos de navegación configurados en Apariencia > Menús.
+ * Obtener elementos de navegación configurados en Apariencia > Menús con jerarquía padre-hijos.
  *
- * @return array Lista de elementos con title, url, target, classes.
+ * @param string $location Ubicación del menú ('primary' o 'mobile').
+ * @return array Lista jerárquica de elementos con title, url, target, classes, children.
  */
-function coco_theme_get_header_nav_items() {
-	$items     = array();
+function coco_theme_get_header_nav_items( $location = 'primary' ) {
 	$locations = get_nav_menu_locations();
-	$menu_id   = ! empty( $locations['primary'] ) ? intval( $locations['primary'] ) : 0;
+	$menu_id   = ! empty( $locations[ $location ] ) ? intval( $locations[ $location ] ) : 0;
+
+	// Si se solicita 'mobile' pero no tiene menú asignado, heredar automáticamente 'primary'
+	if ( 'mobile' === $location && ! $menu_id && ! empty( $locations['primary'] ) ) {
+		$menu_id = intval( $locations['primary'] );
+	}
 
 	// Si no está asignado a 'primary', revisar la opción del personalizador
 	if ( ! $menu_id ) {
@@ -458,66 +464,84 @@ function coco_theme_get_header_nav_items() {
 	if ( $menu_id > 0 && is_nav_menu( $menu_id ) ) {
 		$nav_items = wp_get_nav_menu_items( $menu_id );
 		if ( ! empty( $nav_items ) && ! is_wp_error( $nav_items ) ) {
+			$items_by_id = array();
+			$tree        = array();
+
 			foreach ( $nav_items as $item ) {
-				// Solo elementos de nivel superior
-				if ( intval( $item->menu_item_parent ) === 0 ) {
-					$items[] = array(
-						'title'   => $item->title,
-						'url'     => $item->url,
-						'target'  => ! empty( $item->target ) ? $item->target : '',
-						'classes' => is_array( $item->classes ) ? implode( ' ', array_filter( $item->classes ) ) : '',
-					);
+				$items_by_id[ $item->ID ] = array(
+					'id'       => $item->ID,
+					'parent'   => intval( $item->menu_item_parent ),
+					'title'    => $item->title,
+					'url'      => $item->url,
+					'target'   => ! empty( $item->target ) ? $item->target : '',
+					'classes'  => is_array( $item->classes ) ? implode( ' ', array_filter( $item->classes ) ) : '',
+					'children' => array(),
+				);
+			}
+
+			foreach ( $items_by_id as $id => &$node ) {
+				if ( 0 === $node['parent'] ) {
+					$tree[ $id ] = &$node;
+				} else {
+					if ( isset( $items_by_id[ $node['parent'] ] ) ) {
+						$items_by_id[ $node['parent'] ]['children'][] = &$node;
+					}
 				}
 			}
+			unset( $node );
+
+			return array_values( $tree );
 		}
 	}
 
 	// Si no hay menú creado aún, usar los elementos predeterminados de la tienda
-	if ( empty( $items ) ) {
-		$items = array(
-			array(
-				'title'  => 'Tienda',
-				'url'    => home_url( '/shop/' ),
-				'target' => '',
-			),
-			array(
-				'title'  => 'Bijouterie & Accesorios',
-				'url'    => home_url( '/categoria-producto/bijouterie/' ),
-				'target' => '',
-			),
-			array(
-				'title'  => 'Hogar',
-				'url'    => home_url( '/categoria-producto/hogar/' ),
-				'target' => '',
-			),
-			array(
-				'title'  => 'Moda & Indumentaria',
-				'url'    => home_url( '/categoria-producto/moda/' ),
-				'target' => '',
-			),
-			array(
-				'title'  => 'Preguntas Frecuentes',
-				'url'    => home_url( '/faq/' ),
-				'target' => '',
-			),
-			array(
-				'title'  => 'Contacto',
-				'url'    => 'https://wa.me/595981531503',
-				'target' => '_blank',
-			),
-		);
-	}
-
-	return $items;
+	return array(
+		array(
+			'title'    => 'Tienda',
+			'url'      => home_url( '/shop/' ),
+			'target'   => '',
+			'children' => array(),
+		),
+		array(
+			'title'    => 'Bijouterie & Accesorios',
+			'url'      => home_url( '/categoria-producto/bijouterie/' ),
+			'target'   => '',
+			'children' => array(),
+		),
+		array(
+			'title'    => 'Hogar',
+			'url'      => home_url( '/categoria-producto/hogar/' ),
+			'target'   => '',
+			'children' => array(),
+		),
+		array(
+			'title'    => 'Moda & Indumentaria',
+			'url'      => home_url( '/categoria-producto/moda/' ),
+			'target'   => '',
+			'children' => array(),
+		),
+		array(
+			'title'    => 'Preguntas Frecuentes',
+			'url'      => home_url( '/faq/' ),
+			'target'   => '',
+			'children' => array(),
+		),
+		array(
+			'title'    => 'Contacto',
+			'url'      => 'https://wa.me/595981531503',
+			'target'   => '_blank',
+			'children' => array(),
+		),
+	);
 }
 
 /**
  * Renderizar la barra de navegación boutique para la cabecera (escritorio).
  *
- * @return string HTML de la navegación con iconos sobre cada título.
+ * @return string HTML de la navegación con iconos y submenús desplegables.
  */
 function coco_theme_render_boutique_nav() {
-	$items = coco_theme_get_header_nav_items();
+	$items = coco_theme_get_header_nav_items( 'primary' );
 	if ( empty( $items ) ) {
 		return '';
 	}
@@ -528,10 +552,11 @@ function coco_theme_render_boutique_nav() {
 	$output .= '<ul class="coco-boutique-nav-list">';
 
 	foreach ( $items as $item ) {
-		$title     = esc_html( $item['title'] );
-		$url       = esc_url( $item['url'] );
-		$target    = ! empty( $item['target'] ) ? ' target="' . esc_attr( $item['target'] ) . '" rel="noreferrer noopener"' : '';
-		$icon_html = coco_theme_get_nav_icon_html( $item['title'], $item['url'], false );
+		$title        = esc_html( $item['title'] );
+		$url          = esc_url( $item['url'] );
+		$target       = ! empty( $item['target'] ) ? ' target="' . esc_attr( $item['target'] ) . '" rel="noreferrer noopener"' : '';
+		$icon_html    = coco_theme_get_nav_icon_html( $item['title'], $item['url'], false );
+		$has_children = ! empty( $item['children'] );
 
 		$is_active = false;
 		if ( ! empty( $current_req ) && ! empty( $item['url'] ) ) {
@@ -541,19 +566,40 @@ function coco_theme_render_boutique_nav() {
 			}
 		}
 
-		$item_classes = 'coco-nav-item' . ( $is_active ? ' active' : '' );
+		$item_classes = 'coco-nav-item' . ( $is_active ? ' active' : '' ) . ( $has_children ? ' has-dropdown' : '');
 		if ( ! empty( $item['classes'] ) ) {
 			$item_classes .= ' ' . esc_attr( $item['classes'] );
 		}
 
+		$arrow_html = $has_children ? ' <span class="coco-dropdown-arrow">▾</span>' : '';
+
 		$output .= sprintf(
-			'<li class="%s"><a href="%s" class="coco-nav-link"%s>%s<span class="coco-nav-label">%s</span></a></li>',
+			'<li class="%s"><a href="%s" class="coco-nav-link"%s>%s<span class="coco-nav-label">%s%s</span></a>',
 			esc_attr( $item_classes ),
 			$url,
 			$target,
 			$icon_html,
-			$title
+			$title,
+			$arrow_html
 		);
+
+		if ( $has_children ) {
+			$output .= '<ul class="coco-dropdown-menu">';
+			foreach ( $item['children'] as $child ) {
+				$child_title  = esc_html( $child['title'] );
+				$child_url    = esc_url( $child['url'] );
+				$child_target = ! empty( $child['target'] ) ? ' target="' . esc_attr( $child['target'] ) . '" rel="noreferrer noopener"' : '';
+				$output      .= sprintf(
+					'<li class="coco-dropdown-item"><a href="%s" class="coco-dropdown-link"%s><span>%s</span></a></li>',
+					$child_url,
+					$child_target,
+					$child_title
+				);
+			}
+			$output .= '</ul>';
+		}
+
+		$output .= '</li>';
 	}
 
 	$output .= '</ul>';
@@ -566,10 +612,10 @@ add_shortcode( 'coco_boutique_nav', 'coco_theme_render_boutique_nav' );
 /**
  * Renderizar la lista de navegación para el cajón lateral móvil.
  *
- * @return string HTML <ul> con iconos y enlaces.
+ * @return string HTML <ul> con iconos, enlaces y submenús desplegables.
  */
 function coco_theme_render_mobile_nav() {
-	$items = coco_theme_get_header_nav_items();
+	$items = coco_theme_get_header_nav_items( 'mobile' );
 	if ( empty( $items ) ) {
 		return '';
 	}
@@ -577,18 +623,43 @@ function coco_theme_render_mobile_nav() {
 	$output = '<ul class="coco-mobile-nav-list">';
 
 	foreach ( $items as $item ) {
-		$title     = esc_html( $item['title'] );
-		$url       = esc_url( $item['url'] );
-		$target    = ! empty( $item['target'] ) ? ' target="' . esc_attr( $item['target'] ) . '" rel="noreferrer noopener"' : '';
-		$icon_html = coco_theme_get_nav_icon_html( $item['title'], $item['url'], true );
+		$title        = esc_html( $item['title'] );
+		$url          = esc_url( $item['url'] );
+		$target       = ! empty( $item['target'] ) ? ' target="' . esc_attr( $item['target'] ) . '" rel="noreferrer noopener"' : '';
+		$icon_html    = coco_theme_get_nav_icon_html( $item['title'], $item['url'], true );
+		$has_children = ! empty( $item['children'] );
 
-		$output .= sprintf(
-			'<li><a href="%s"%s>%s<span>%s</span></a></li>',
-			$url,
-			$target,
-			$icon_html,
-			$title
-		);
+		if ( $has_children ) {
+			$output .= '<li class="coco-mobile-nav-item has-children">';
+			$output .= '<div class="coco-mobile-nav-row">';
+			$output .= sprintf( '<a href="%s" class="coco-mobile-nav-link"%s>%s<span>%s</span></a>', $url, $target, $icon_html, $title );
+			$output .= '<button type="button" class="coco-mobile-submenu-toggle" aria-label="Desplegar submenú" onclick="cocoToggleMobileSubmenu(this)">';
+			$output .= '<svg class="coco-submenu-caret" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+			$output .= '</button>';
+			$output .= '</div>';
+			$output .= '<ul class="coco-mobile-submenu">';
+			foreach ( $item['children'] as $child ) {
+				$child_title  = esc_html( $child['title'] );
+				$child_url    = esc_url( $child['url'] );
+				$child_target = ! empty( $child['target'] ) ? ' target="' . esc_attr( $child['target'] ) . '" rel="noreferrer noopener"' : '';
+				$output      .= sprintf(
+					'<li><a href="%s"%s class="coco-mobile-sublink"><span class="coco-sublink-bullet">•</span> <span>%s</span></a></li>',
+					$child_url,
+					$child_target,
+					$child_title
+				);
+			}
+			$output .= '</ul>';
+			$output .= '</li>';
+		} else {
+			$output .= sprintf(
+				'<li class="coco-mobile-nav-item"><a href="%s"%s class="coco-mobile-nav-link">%s<span>%s</span></a></li>',
+				$url,
+				$target,
+				$icon_html,
+				$title
+			);
+		}
 	}
 
 	$output .= '</ul>';
@@ -668,6 +739,13 @@ window.cocoToggleMobileNav = function(force) {
 		drawer.style.display = 'none';
 		drawer.setAttribute('aria-hidden', 'true');
 		document.body.style.overflow = '';
+	}
+};
+window.cocoToggleMobileSubmenu = function(btn) {
+	if (!btn) return;
+	var item = btn.closest('.coco-mobile-nav-item');
+	if (item) {
+		item.classList.toggle('is-open');
 	}
 };
 window.cocoDismissTopBar = function() {
