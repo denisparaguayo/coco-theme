@@ -713,74 +713,128 @@ function coco_theme_enqueue_assets() {
 		array( 'coco-theme-fonts' ),
 		COCO_THEME_VERSION
 	);
-
-	$header_js = "
-window.cocoToggleSearch = function(force) {
-	var bar = document.getElementById('coco-header-search-bar');
-	if (!bar) return;
-	var willOpen = (typeof force === 'boolean') ? force : (bar.style.display === 'none' || !bar.style.display);
-	bar.style.display = willOpen ? 'block' : 'none';
-	if (willOpen) {
-		var inp = bar.querySelector('.coco-header-search-input');
-		if (inp) inp.focus();
-	}
-};
-window.cocoToggleMobileNav = function(force) {
-	var drawer = document.getElementById('coco-mobile-drawer');
-	if (!drawer) return;
-	var willOpen = (typeof force === 'boolean') ? force : !drawer.classList.contains('is-open');
-	if (willOpen) {
-		drawer.classList.add('is-open');
-		drawer.style.display = 'block';
-		drawer.setAttribute('aria-hidden', 'false');
-		document.body.style.overflow = 'hidden';
-	} else {
-		drawer.classList.remove('is-open');
-		drawer.style.display = 'none';
-		drawer.setAttribute('aria-hidden', 'true');
-		document.body.style.overflow = '';
-	}
-};
-window.cocoToggleMobileSubmenu = function(btn) {
-	if (!btn) return;
-	var item = btn.closest('.coco-mobile-nav-item');
-	if (item) {
-		item.classList.toggle('is-open');
-	}
-};
-window.cocoDismissTopBar = function() {
-	var m = document.getElementById('coco-sticky-marquee-top');
-	if (m) {
-		m.style.display = 'none';
-		try { sessionStorage.setItem('coco_topbar_dismissed', '1'); } catch(e){}
-	}
-};
-(function(){
-	try {
-		if (sessionStorage.getItem('coco_topbar_dismissed') === '1') {
-			var m = document.getElementById('coco-sticky-marquee-top');
-			if (m) m.style.display = 'none';
-		}
-	} catch(e){}
-	try {
-		var loc = window.location.pathname;
-		var items = document.querySelectorAll('.coco-boutique-nav-list .coco-nav-item');
-		items.forEach(function(item){
-			var a = item.querySelector('a');
-			if (!a) return;
-			var h = a.getAttribute('href');
-			if (h && (loc === h || (h !== '/' && h !== '/shop/' && loc.indexOf(h) !== -1))) {
-				item.classList.add('active');
-			} else if (h === '/shop/' && (loc === '/' || loc === '/shop/' || loc === '/shop')) {
-				item.classList.add('active');
-			}
-		});
-	} catch(e){}
-})();
-";
-	wp_add_inline_script( 'coco-theme-style', $header_js );
 }
 add_action( 'wp_enqueue_scripts', 'coco_theme_enqueue_assets' );
+
+/**
+ * Imprimir scripts esenciales de cabecera y navegación móvil en wp_head.
+ */
+function coco_theme_print_header_scripts() {
+	?>
+	<script id="coco-header-core-js">
+	window.cocoToggleSearch = function(force) {
+		var bar = document.getElementById('coco-header-search-bar');
+		if (!bar) return;
+		var willOpen = (typeof force === 'boolean') ? force : (bar.style.display === 'none' || !bar.style.display);
+		bar.style.display = willOpen ? 'block' : 'none';
+		if (willOpen) {
+			var inp = bar.querySelector('.coco-header-search-input');
+			if (inp) inp.focus();
+		}
+	};
+
+	window.cocoToggleMobileNav = function(force) {
+		var drawer = document.getElementById('coco-mobile-drawer');
+		if (!drawer) return;
+		var willOpen = (typeof force === 'boolean') ? force : !drawer.classList.contains('is-open');
+		if (willOpen) {
+			drawer.classList.add('is-open');
+			drawer.style.display = 'block';
+			drawer.setAttribute('aria-hidden', 'false');
+			document.body.style.overflow = 'hidden';
+		} else {
+			drawer.classList.remove('is-open');
+			drawer.style.display = 'none';
+			drawer.setAttribute('aria-hidden', 'true');
+			document.body.style.overflow = '';
+		}
+	};
+
+	window.cocoToggleMobileSubmenu = function(btn) {
+		if (!btn) return;
+		var item = btn.closest('.coco-mobile-nav-item');
+		if (item) {
+			item.classList.toggle('is-open');
+		}
+	};
+
+	window.cocoDismissTopBar = function() {
+		var m = document.getElementById('coco-sticky-marquee-top');
+		if (m) {
+			m.style.display = 'none';
+			try { sessionStorage.setItem('coco_topbar_dismissed', '1'); } catch(e){}
+		}
+	};
+
+	// Delegación global de clics para móvil y buscador
+	document.addEventListener('click', function(e) {
+		var mobileToggle = e.target.closest('.coco-header-mobile-toggle');
+		if (mobileToggle) {
+			e.preventDefault();
+			window.cocoToggleMobileNav();
+			return;
+		}
+		var mobileClose = e.target.closest('.coco-mobile-drawer-close, .coco-mobile-drawer-backdrop');
+		if (mobileClose) {
+			e.preventDefault();
+			window.cocoToggleMobileNav(false);
+			return;
+		}
+		var submenuToggle = e.target.closest('.coco-mobile-submenu-toggle');
+		if (submenuToggle) {
+			e.preventDefault();
+			window.cocoToggleMobileSubmenu(submenuToggle);
+			return;
+		}
+		var searchToggle = e.target.closest('.coco-btn-search-toggle');
+		if (searchToggle) {
+			e.preventDefault();
+			window.cocoToggleSearch();
+			return;
+		}
+		var searchClose = e.target.closest('.coco-header-search-close');
+		if (searchClose) {
+			e.preventDefault();
+			window.cocoToggleSearch(false);
+			return;
+		}
+	});
+
+	// Comprobación de marquesina y enlaces activos al cargar DOM
+	document.addEventListener('DOMContentLoaded', function() {
+		try {
+			if (sessionStorage.getItem('coco_topbar_dismissed') === '1') {
+				var m = document.getElementById('coco-sticky-marquee-top');
+				if (m) m.style.display = 'none';
+			}
+		} catch(e){}
+	});
+	</script>
+	<?php
+}
+add_action( 'wp_head', 'coco_theme_print_header_scripts', 2 );
+
+/**
+ * Garantizar que el cajón móvil #coco-mobile-drawer siempre exista en el DOM.
+ */
+function coco_theme_ensure_mobile_drawer_in_body() {
+	?>
+	<script id="coco-mobile-drawer-fallback">
+	(function() {
+		if (!document.getElementById('coco-mobile-drawer')) {
+			var d = document.createElement('div');
+			d.id = 'coco-mobile-drawer';
+			d.className = 'coco-mobile-nav-drawer';
+			d.setAttribute('aria-hidden', 'true');
+			d.style.display = 'none';
+			d.innerHTML = '<div class="coco-mobile-drawer-backdrop" onclick="cocoToggleMobileNav(false)"></div><div class="coco-mobile-drawer-content"><div class="coco-mobile-drawer-header"><span class="coco-mobile-drawer-title">Menú Coco Cherry</span><button type="button" class="coco-mobile-drawer-close" aria-label="Cerrar menú" onclick="cocoToggleMobileNav(false)">✕</button></div><?php echo addslashes( preg_replace( "/\r|\n/", '', coco_theme_render_mobile_nav() ) ); ?></div>';
+			document.body.appendChild(d);
+		}
+	})();
+	</script>
+	<?php
+}
+add_action( 'wp_footer', 'coco_theme_ensure_mobile_drawer_in_body', 99 );
 
 /**
  * Registrar categoría de patrones propios de Coco Cherry Store.
