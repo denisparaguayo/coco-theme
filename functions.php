@@ -339,18 +339,12 @@ function coco_theme_get_nav_icon_html( $title, $url = '', $is_mobile = false ) {
 		return sprintf( '<span class="coco-nav-icon coco-nav-emoji" style="font-size:%s;line-height:1;display:inline-flex;align-items:center;justify-content:center;">%s</span>', esc_attr( $emoji_size ), esc_html( $emoji_matches[1] ) );
 	}
 
-	// Normalizar texto para comparación sin acentos
-	$normalized = strtolower( remove_accents( $title_clean . ' ' . $url ) );
+	// Normalizar texto del título y URL limpiando palabras del sistema como 'categoria-producto'
+	$title_norm = strtolower( remove_accents( $title_clean ) );
+	$url_clean  = str_replace( array( 'categoria-producto', 'product-category', 'categoria' ), '', strtolower( remove_accents( $url ) ) );
+	$normalized = $title_norm . ' ' . $url_clean;
 
-	// 2. Tienda / Catálogo / Productos
-	if ( preg_match( '/(tienda|shop|catalogo|producto|inicio|home)/i', $normalized ) ) {
-		return sprintf(
-			'<svg class="coco-nav-icon" width="%s" height="%s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="%s" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>',
-			$size, $size, $stroke
-		);
-	}
-
-	// 3. Bijouterie / Joyas / Accesorios
+	// 2. Bijouterie / Joyas / Accesorios (Diamante)
 	if ( preg_match( '/(bijou|joya|joyeria|accesorio|anillo|collar|aro|aros|pulsera|reloj|brillante|oro|plata)/i', $normalized ) ) {
 		return sprintf(
 			'<svg class="coco-nav-icon" width="%s" height="%s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="%s" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9z"></path><path d="M11 3 8 9l4 13 4-13-3-6"></path><path d="M2 9h20"></path></svg>',
@@ -358,7 +352,7 @@ function coco_theme_get_nav_icon_html( $title, $url = '', $is_mobile = false ) {
 		);
 	}
 
-	// 4. Hogar / Deco / Living / Cocina
+	// 3. Hogar / Deco / Living / Cocina (Lámpara / Hogar Boutique)
 	if ( preg_match( '/(hogar|casa|deco|decoracion|living|cocina|bazar|lampara|mueble)/i', $normalized ) ) {
 		return sprintf(
 			'<svg class="coco-nav-icon" width="%s" height="%s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="%s" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4c0 1.5.8 2.8 2 3.5L2 14v2h20v-2l-8-4.5c1.2-.7 2-2 2-3.5a4 4 0 0 0-4-4z"></path><path d="M12 6a2 2 0 1 1-4 0"></path></svg>',
@@ -366,7 +360,7 @@ function coco_theme_get_nav_icon_html( $title, $url = '', $is_mobile = false ) {
 		);
 	}
 
-	// 5. Moda / Ropa / Indumentaria / Prendas / Vestidos
+	// 4. Moda / Ropa / Indumentaria / Prendas / Vestidos (Moda Boutique)
 	if ( preg_match( '/(moda|ropa|indumentaria|prenda|vestido|blusa|lenceria|calzado|zapato|camisa|pantalon)/i', $normalized ) ) {
 		return sprintf(
 			'<svg class="coco-nav-icon" width="%s" height="%s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="%s" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>',
@@ -374,7 +368,7 @@ function coco_theme_get_nav_icon_html( $title, $url = '', $is_mobile = false ) {
 		);
 	}
 
-	// 6. Belleza / Cuidado / Skincare / Cosméticos / Maquillaje
+	// 5. Belleza / Cuidado / Skincare / Cosméticos / Maquillaje (Destellos / Belleza)
 	if ( preg_match( '/(belleza|cosmetica|cosmeticos|skincare|facial|capilar|maquillaje|pestana|ceja|piel)/i', $normalized ) ) {
 		return sprintf(
 			'<svg class="coco-nav-icon" width="%s" height="%s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="%s" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>',
@@ -382,7 +376,7 @@ function coco_theme_get_nav_icon_html( $title, $url = '', $is_mobile = false ) {
 		);
 	}
 
-	// 7. Ofertas / Descuentos / Sale / Promociones
+	// 6. Ofertas / Descuentos / Sale / Promociones (Fuego / Ofertas)
 	if ( preg_match( '/(oferta|ofertas|sale|descuento|promo|promocion|liquidacion)/i', $normalized ) ) {
 		return sprintf(
 			'<svg class="coco-nav-icon" width="%s" height="%s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="%s" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>',
@@ -390,7 +384,7 @@ function coco_theme_get_nav_icon_html( $title, $url = '', $is_mobile = false ) {
 		);
 	}
 
-	// 8. FAQ / Preguntas Frecuentes / Dudas / Ayuda
+	// 7. FAQ / Preguntas Frecuentes / Dudas / Ayuda (Estrella)
 	if ( preg_match( '/(faq|pregunta|preguntas|duda|ayuda|soporte)/i', $normalized ) ) {
 		return sprintf(
 			'<svg class="coco-nav-icon" width="%s" height="%s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="%s" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>',
@@ -398,7 +392,7 @@ function coco_theme_get_nav_icon_html( $title, $url = '', $is_mobile = false ) {
 		);
 	}
 
-	// 9. Contacto / WhatsApp / Mensaje / Soporte
+	// 8. Contacto / WhatsApp / Mensaje / Soporte (Sobre)
 	if ( preg_match( '/(contacto|whatsapp|escribenos|mensaje|correo|email|telefono)/i', $normalized ) ) {
 		return sprintf(
 			'<svg class="coco-nav-icon" width="%s" height="%s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="%s" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>',
@@ -406,10 +400,18 @@ function coco_theme_get_nav_icon_html( $title, $url = '', $is_mobile = false ) {
 		);
 	}
 
-	// 10. Nosotros / Quiénes Somos / Empresa
+	// 9. Nosotros / Quiénes Somos / Empresa (Corazón)
 	if ( preg_match( '/(nosotros|quienes|somos|sobre|historia|empresa)/i', $normalized ) ) {
 		return sprintf(
 			'<svg class="coco-nav-icon" width="%s" height="%s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="%s" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>',
+			$size, $size, $stroke
+		);
+	}
+
+	// 10. Tienda / Catálogo / Inicio / Shop (Tienda / Casita)
+	if ( preg_match( '/(tienda|shop|catalogo|inicio|home)/i', $title_norm ) || preg_match( '/(\/shop|\/tienda|\/catalogo)/i', $url ) ) {
+		return sprintf(
+			'<svg class="coco-nav-icon" width="%s" height="%s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="%s" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>',
 			$size, $size, $stroke
 		);
 	}
