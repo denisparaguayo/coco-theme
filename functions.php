@@ -554,7 +554,10 @@ function coco_theme_after_cart_action_row() {
 				row.appendChild(codBtn);
 			}
 			if (codBtn) {
-				codBtn.textContent = 'Comprar ahora';
+				var titleEl = codBtn.querySelector('.coco-cod-btn-title');
+				if (titleEl) {
+					titleEl.textContent = 'Pagar al recibir en casa';
+				}
 			}
 			// Botones + y - del selector de cantidad
 			var qtyWrap = document.querySelector('.single-product .quantity');
@@ -2408,17 +2411,18 @@ function coco_theme_render_mobile_sticky_buy_bar() {
 			});
 
 			// Monitorear apertura de modal para esconder la barra sticky
-			if (window.MutationObserver) {
-				var bodyObserver = new MutationObserver(function(){
+			var modalEl = document.getElementById('coco-cod-modal');
+			if (window.MutationObserver && modalEl) {
+				var modalObserver = new MutationObserver(function(){
 					if (isModalActive()) {
 						bar.classList.remove('is-visible');
-						document.body.classList.remove('has-coco-sticky-visible');
+						bar.setAttribute('aria-hidden', 'true');
 					} else if (mode === 'always') {
 						bar.classList.add('is-visible');
-						document.body.classList.add('has-coco-sticky-visible');
+						bar.setAttribute('aria-hidden', 'false');
 					}
 				});
-				bodyObserver.observe(document.body, { attributes: true, attributeFilter: ['class', 'style'] });
+				modalObserver.observe(modalEl, { attributes: true, attributeFilter: ['class', 'style', 'aria-hidden'] });
 			}
 		}
 
