@@ -733,9 +733,20 @@ function coco_theme_print_header_scripts() {
 		}
 	};
 
+	var _cocoNavToggleTime = 0;
 	window.cocoToggleMobileNav = function(force) {
+		var now = Date.now();
+		if (typeof force !== 'boolean') {
+			if (now - _cocoNavToggleTime < 350) return;
+			_cocoNavToggleTime = now;
+		}
+
 		var drawer = document.getElementById('coco-mobile-drawer');
-		if (!drawer) return;
+		if (!drawer) {
+			console.warn('coco-mobile-drawer no encontrado en el DOM');
+			return;
+		}
+
 		var willOpen = (typeof force === 'boolean') ? force : !drawer.classList.contains('is-open');
 		if (willOpen) {
 			drawer.classList.add('is-open');
@@ -771,7 +782,7 @@ function coco_theme_print_header_scripts() {
 		var mobileToggle = e.target.closest('.coco-header-mobile-toggle');
 		if (mobileToggle) {
 			e.preventDefault();
-			window.cocoToggleMobileNav();
+			window.cocoToggleMobileNav(true);
 			return;
 		}
 		var mobileClose = e.target.closest('.coco-mobile-drawer-close, .coco-mobile-drawer-backdrop');

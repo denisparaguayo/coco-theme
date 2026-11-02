@@ -7,7 +7,7 @@ Description: Tema WordPress Full Site Editing (FSE) ultraligero y de alta conver
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 7.4
-Version: 1.4.3
+Version: 1.4.4
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: coco-theme
@@ -464,6 +464,14 @@ body {
 	cursor: pointer;
 	align-items: center;
 	justify-content: center;
+	touch-action: manipulation;
+	-webkit-tap-highlight-color: transparent;
+	position: relative;
+	z-index: 20;
+}
+
+.coco-header-mobile-toggle svg {
+	pointer-events: none;
 }
 
 /* Buscador desplegable animado */
