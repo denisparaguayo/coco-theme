@@ -633,8 +633,8 @@ function coco_theme_render_mobile_nav() {
 			$output .= '<li class="coco-mobile-nav-item has-children">';
 			$output .= '<div class="coco-mobile-nav-row">';
 			$output .= sprintf( '<a href="%s" class="coco-mobile-nav-link"%s>%s<span>%s</span></a>', $url, $target, $icon_html, $title );
-			$output .= '<button type="button" class="coco-mobile-submenu-toggle" aria-label="Desplegar submenú" onclick="cocoToggleMobileSubmenu(this)">';
-			$output .= '<svg class="coco-submenu-caret" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+			$output .= '<button type="button" class="coco-mobile-submenu-toggle" aria-label="Desplegar submenú" onclick="cocoToggleMobileSubmenu(this, event)">';
+			$output .= '<svg class="coco-submenu-caret" style="pointer-events:none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
 			$output .= '</button>';
 			$output .= '</div>';
 			$output .= '<ul class="coco-mobile-submenu">';
@@ -761,7 +761,15 @@ function coco_theme_print_header_scripts() {
 		}
 	};
 
-	window.cocoToggleMobileSubmenu = function(btn) {
+	var _cocoSubmenuToggleTime = 0;
+	window.cocoToggleMobileSubmenu = function(btn, e) {
+		if (e && e.stopPropagation) {
+			e.stopPropagation();
+		}
+		var now = Date.now();
+		if (now - _cocoSubmenuToggleTime < 350) return;
+		_cocoSubmenuToggleTime = now;
+
 		if (!btn) return;
 		var item = btn.closest('.coco-mobile-nav-item');
 		if (item) {
@@ -789,12 +797,6 @@ function coco_theme_print_header_scripts() {
 		if (mobileClose) {
 			e.preventDefault();
 			window.cocoToggleMobileNav(false);
-			return;
-		}
-		var submenuToggle = e.target.closest('.coco-mobile-submenu-toggle');
-		if (submenuToggle) {
-			e.preventDefault();
-			window.cocoToggleMobileSubmenu(submenuToggle);
 			return;
 		}
 		var searchToggle = e.target.closest('.coco-btn-search-toggle');

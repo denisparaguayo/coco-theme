@@ -7,7 +7,7 @@ Description: Tema WordPress Full Site Editing (FSE) ultraligero y de alta conver
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 7.4
-Version: 1.4.4
+Version: 1.4.5
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: coco-theme
@@ -673,13 +673,22 @@ body.admin-bar .coco-mobile-drawer-content {
 .coco-mobile-submenu-toggle {
 	background: transparent;
 	border: none;
-	padding: 0.85rem 1rem;
+	width: 48px;
+	height: 48px;
+	padding: 0;
 	cursor: pointer;
 	color: #6B7280;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	transition: color 0.2s ease;
+	transition: all 0.2s ease;
+	touch-action: manipulation;
+	-webkit-tap-highlight-color: transparent;
+	flex-shrink: 0;
+}
+
+.coco-mobile-submenu-toggle svg {
+	pointer-events: none;
 }
 
 .coco-submenu-caret {
@@ -702,7 +711,7 @@ body.admin-bar .coco-mobile-drawer-content {
 }
 
 .coco-mobile-nav-item.is-open .coco-mobile-submenu {
-	display: flex;
+	display: flex !important;
 }
 
 .coco-mobile-sublink {
