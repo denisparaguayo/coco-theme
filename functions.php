@@ -1014,16 +1014,81 @@ function coco_theme_after_cart_action_row() {
 add_action( 'woocommerce_after_add_to_cart_button', 'coco_theme_after_cart_action_row', 99 );
 
 /**
+ * Determina la clase CSS para el badge según el texto del banco o método de pago.
+ */
+function coco_theme_get_pay_badge_class( $badge_text ) {
+	$clean = function_exists( 'mb_strtolower' ) ? mb_strtolower( trim( wp_strip_all_tags( $badge_text ) ), 'UTF-8' ) : strtolower( trim( wp_strip_all_tags( $badge_text ) ) );
+	$clean_plain = str_replace( array( 'á', 'é', 'í', 'ó', 'ú', 'ñ' ), array( 'a', 'e', 'i', 'o', 'u', 'n' ), $clean );
+
+	if ( false !== strpos( $clean_plain, 'itau' ) ) {
+		return 'coco-pay-itau';
+	}
+	if ( false !== strpos( $clean_plain, 'ueno' ) ) {
+		return 'coco-pay-ueno';
+	}
+	if ( false !== strpos( $clean_plain, 'tigo' ) ) {
+		return 'coco-pay-tigo';
+	}
+	if ( false !== strpos( $clean_plain, 'efectivo' ) || false !== strpos( $clean_plain, 'cash' ) || false !== strpos( $clean_plain, 'contra entrega' ) ) {
+		return 'coco-pay-efectivo';
+	}
+	if ( false !== strpos( $clean_plain, 'qr' ) || false !== strpos( $clean_plain, 'transf' ) || false !== strpos( $clean_plain, 'sipap' ) ) {
+		return 'coco-pay-qr';
+	}
+	if ( false !== strpos( $clean_plain, 'continental' ) ) {
+		return 'coco-pay-continental';
+	}
+	if ( false !== strpos( $clean_plain, 'familiar' ) ) {
+		return 'coco-pay-familiar';
+	}
+	if ( false !== strpos( $clean_plain, 'basa' ) ) {
+		return 'coco-pay-basa';
+	}
+	if ( false !== strpos( $clean_plain, 'sudameris' ) ) {
+		return 'coco-pay-sudameris';
+	}
+	if ( false !== strpos( $clean_plain, 'bnf' ) ) {
+		return 'coco-pay-bnf';
+	}
+	if ( false !== strpos( $clean_plain, 'visa' ) ) {
+		return 'coco-pay-visa';
+	}
+	if ( false !== strpos( $clean_plain, 'master' ) ) {
+		return 'coco-pay-mastercard';
+	}
+	if ( false !== strpos( $clean_plain, 'tarjeta' ) || false !== strpos( $clean_plain, 'pos' ) ) {
+		return 'coco-pay-tarjetas';
+	}
+
+	return 'coco-pay-default';
+}
+
+/**
  * Bloques Ecomus adaptados a Paraguay debajo del botón "Comprar ahora":
  * 1) Enlaces rápidos (Haz una pregunta / Entrega y devolución / Compartir)
- * 2) Dos cajas de plazos de entrega y garantía en Paraguay
- * 3) Garantía de pago seguro con métodos locales (ueno bank, Giros Tigo, Efectivo, QR / Transferencia)
+ * 2) Dos cajas de plazos de entrega y garantía en Paraguay (configurables desde Personalizar)
+ * 3) Garantía de pago seguro con métodos locales configurables (Itaú, Giros Tigo, Efectivo, QR / Transferencia)
  */
 function coco_theme_product_cod_guarantees() {
 	global $product;
 	$product_title = ( $product instanceof \WC_Product ) ? $product->get_name() : get_the_title();
 	$product_url   = get_permalink();
 	$wa_question   = 'https://wa.me/595981531503?text=' . rawurlencode( 'Hola Coco Cherry Store! Tengo una consulta sobre el producto: ' . $product_title . ' (' . $product_url . ')' );
+
+	$delivery_1 = get_theme_mod(
+		'coco_theme_delivery_box_1',
+		'Plazos de entrega estimados: <strong>24–48 hs</strong> (Asunción y Gran Asunción), <strong>2–4 días</strong> (Interior de Paraguay).'
+	);
+	$delivery_2 = get_theme_mod(
+		'coco_theme_delivery_box_2',
+		'<strong>Pago Contra Entrega</strong> al recibir en puerta. Garantía de cambio directo por defectos de fábrica.'
+	);
+
+	$show_safe_checkout  = (bool) get_theme_mod( 'coco_theme_safe_checkout_enabled', true );
+	$safe_checkout_title = get_theme_mod( 'coco_theme_safe_checkout_title', "Garantizamos<br>un pago seguro." );
+	$default_badges      = "Itaú\nGiros Tigo\n💵 Efectivo\nQR / Transf.";
+	$badges_raw          = get_theme_mod( 'coco_theme_safe_checkout_badges', $default_badges );
+	$badges_list         = array_filter( array_map( 'trim', preg_split( '/[\r\n,]+/', (string) $badges_raw ) ) );
 	?>
 	<div class="coco-ecomus-extra-info">
 		<!-- Enlaces de acción rápida estilo Ecomus -->
@@ -1048,29 +1113,30 @@ function coco_theme_product_cod_guarantees() {
 				<div class="coco-delivery-card-icon">
 					<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
 				</div>
-				<p>Plazos de entrega estimados: <strong>24–48 hs</strong> (Asunción y Gran Asunción), <strong>2–4 días</strong> (Interior de Paraguay).</p>
+				<p><?php echo wp_kses_post( $delivery_1 ); ?></p>
 			</div>
 			<div class="coco-ecomus-delivery-card">
 				<div class="coco-delivery-card-icon">
 					<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path><path d="M16 16h5v5"></path></svg>
 				</div>
-				<p><strong>Pago Contra Entrega</strong> al recibir en puerta. Garantía de cambio directo por defectos de fábrica.</p>
+				<p><?php echo wp_kses_post( $delivery_2 ); ?></p>
 			</div>
 		</div>
 
-		<!-- Fila de pago seguro adaptada a Paraguay (ueno bank, Giros Tigo, Efectivo, Transferencia) -->
+		<?php if ( $show_safe_checkout && ! empty( $badges_list ) ) : ?>
+		<!-- Fila de pago seguro configurable desde Apariencia > Personalizar -->
 		<div class="coco-ecomus-safe-checkout">
 			<div class="coco-safe-label">
 				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
-				<span>Garantizamos<br>un pago seguro.</span>
+				<span><?php echo wp_kses_post( nl2br( $safe_checkout_title ) ); ?></span>
 			</div>
 			<div class="coco-py-payment-badges">
-				<span class="coco-pay-badge coco-pay-ueno" title="ueno bank (Transferencia / QR)">ueno bank</span>
-				<span class="coco-pay-badge coco-pay-tigo" title="Giros Tigo">Giros Tigo</span>
-				<span class="coco-pay-badge coco-pay-efectivo" title="Efectivo al recibir">💵 Efectivo</span>
-				<span class="coco-pay-badge coco-pay-qr" title="Transferencia bancaria / SIPAP / QR">QR / Transf.</span>
+				<?php foreach ( $badges_list as $badge_item ) : ?>
+					<span class="coco-pay-badge <?php echo esc_attr( coco_theme_get_pay_badge_class( $badge_item ) ); ?>" title="<?php echo esc_attr( $badge_item ); ?>"><?php echo esc_html( $badge_item ); ?></span>
+				<?php endforeach; ?>
 			</div>
 		</div>
+		<?php endif; ?>
 	</div>
 	<?php
 }
@@ -2205,6 +2271,107 @@ function coco_theme_customize_register( $wp_customize ) {
 			)
 		);
 	}
+
+	// 7. Controles de Garantías y Métodos de Pago en Ficha de Producto (Pago Seguro).
+	$wp_customize->add_setting(
+		'coco_theme_safe_checkout_enabled',
+		array(
+			'default'           => true,
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'rest_sanitize_boolean',
+			'transport'         => 'refresh',
+		)
+	);
+
+	$wp_customize->add_control(
+		'coco_theme_safe_checkout_enabled',
+		array(
+			'label'       => __( 'Mostrar fila de "Garantizamos un pago seguro"', 'coco-theme' ),
+			'description' => __( 'Muestra el escudo de seguridad y los distintivos de bancos y métodos de pago debajo de las opciones de compra.', 'coco-theme' ),
+			'section'     => 'coco_theme_options',
+			'type'        => 'checkbox',
+		)
+	);
+
+	$wp_customize->add_setting(
+		'coco_theme_safe_checkout_title',
+		array(
+			'default'           => "Garantizamos\nun pago seguro.",
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'sanitize_textarea_field',
+			'transport'         => 'refresh',
+		)
+	);
+
+	$wp_customize->add_control(
+		'coco_theme_safe_checkout_title',
+		array(
+			'label'       => __( 'Pago Seguro: Texto junto al escudo', 'coco-theme' ),
+			'description' => __( 'Texto descriptivo junto al icono del escudo (acepta saltos de línea).', 'coco-theme' ),
+			'section'     => 'coco_theme_options',
+			'type'        => 'textarea',
+		)
+	);
+
+	$wp_customize->add_setting(
+		'coco_theme_safe_checkout_badges',
+		array(
+			'default'           => "Itaú\nGiros Tigo\n💵 Efectivo\nQR / Transf.",
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'sanitize_textarea_field',
+			'transport'         => 'refresh',
+		)
+	);
+
+	$wp_customize->add_control(
+		'coco_theme_safe_checkout_badges',
+		array(
+			'label'       => __( 'Pago Seguro: Bancos y Métodos de Pago (Badges)', 'coco-theme' ),
+			'description' => __( 'Escribe un método o banco por línea o separados por comas (ej: Itaú, Giros Tigo, 💵 Efectivo, QR / Transf.). Aplica automáticamente colores de marca para: Itaú, ueno bank, Giros Tigo, Efectivo, QR / Transf., Continental, Familiar, Basa, Sudameris, BNF, Tarjetas, Visa, Mastercard.', 'coco-theme' ),
+			'section'     => 'coco_theme_options',
+			'type'        => 'textarea',
+		)
+	);
+
+	$wp_customize->add_setting(
+		'coco_theme_delivery_box_1',
+		array(
+			'default'           => 'Plazos de entrega estimados: <strong>24–48 hs</strong> (Asunción y Gran Asunción), <strong>2–4 días</strong> (Interior de Paraguay).',
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'wp_kses_post',
+			'transport'         => 'refresh',
+		)
+	);
+
+	$wp_customize->add_control(
+		'coco_theme_delivery_box_1',
+		array(
+			'label'       => __( 'Ficha de Producto: Plazos de Entrega (Caja 1)', 'coco-theme' ),
+			'description' => __( 'Texto de la primera caja informativa (plazos estimados de envío).', 'coco-theme' ),
+			'section'     => 'coco_theme_options',
+			'type'        => 'textarea',
+		)
+	);
+
+	$wp_customize->add_setting(
+		'coco_theme_delivery_box_2',
+		array(
+			'default'           => '<strong>Pago Contra Entrega</strong> al recibir en puerta. Garantía de cambio directo por defectos de fábrica.',
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'wp_kses_post',
+			'transport'         => 'refresh',
+		)
+	);
+
+	$wp_customize->add_control(
+		'coco_theme_delivery_box_2',
+		array(
+			'label'       => __( 'Ficha de Producto: Garantía y Pago Contra Entrega (Caja 2)', 'coco-theme' ),
+			'description' => __( 'Texto de la segunda caja informativa (condiciones de pago y cambio).', 'coco-theme' ),
+			'section'     => 'coco_theme_options',
+			'type'        => 'textarea',
+		)
+	);
 }
 add_action( 'customize_register', 'coco_theme_customize_register' );
 

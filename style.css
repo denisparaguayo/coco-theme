@@ -2909,6 +2909,12 @@ ul.products::after,
 	white-space: nowrap;
 }
 
+.coco-pay-itau {
+	background-color: #EC7000;
+	color: #FFFFFF;
+	border: 1px solid #EC7000;
+}
+
 .coco-pay-ueno {
 	background-color: #0F172A;
 	color: #00E5A3;
@@ -2931,6 +2937,60 @@ ul.products::after,
 	background-color: #EEF2FF;
 	color: #4338CA;
 	border: 1px solid #C7D2FE;
+}
+
+.coco-pay-continental {
+	background-color: #005A36;
+	color: #FFFFFF;
+	border: 1px solid #005A36;
+}
+
+.coco-pay-familiar {
+	background-color: #D9252A;
+	color: #FFFFFF;
+	border: 1px solid #D9252A;
+}
+
+.coco-pay-basa {
+	background-color: #002D62;
+	color: #FFFFFF;
+	border: 1px solid #002D62;
+}
+
+.coco-pay-sudameris {
+	background-color: #C8102E;
+	color: #FFFFFF;
+	border: 1px solid #C8102E;
+}
+
+.coco-pay-bnf {
+	background-color: #8B0000;
+	color: #FFFFFF;
+	border: 1px solid #8B0000;
+}
+
+.coco-pay-visa {
+	background-color: #1A1F71;
+	color: #FFFFFF;
+	border: 1px solid #1A1F71;
+}
+
+.coco-pay-mastercard {
+	background-color: #EB001B;
+	color: #FFFFFF;
+	border: 1px solid #EB001B;
+}
+
+.coco-pay-tarjetas {
+	background-color: #1E293B;
+	color: #FFFFFF;
+	border: 1px solid #1E293B;
+}
+
+.coco-pay-default {
+	background-color: #F1F5F9;
+	color: #334155;
+	border: 1px solid #CBD5E1;
 }
 
 /* ==========================================================================
