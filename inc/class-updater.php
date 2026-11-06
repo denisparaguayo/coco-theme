@@ -120,12 +120,12 @@ class Updater {
 	}
 
 	/**
-	 * Registra el submenú en Apariencia > Actualizar Coco Theme.
+	 * Registra el submenú en Apariencia > Actualización del Tema.
 	 */
 	public function register_admin_page() {
 		add_theme_page(
-			__( 'Actualizar Coco Theme (GitHub)', 'coco-theme' ),
-			__( 'Actualizar Coco Theme', 'coco-theme' ),
+			__( 'Actualización del Tema', 'coco-theme' ),
+			__( 'Actualización del Tema', 'coco-theme' ),
 			'update_themes',
 			'coco-theme-updater',
 			array( $this, 'render_admin_page' )
@@ -337,7 +337,7 @@ class Updater {
 	}
 
 	/**
-	 * Renderiza la pantalla en Apariencia > Actualizar Coco Theme.
+	 * Renderiza la pantalla en Apariencia > Actualización del Tema.
 	 */
 	public function render_admin_page() {
 		$local_ver  = $this->get_local_version();
@@ -345,17 +345,18 @@ class Updater {
 		$repo       = $this->get_repo();
 		$branch     = $this->get_branch();
 		$has_update = $remote_ver && version_compare( $local_ver, $remote_ver, '<' );
+		$show_dev   = isset( $_GET['dev'] ) || ( defined( 'WP_DEBUG' ) && WP_DEBUG );
 		?>
 		<div class="wrap">
-			<h1><?php esc_html_e( 'Actualizador de Coco Cherry Theme (GitHub)', 'coco-theme' ); ?></h1>
+			<h1><?php esc_html_e( 'Actualización del Tema', 'coco-theme' ); ?></h1>
 
 			<?php if ( isset( $_GET['updated'] ) ) : ?>
 				<div class="notice notice-success is-dismissible">
 					<p>
-						<strong><?php esc_html_e( '¡Tema actualizado correctamente desde GitHub!', 'coco-theme' ); ?></strong>
+						<strong><?php esc_html_e( '¡Tema actualizado correctamente!', 'coco-theme' ); ?></strong>
 						<?php
 						if ( isset( $_GET['new_ver'] ) ) {
-							printf( ' ' . esc_html__( 'Versión actual: %s', 'coco-theme' ), esc_html( sanitize_text_field( wp_unslash( $_GET['new_ver'] ) ) ) );
+							printf( ' ' . esc_html__( 'Versión actual instalada: v%s', 'coco-theme' ), esc_html( sanitize_text_field( wp_unslash( $_GET['new_ver'] ) ) ) );
 						}
 						?>
 					</p>
@@ -364,13 +365,13 @@ class Updater {
 
 			<?php if ( isset( $_GET['checked'] ) ) : ?>
 				<div class="notice notice-info is-dismissible">
-					<p><?php esc_html_e( 'Comprobación con GitHub completada.', 'coco-theme' ); ?></p>
+					<p><?php esc_html_e( 'Comprobación de versiones finalizada.', 'coco-theme' ); ?></p>
 				</div>
 			<?php endif; ?>
 
 			<?php if ( isset( $_GET['saved'] ) ) : ?>
 				<div class="notice notice-success is-dismissible">
-					<p><?php esc_html_e( 'Configuración del repositorio guardada.', 'coco-theme' ); ?></p>
+					<p><?php esc_html_e( 'Configuración guardada correctamente.', 'coco-theme' ); ?></p>
 				</div>
 			<?php endif; ?>
 
@@ -380,84 +381,77 @@ class Updater {
 				</div>
 			<?php endif; ?>
 
-			<div class="card" style="max-width: 680px; padding: 20px; margin-top: 20px;">
-				<h2 style="margin-top:0;"><?php esc_html_e( 'Estado de Versión', 'coco-theme' ); ?></h2>
-				<table class="widefat striped" style="margin-bottom: 20px;">
+			<div class="card" style="max-width: 640px; padding: 24px; margin-top: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+				<h2 style="margin-top:0; font-size: 1.25rem;"><?php esc_html_e( 'Estado de la Versión', 'coco-theme' ); ?></h2>
+				<table class="widefat striped" style="margin-bottom: 24px; border-radius: 6px; overflow: hidden;">
 					<tbody>
 						<tr>
-							<td><strong><?php esc_html_e( 'Versión instalada en este sitio:', 'coco-theme' ); ?></strong></td>
+							<td style="width: 50%;"><strong><?php esc_html_e( 'Versión instalada:', 'coco-theme' ); ?></strong></td>
 							<td><code>v<?php echo esc_html( $local_ver ); ?></code></td>
 						</tr>
 						<tr>
-							<td><strong><?php esc_html_e( 'Versión disponible en GitHub:', 'coco-theme' ); ?></strong></td>
+							<td><strong><?php esc_html_e( 'Última versión disponible:', 'coco-theme' ); ?></strong></td>
 							<td>
 								<?php if ( $remote_ver ) : ?>
 									<code>v<?php echo esc_html( $remote_ver ); ?></code>
 									<?php if ( $has_update ) : ?>
-										<span style="color:#16a34a; font-weight:700; margin-left:8px;"><?php esc_html_e( '¡Nueva versión disponible!', 'coco-theme' ); ?></span>
+										<span style="color:#16a34a; font-weight:700; margin-left:8px;"><?php esc_html_e( '¡Nueva actualización disponible!', 'coco-theme' ); ?></span>
 									<?php else : ?>
-										<span style="color:#52606d; margin-left:8px;"><?php esc_html_e( '(Al día)', 'coco-theme' ); ?></span>
+										<span style="color:#0284c7; font-weight:600; margin-left:8px;"><?php esc_html_e( '✓ El tema está al día', 'coco-theme' ); ?></span>
 									<?php endif; ?>
 								<?php else : ?>
-									<span style="color:#d97706;"><?php esc_html_e( 'No detectada aún (verifica que el repositorio sea público y tenga style.css)', 'coco-theme' ); ?></span>
+									<span style="color:#d97706;"><?php esc_html_e( 'Verificando con el servidor...', 'coco-theme' ); ?></span>
 								<?php endif; ?>
-							</td>
-						</tr>
-						<tr>
-							<td><strong><?php esc_html_e( 'Repositorio conectado:', 'coco-theme' ); ?></strong></td>
-							<td>
-								<a href="<?php echo esc_url( 'https://github.com/' . $repo ); ?>" target="_blank" rel="noopener">
-									https://github.com/<?php echo esc_html( $repo ); ?> (<?php echo esc_html( $branch ); ?>)
-								</a>
 							</td>
 						</tr>
 					</tbody>
 				</table>
 
-				<div style="display:flex; gap: 12px; flex-wrap: wrap;">
+				<div style="display:flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+					<?php if ( $has_update ) : ?>
+						<form method="post">
+							<?php wp_nonce_field( 'coco_theme_github_nonce_action', 'coco_theme_github_nonce' ); ?>
+							<input type="hidden" name="coco_theme_github_action" value="update" />
+							<button type="submit" class="button button-primary button-hero" style="background:#16a34a; border-color:#15803d;">
+								<?php esc_html_e( 'Actualizar tema ahora', 'coco-theme' ); ?>
+							</button>
+						</form>
+					<?php endif; ?>
+
 					<form method="post">
 						<?php wp_nonce_field( 'coco_theme_github_nonce_action', 'coco_theme_github_nonce' ); ?>
 						<input type="hidden" name="coco_theme_github_action" value="check" />
 						<button type="submit" class="button button-secondary">
-							<?php esc_html_e( 'Comprobar versión en GitHub', 'coco-theme' ); ?>
-						</button>
-					</form>
-
-					<form method="post">
-						<?php wp_nonce_field( 'coco_theme_github_nonce_action', 'coco_theme_github_nonce' ); ?>
-						<input type="hidden" name="coco_theme_github_action" value="update" />
-						<button type="submit" class="button button-primary">
-							<?php esc_html_e( 'Forzar Descarga y Actualizar desde GitHub Ahora', 'coco-theme' ); ?>
+							<?php esc_html_e( 'Buscar actualizaciones', 'coco-theme' ); ?>
 						</button>
 					</form>
 				</div>
-				<p class="description" style="margin-top: 12px;">
-					<?php esc_html_e( 'Nota: El botón "Forzar Descarga y Actualizar" descargará el último código de la rama configurada en GitHub y reemplazará los archivos del tema aunque no hayas cambiado el número de versión.', 'coco-theme' ); ?>
-				</p>
 			</div>
 
-			<div class="card" style="max-width: 680px; padding: 20px; margin-top: 20px;">
-				<h2 style="margin-top:0;"><?php esc_html_e( 'Configuración del Repositorio GitHub', 'coco-theme' ); ?></h2>
-				<form method="post">
-					<?php wp_nonce_field( 'coco_theme_github_nonce_action', 'coco_theme_github_nonce' ); ?>
-					<input type="hidden" name="coco_theme_github_action" value="save_repo" />
-					<table class="form-table">
-						<tr>
-							<th scope="row"><label for="github_repo"><?php esc_html_e( 'Repositorio (usuario/repo)', 'coco-theme' ); ?></label></th>
-							<td>
-								<input type="text" id="github_repo" name="github_repo" value="<?php echo esc_attr( $repo ); ?>" class="regular-text" placeholder="denisparaguayo/coco-theme" />
-							</td>
-						</tr>
-						<tr>
-							<th scope="row"><label for="github_branch"><?php esc_html_e( 'Rama (Branch)', 'coco-theme' ); ?></label></th>
-							<td>
-								<input type="text" id="github_branch" name="github_branch" value="<?php echo esc_attr( $branch ); ?>" class="regular-text" placeholder="main" />
-							</td>
-						</tr>
-					</table>
-					<button type="submit" class="button button-secondary"><?php esc_html_e( 'Guardar Repositorio', 'coco-theme' ); ?></button>
-				</form>
-			</div>
+			<?php if ( $show_dev ) : ?>
+				<div class="card" style="max-width: 640px; padding: 20px; margin-top: 24px; border-radius: 8px;">
+					<h2 style="margin-top:0; font-size:1.1rem; color:#64748b;"><?php esc_html_e( 'Opciones de Desarrollador (Repositorio)', 'coco-theme' ); ?></h2>
+					<form method="post">
+						<?php wp_nonce_field( 'coco_theme_github_nonce_action', 'coco_theme_github_nonce' ); ?>
+						<input type="hidden" name="coco_theme_github_action" value="save_repo" />
+						<table class="form-table">
+							<tr>
+								<th scope="row"><label for="github_repo"><?php esc_html_e( 'Repositorio', 'coco-theme' ); ?></label></th>
+								<td>
+									<input type="text" id="github_repo" name="github_repo" value="<?php echo esc_attr( $repo ); ?>" class="regular-text" />
+								</td>
+							</tr>
+							<tr>
+								<th scope="row"><label for="github_branch"><?php esc_html_e( 'Rama', 'coco-theme' ); ?></label></th>
+								<td>
+									<input type="text" id="github_branch" name="github_branch" value="<?php echo esc_attr( $branch ); ?>" class="regular-text" />
+								</td>
+							</tr>
+						</table>
+						<button type="submit" class="button button-secondary"><?php esc_html_e( 'Guardar cambios técnicos', 'coco-theme' ); ?></button>
+					</form>
+				</div>
+			<?php endif; ?>
 		</div>
 		<?php
 	}

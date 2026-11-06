@@ -6,6 +6,10 @@
  * Block Types: core/template-part/header
  * Description: Cabecera Boutique con marquesina superior, logo, navegación con iconos, buscador y acciones con color de fondo configurable.
  */
+
+$header_wa_url  = function_exists( 'coco_theme_get_whatsapp_url' ) ? coco_theme_get_whatsapp_url( 'general' ) : 'https://wa.me/595981531503';
+$header_wa_disp = function_exists( 'coco_theme_get_whatsapp_display' ) ? coco_theme_get_whatsapp_display() : '0981 531503';
+$site_name      = get_bloginfo( 'name' );
 ?>
 <!-- wp:group {"tagName":"div","className":"coco-sticky-top-marquee","backgroundColor":"dark","textColor":"white","layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"center"}} -->
 <div id="coco-sticky-marquee-top" class="wp-block-group coco-sticky-top-marquee has-white-color has-dark-background-color has-text-color has-background">
@@ -15,7 +19,7 @@
 			<span class="coco-marquee-dot">•</span>
 			<span>🚚 Envíos a todo Paraguay</span>
 			<span class="coco-marquee-dot">•</span>
-			<span>📲 WhatsApp: <a href="https://wa.me/595981531503" target="_blank" rel="noreferrer noopener">0981 531503</a></span>
+			<span>📲 WhatsApp: <a href="<?php echo esc_url( $header_wa_url ); ?>" target="_blank" rel="noreferrer noopener"><?php echo esc_html( $header_wa_disp ); ?></a></span>
 			<span class="coco-marquee-dot">•</span>
 			<span>🛡️ 100% Compra Segura</span>
 			<span class="coco-marquee-dot">•</span>
@@ -23,7 +27,7 @@
 			<span class="coco-marquee-dot">•</span>
 			<span>🚚 Envíos a todo Paraguay</span>
 			<span class="coco-marquee-dot">•</span>
-			<span>📲 WhatsApp: <a href="https://wa.me/595981531503" target="_blank" rel="noreferrer noopener">0981 531503</a></span>
+			<span>📲 WhatsApp: <a href="<?php echo esc_url( $header_wa_url ); ?>" target="_blank" rel="noreferrer noopener"><?php echo esc_html( $header_wa_disp ); ?></a></span>
 			<span class="coco-marquee-dot">•</span>
 			<span>🛡️ 100% Compra Segura</span>
 		</div>
@@ -95,7 +99,7 @@
 					</a>
 				</li>
 				<li class="coco-nav-item">
-					<a href="https://wa.me/595981531503" target="_blank" rel="noreferrer noopener" class="coco-nav-link">
+					<a href="<?php echo esc_url( $header_wa_url ); ?>" target="_blank" rel="noreferrer noopener" class="coco-nav-link">
 						<svg class="coco-nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
 							<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
 							<polyline points="22,6 12,13 2,6"></polyline>
@@ -112,7 +116,7 @@
 			<button type="button" class="coco-header-action-btn coco-btn-search-toggle" aria-label="Abrir buscador" onclick="cocoToggleSearch()">
 				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
 			</button>
-			<a href="https://wa.me/595981531503" class="coco-header-action-btn" aria-label="Atención y Pedidos por WhatsApp" target="_blank" rel="noreferrer noopener" title="Atención y Pedidos por WhatsApp">
+			<a href="<?php echo esc_url( $header_wa_url ); ?>" class="coco-header-action-btn" aria-label="Atención y Pedidos por WhatsApp" target="_blank" rel="noreferrer noopener" title="Atención y Pedidos por WhatsApp">
 				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
 			</a>
 			<button type="button" class="coco-header-mobile-toggle" aria-label="Abrir menú de navegación" onclick="cocoToggleMobileNav(true)">
@@ -120,15 +124,13 @@
 			</button>
 		</div>
 		<!-- /wp:html -->
-	</div>
-	<!-- /wp:group -->
 
 	<!-- wp:html -->
 	<div id="coco-header-search-bar" class="coco-header-search-drawer" style="display:none;">
 		<div class="coco-header-search-inner">
 			<form role="search" method="get" class="coco-header-search-form" action="/">
 				<svg class="coco-search-input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-				<input type="search" class="coco-header-search-input" placeholder="Buscar aros, bijouterie, prendas, belleza..." name="s" autocomplete="off" />
+				<input type="search" class="coco-header-search-input" placeholder="Buscar productos..." name="s" autocomplete="off" />
 				<input type="hidden" name="post_type" value="product" />
 				<button type="submit" class="coco-header-search-submit">Buscar</button>
 				<button type="button" class="coco-header-search-close" onclick="cocoToggleSearch(false)">✕</button>
@@ -144,16 +146,13 @@
 	<div class="coco-mobile-drawer-backdrop" onclick="cocoToggleMobileNav(false)"></div>
 	<div class="coco-mobile-drawer-content">
 		<div class="coco-mobile-drawer-header">
-			<span class="coco-mobile-drawer-title">Menú Coco Cherry</span>
+			<span class="coco-mobile-drawer-title">Menú <?php echo esc_html( $site_name ); ?></span>
 			<button type="button" class="coco-mobile-drawer-close" aria-label="Cerrar menú" onclick="cocoToggleMobileNav(false)">✕</button>
 		</div>
 		<ul class="coco-mobile-nav-list">
 			<li><a href="/shop/"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg> Tienda (Catálogo)</a></li>
-			<li><a href="/categoria-producto/bijouterie/"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12l4 6-10 13L2 9z"></path></svg> Bijouterie & Accesorios</a></li>
-			<li><a href="/categoria-producto/hogar/"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4c0 1.5.8 2.8 2 3.5L2 14v2h20v-2l-8-4.5c1.2-.7 2-2 2-3.5a4 4 0 0 0-4-4z"></path></svg> Hogar</a></li>
-			<li><a href="/categoria-producto/moda/"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect></svg> Moda & Indumentaria</a></li>
 			<li><a href="/faq/"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Preguntas Frecuentes</a></li>
-			<li><a href="https://wa.me/595981531503" target="_blank" rel="noreferrer noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path></svg> Contacto</a></li>
+			<li><a href="<?php echo esc_url( $header_wa_url ); ?>" target="_blank" rel="noreferrer noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path></svg> Contacto (WhatsApp)</a></li>
 		</ul>
 	</div>
 </div>

@@ -16,6 +16,98 @@ require_once COCO_THEME_DIR . '/inc/class-updater.php';
 new \Coco_Theme\Updater();
 
 /**
+ * ==========================================================================
+ * HELPERS DINÁMICOS Y MULTITIENDA (WHATSAPP, MARCA, CONTACTO)
+ * ==========================================================================
+ */
+
+/**
+ * Obtener el número de WhatsApp para enlaces wa.me (limpio de espacios y caracteres).
+ */
+function coco_theme_get_whatsapp_number() {
+	$num = get_theme_mod( 'coco_whatsapp_number', '' );
+	if ( empty( $num ) ) {
+		$num = get_option( 'coco_whatsapp_number', '595981531503' );
+	}
+	return preg_replace( '/[^0-9]/', '', (string) $num );
+}
+
+/**
+ * Obtener el número visible para los visitantes en textos y botones.
+ */
+function coco_theme_get_whatsapp_display() {
+	$display = get_theme_mod( 'coco_whatsapp_display', '' );
+	if ( ! empty( $display ) ) {
+		return esc_html( $display );
+	}
+	$num = coco_theme_get_whatsapp_number();
+	if ( 0 === strpos( $num, '5959' ) ) {
+		return '09' . substr( $num, 4, 2 ) . ' ' . substr( $num, 6 );
+	}
+	return ! empty( $num ) ? $num : '0981 531503';
+}
+
+/**
+ * Obtener la dirección o ciudad de la tienda para el pie de página.
+ */
+function coco_theme_get_store_address() {
+	$addr = get_theme_mod( 'coco_store_address', '' );
+	if ( ! empty( $addr ) ) {
+		return esc_html( $addr );
+	}
+	if ( function_exists( 'WC' ) && WC()->countries ) {
+		$base = WC()->countries->get_base_address();
+		$city = WC()->countries->get_base_city();
+		if ( ! empty( $base ) && ! empty( $city ) ) {
+			return esc_html( $base . ', ' . $city . ', Paraguay' );
+		}
+	}
+	return 'Guaraníes 4779, Asunción, Paraguay';
+}
+
+/**
+ * Generar URL de WhatsApp dinámica con mensaje 100% personalizable y variables dinámicas.
+ *
+ * @param string                  $context 'general' o 'product'.
+ * @param \WC_Product|int|null    $product Objeto o ID del producto (opcional).
+ * @return string URL de wa.me lista.
+ */
+function coco_theme_get_whatsapp_url( $context = 'general', $product = null ) {
+	$phone     = coco_theme_get_whatsapp_number();
+	$site_name = get_bloginfo( 'name' );
+
+	if ( 'product' === $context ) {
+		if ( ! $product && function_exists( 'is_product' ) && is_product() ) {
+			$product = wc_get_product( get_queried_object_id() );
+		} elseif ( is_numeric( $product ) && function_exists( 'wc_get_product' ) ) {
+			$product = wc_get_product( $product );
+		}
+
+		$raw_msg = get_theme_mod(
+			'coco_whatsapp_product_message',
+			'¡Hola {sitio}! Tengo una consulta sobre el producto: {producto} ({url})'
+		);
+
+		$title = ( $product instanceof \WC_Product ) ? $product->get_name() : ( is_object( $product ) && isset( $product->post_title ) ? $product->post_title : get_the_title() );
+		$link  = ( $product instanceof \WC_Product ) ? $product->get_permalink() : get_permalink();
+
+		$msg = str_replace(
+			array( '{sitio}', '{producto}', '{url}' ),
+			array( $site_name, $title, $link ),
+			$raw_msg
+		);
+	} else {
+		$raw_msg = get_theme_mod(
+			'coco_whatsapp_general_message',
+			'¡Hola {sitio}! Quiero hacer una consulta sobre sus productos con entrega a domicilio.'
+		);
+		$msg = str_replace( '{sitio}', $site_name, $raw_msg );
+	}
+
+	return 'https://wa.me/' . $phone . '?text=' . rawurlencode( $msg );
+}
+
+/**
  * Configuración base del tema y soporte para FSE y WooCommerce.
  */
 function coco_theme_setup() {
@@ -494,45 +586,69 @@ function coco_theme_get_header_nav_items( $location = 'primary' ) {
 		}
 	}
 
-	// Si no hay menú creado aún, usar los elementos predeterminados de la tienda
-	return array(
+	// Si no hay menú creado aún en WordPress, generar navegación automática desde WooCommerce
+	$default_items = array(
 		array(
 			'title'    => 'Tienda',
-			'url'      => home_url( '/shop/' ),
+			'url'      => function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/shop/' ),
 			'target'   => '',
-			'children' => array(),
-		),
-		array(
-			'title'    => 'Bijouterie & Accesorios',
-			'url'      => home_url( '/categoria-producto/bijouterie/' ),
-			'target'   => '',
-			'children' => array(),
-		),
-		array(
-			'title'    => 'Hogar',
-			'url'      => home_url( '/categoria-producto/hogar/' ),
-			'target'   => '',
-			'children' => array(),
-		),
-		array(
-			'title'    => 'Moda & Indumentaria',
-			'url'      => home_url( '/categoria-producto/moda/' ),
-			'target'   => '',
-			'children' => array(),
-		),
-		array(
-			'title'    => 'Preguntas Frecuentes',
-			'url'      => home_url( '/faq/' ),
-			'target'   => '',
-			'children' => array(),
-		),
-		array(
-			'title'    => 'Contacto',
-			'url'      => 'https://wa.me/595981531503',
-			'target'   => '_blank',
 			'children' => array(),
 		),
 	);
+
+	if ( taxonomy_exists( 'product_cat' ) ) {
+		$cats = get_terms(
+			array(
+				'taxonomy'   => 'product_cat',
+				'hide_empty' => true,
+				'number'     => 4,
+				'parent'     => 0,
+				'exclude'    => array( (int) get_option( 'default_product_cat' ) ),
+			)
+		);
+		if ( ! empty( $cats ) && ! is_wp_error( $cats ) ) {
+			foreach ( $cats as $cat ) {
+				$default_items[] = array(
+					'title'    => $cat->name,
+					'url'      => get_term_link( $cat ),
+					'target'   => '',
+					'children' => array(),
+				);
+			}
+		}
+	}
+
+	// Si aún no se crearon categorías en la tienda, colocar accesos generales seguros
+	if ( count( $default_items ) === 1 ) {
+		$default_items[] = array(
+			'title'    => 'Destacados',
+			'url'      => home_url( '/shop/' ),
+			'target'   => '',
+			'children' => array(),
+		);
+		$default_items[] = array(
+			'title'    => 'Novedades',
+			'url'      => home_url( '/shop/' ),
+			'target'   => '',
+			'children' => array(),
+		);
+	}
+
+	$default_items[] = array(
+		'title'    => 'Preguntas Frecuentes',
+		'url'      => home_url( '/faq/' ),
+		'target'   => '',
+		'children' => array(),
+	);
+
+	$default_items[] = array(
+		'title'    => 'Contacto',
+		'url'      => coco_theme_get_whatsapp_url( 'general' ),
+		'target'   => '_blank',
+		'children' => array(),
+	);
+
+	return $default_items;
 }
 
 /**
@@ -690,6 +806,23 @@ function coco_theme_render_header_navigation( $block_content, $block ) {
 		if ( preg_match( $pattern_mob, $block_content ) ) {
 			$block_content = preg_replace( $pattern_mob, coco_theme_render_mobile_nav(), $block_content, 1 );
 		}
+	}
+
+	// 4. Dinamizar variables globales de WhatsApp, teléfono, dirección y marca en cabecera/pie
+	if ( false !== strpos( $block_content, '595981531503' ) || false !== strpos( $block_content, '0981 531503' ) || false !== strpos( $block_content, 'Guaraníes 4779' ) || false !== strpos( $block_content, 'Coco Cherry' ) ) {
+		$wa_general_url = coco_theme_get_whatsapp_url( 'general' );
+		$wa_display     = coco_theme_get_whatsapp_display();
+		$wa_clean_num   = coco_theme_get_whatsapp_number();
+		$store_address  = coco_theme_get_store_address();
+		$site_title     = get_bloginfo( 'name' );
+
+		$block_content = str_replace( 'https://wa.me/595981531503', esc_url( $wa_general_url ), $block_content );
+		$block_content = str_replace( '595981531503', esc_html( $wa_clean_num ), $block_content );
+		$block_content = str_replace( '0981 531503', esc_html( $wa_display ), $block_content );
+		$block_content = str_replace( 'Guaraníes 4779, Asunción, Paraguay', esc_html( $store_address ), $block_content );
+		$block_content = str_replace( 'Menú Coco Cherry', 'Menú ' . esc_html( $site_title ), $block_content );
+		$block_content = str_replace( '2026 Coco Cherry Store Paraguay', date( 'Y' ) . ' ' . esc_html( $site_title ) . ' Paraguay', $block_content );
+		$block_content = str_replace( 'Coco Cherry Store Paraguay', esc_html( $site_title ) . ' Paraguay', $block_content );
 	}
 
 	return $block_content;
@@ -872,7 +1005,7 @@ function coco_theme_ecomus_brand_and_stock() {
 	global $product;
 	?>
 	<div class="coco-ecomus-meta-top">
-		<span class="coco-ecomus-brand">Marca: <strong>Coco Cherry Store</strong></span>
+		<span class="coco-ecomus-brand"><?php esc_html_e( 'Marca:', 'coco-theme' ); ?> <strong><?php echo esc_html( get_bloginfo( 'name' ) ); ?></strong></span>
 	</div>
 	<?php
 }
@@ -1071,9 +1204,7 @@ function coco_theme_get_pay_badge_class( $badge_text ) {
  */
 function coco_theme_product_cod_guarantees() {
 	global $product;
-	$product_title = ( $product instanceof \WC_Product ) ? $product->get_name() : get_the_title();
-	$product_url   = get_permalink();
-	$wa_question   = 'https://wa.me/595981531503?text=' . rawurlencode( 'Hola Coco Cherry Store! Tengo una consulta sobre el producto: ' . $product_title . ' (' . $product_url . ')' );
+	$wa_question = coco_theme_get_whatsapp_url( 'product', $product );
 
 	$delivery_1 = get_theme_mod(
 		'coco_theme_delivery_box_1',
@@ -1679,6 +1810,10 @@ function coco_theme_star_products_shortcode() {
 		$name2 = 'Rizador de Pestañas Térmico y Perfilador de Cejas 2 en 1 Recargable USB';
 	}
 
+	$home_wa_url    = coco_theme_get_whatsapp_url( 'general' );
+	$home_wa_disp   = coco_theme_get_whatsapp_display();
+	$home_site_name = get_bloginfo( 'name' );
+
 	ob_start();
 	?>
 	<div class="coco-fav-cards-grid">
@@ -1752,27 +1887,15 @@ function coco_theme_render_floating_whatsapp() {
 		return;
 	}
 
-	$phone = '595981531503';
-	$text  = 'Hola Coco Cherry Store! Quiero hacer una consulta sobre sus productos con pago al recibir.';
-
-	if ( function_exists( 'is_product' ) && is_product() ) {
-		$product = wc_get_product( get_queried_object_id() );
-		if ( $product instanceof \WC_Product ) {
-			$text = sprintf(
-				'Hola Coco Cherry Store! Quiero consultar sobre el producto: %s (%s)',
-				$product->get_name(),
-				get_permalink( $product->get_id() )
-			);
-		}
-	}
-
-	$wa_url = 'https://wa.me/' . $phone . '?text=' . rawurlencode( $text );
+	$is_product = function_exists( 'is_product' ) && is_product();
+	$wa_url     = coco_theme_get_whatsapp_url( $is_product ? 'product' : 'general' );
+	$display    = coco_theme_get_whatsapp_display();
 	?>
 	<a href="<?php echo esc_url( $wa_url ); ?>" class="coco-floating-wa" target="_blank" rel="noopener noreferrer" aria-label="Consultar por WhatsApp">
 		<svg viewBox="0 0 24 24" aria-hidden="true">
 			<path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12 0 2.625.846 5.059 2.284 7.033l-1.492 5.451 5.603-1.469c1.911 1.196 4.169 1.889 6.605 1.889 6.627 0 12-5.373 12-12s-5.373-12-12-12z"/>
 		</svg>
-		<span>WhatsApp 0981 531503</span>
+		<span>WhatsApp <?php echo esc_html( $display ); ?></span>
 	</a>
 	<?php
 }
@@ -1861,12 +1984,121 @@ function coco_theme_customize_register( $wp_customize ) {
 		)
 	);
 
-	// 3. Sección propia Opciones Coco Cherry Store.
+	// 3. Sección propia Opciones de Tienda (COD Paraguay).
 	$wp_customize->add_section(
 		'coco_theme_options',
 		array(
-			'title'    => __( 'Opciones Coco Cherry Store', 'coco-theme' ),
+			'title'    => __( 'Opciones de la Tienda (COD)', 'coco-theme' ),
 			'priority' => 30,
+		)
+	);
+
+	// Sección propia para WhatsApp y Contacto (100% Personalizable)
+	$wp_customize->add_section(
+		'coco_whatsapp_options',
+		array(
+			'title'    => __( 'Ajustes de WhatsApp y Contacto', 'coco-theme' ),
+			'priority' => 28,
+		)
+	);
+
+	// 1. Número de WhatsApp (con código de país)
+	$wp_customize->add_setting(
+		'coco_whatsapp_number',
+		array(
+			'default'           => '595981531503',
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'sanitize_text_field',
+			'transport'         => 'refresh',
+		)
+	);
+	$wp_customize->add_control(
+		'coco_whatsapp_number',
+		array(
+			'label'       => __( 'Número de WhatsApp (con código de país)', 'coco-theme' ),
+			'description' => __( 'Ejemplo: 595981531503 (sin signos + ni guiones). A este número llegarán todos los pedidos y consultas.', 'coco-theme' ),
+			'section'     => 'coco_whatsapp_options',
+			'type'        => 'text',
+		)
+	);
+
+	// 2. Número visible en pantalla
+	$wp_customize->add_setting(
+		'coco_whatsapp_display',
+		array(
+			'default'           => '0981 531503',
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'sanitize_text_field',
+			'transport'         => 'refresh',
+		)
+	);
+	$wp_customize->add_control(
+		'coco_whatsapp_display',
+		array(
+			'label'       => __( 'Número visible para los clientes', 'coco-theme' ),
+			'description' => __( 'Ejemplo: 0981 531503. Así se mostrará en los textos, botones y marquesina.', 'coco-theme' ),
+			'section'     => 'coco_whatsapp_options',
+			'type'        => 'text',
+		)
+	);
+
+	// 3. Mensaje general de WhatsApp
+	$wp_customize->add_setting(
+		'coco_whatsapp_general_message',
+		array(
+			'default'           => '¡Hola {sitio}! Quiero hacer una consulta sobre sus productos con entrega a domicilio.',
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'sanitize_textarea_field',
+			'transport'         => 'refresh',
+		)
+	);
+	$wp_customize->add_control(
+		'coco_whatsapp_general_message',
+		array(
+			'label'       => __( 'Mensaje predeterminado de consultas generales', 'coco-theme' ),
+			'description' => __( 'Usa {sitio} para insertar automáticamente el nombre de tu tienda.', 'coco-theme' ),
+			'section'     => 'coco_whatsapp_options',
+			'type'        => 'textarea',
+		)
+	);
+
+	// 4. Mensaje de WhatsApp para ficha de producto
+	$wp_customize->add_setting(
+		'coco_whatsapp_product_message',
+		array(
+			'default'           => '¡Hola {sitio}! Tengo una consulta sobre el producto: {producto} ({url})',
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'sanitize_textarea_field',
+			'transport'         => 'refresh',
+		)
+	);
+	$wp_customize->add_control(
+		'coco_whatsapp_product_message',
+		array(
+			'label'       => __( 'Mensaje al consultar desde una ficha de producto', 'coco-theme' ),
+			'description' => __( 'Variables disponibles: {sitio} (nombre de tienda), {producto} (nombre del artículo), {url} (enlace al producto).', 'coco-theme' ),
+			'section'     => 'coco_whatsapp_options',
+			'type'        => 'textarea',
+		)
+	);
+
+	// 5. Dirección y Ubicación en Footer
+	$wp_customize->add_setting(
+		'coco_store_address',
+		array(
+			'default'           => 'Guaraníes 4779, Asunción, Paraguay',
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'sanitize_text_field',
+			'transport'         => 'refresh',
+		)
+	);
+	$wp_customize->add_control(
+		'coco_store_address',
+		array(
+			'label'       => __( 'Dirección / Ubicación de la Tienda (Footer)', 'coco-theme' ),
+			'description' => __( 'Aparece en la columna de atención del pie de página.', 'coco-theme' ),
+			'section'     => 'coco_whatsapp_options',
+			'type'        => 'text',
 		)
 	);
 
@@ -2692,7 +2924,7 @@ function coco_theme_render_sales_pop() {
 						<span><?php esc_html_e( 'Verificada', 'coco-theme' ); ?></span>
 					</span>
 				</div>
-				<span class="coco-sp-info-icon" title="<?php esc_attr_e( 'Compra verificada con Pago Contra Entrega en Coco Cherry Store', 'coco-theme' ); ?>">
+				<span class="coco-sp-info-icon" title="<?php echo esc_attr( sprintf( __( 'Compra verificada con Pago Contra Entrega en %s', 'coco-theme' ), get_bloginfo( 'name' ) ) ); ?>">
 					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 						<circle cx="12" cy="12" r="10"></circle>
 						<line x1="12" y1="16" x2="12" y2="12"></line>
@@ -3099,6 +3331,10 @@ function coco_theme_get_default_home_content() {
 		}
 	}
 
+	$home_wa_url    = coco_theme_get_whatsapp_url( 'general' );
+	$home_wa_disp   = coco_theme_get_whatsapp_display();
+	$home_site_name = get_bloginfo( 'name' );
+
 	ob_start();
 	?>
 <!-- wp:group {"className":"coco-hero-luxury-section"} -->
@@ -3160,7 +3396,7 @@ function coco_theme_get_default_home_content() {
 <!-- wp:group {"className":"coco-star-products-section"} -->
 <div class="wp-block-group coco-star-products-section">
 <!-- wp:heading {"className":"coco-flank-title"} -->
-<h2 class="wp-block-heading coco-flank-title">LOS FAVORITOS DE COCO CHERRY</h2>
+<h2 class="wp-block-heading coco-flank-title">LOS FAVORITOS DE <?php echo esc_html( strtoupper( $home_site_name ) ); ?></h2>
 <!-- /wp:heading -->
 
 <!-- wp:columns {"className":"coco-fav-cards-grid"} -->
@@ -3527,7 +3763,7 @@ function coco_theme_get_default_home_content() {
 
 <!-- wp:details -->
 <details class="wp-block-details"><summary>¿Puedo hacer mi pedido o consultar talles por WhatsApp?</summary><!-- wp:paragraph -->
-<p>¡Por supuesto! Nuestro equipo te atiende de forma personalizada en el WhatsApp <strong>0981 531503</strong> para asesorarte con talles, colores o tomar tu pedido directamente.</p>
+<p>¡Por supuesto! Nuestro equipo te atiende de forma personalizada en el WhatsApp <strong><?php echo esc_html( $home_wa_disp ); ?></strong> para asesorarte con talles, colores o tomar tu pedido directamente.</p>
 <!-- /wp:paragraph --></details>
 <!-- /wp:details -->
 </div>
@@ -3540,13 +3776,13 @@ function coco_theme_get_default_home_content() {
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"align":"center","className":"coco-section-subtext"} -->
-<p class="has-text-align-center coco-section-subtext">Escribinos ahora mismo al <strong>0981 531503</strong> y te ayudamos a elegir tus productos con entrega en puerta.</p>
+<p class="has-text-align-center coco-section-subtext">Escribinos ahora mismo al <strong><?php echo esc_html( $home_wa_disp ); ?></strong> y te ayudamos a elegir tus productos con entrega en puerta.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:buttons {"className":"coco-wa-cta-buttons"} -->
 <div class="wp-block-buttons coco-wa-cta-buttons">
 <!-- wp:button {"className":"coco-btn-whatsapp"} -->
-<div class="wp-block-button coco-btn-whatsapp"><a class="wp-block-button__link wp-element-button" href="https://wa.me/595981531503?text=Hola%20Coco%20Cherry%20Store!%20Quiero%20asesoramiento%20para%20hacer%20un%20pedido">📲 Hablar por WhatsApp (0981 531503)</a></div>
+<div class="wp-block-button coco-btn-whatsapp"><a class="wp-block-button__link wp-element-button" href="<?php echo esc_url( $home_wa_url ); ?>">📲 Hablar por WhatsApp (<?php echo esc_html( $home_wa_disp ); ?>)</a></div>
 <!-- /wp:button -->
 
 <!-- wp:button {"className":"coco-btn-primary"} -->
