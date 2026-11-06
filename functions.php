@@ -3971,6 +3971,18 @@ add_action( 'admin_notices', function() {
 	}
 } );
 
+/**
+ * Desactivar la plantilla de bloques 'order-confirmation' de WooCommerce en Coco Theme
+ * para asegurar que siempre se ejecute la plantilla estilizada PHP de confirmación (thankyou.php).
+ */
+add_filter( 'woocommerce_has_block_template', function( $has_template, $template_name ) {
+	if ( 'order-confirmation' === $template_name ) {
+		return false;
+	}
+	return $has_template;
+}, 10, 2 );
+
+
 
 
 
