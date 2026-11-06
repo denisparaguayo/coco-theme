@@ -3993,6 +3993,11 @@ add_action( 'wp_enqueue_scripts', function() {
 	}
 }, 20 );
 
+// Permitir que el comprador contra entrega vea su comprobante sin bloqueo de login obligatorio
+add_filter( 'woocommerce_order_received_verify_known_shoppers', '__return_false', 999 );
+add_filter( 'woocommerce_order_email_verification_required', '__return_false', 999 );
+
+
 
 
 
