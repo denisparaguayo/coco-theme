@@ -366,8 +366,8 @@ function coco_theme_fallback_site_logo_render( $block_content, $block ) {
 		}
 	}
 
-	// Fallback garantizado: si aún no se configuró en medios, servir el logo oficial del tema (COCO-NEW-LOGO.svg).
-	$theme_logo = get_template_directory_uri() . '/assets/images/coco-logo.svg';
+	// Fallback garantizado: si aún no se configuró en medios, servir el logo de muestra predeterminado (default-logo.jpg).
+	$theme_logo = get_template_directory_uri() . '/assets/images/default-logo.jpg';
 	return sprintf(
 		'<div class="wp-block-site-logo"><a href="%s" class="custom-logo-link" rel="home"><img src="%s" class="custom-logo" width="115" height="56" alt="%s" style="width:115px;height:56px;max-height:56px;object-fit:contain;display:block;" /></a></div>',
 		esc_url( home_url( '/' ) ),
@@ -401,7 +401,7 @@ function coco_theme_fallback_custom_logo_html( $html ) {
 	}
 
 	if ( empty( $html ) ) {
-		$theme_logo = get_template_directory_uri() . '/assets/images/coco-logo.svg';
+		$theme_logo = get_template_directory_uri() . '/assets/images/default-logo.jpg';
 		return sprintf(
 			'<a href="%s" class="custom-logo-link" rel="home"><img src="%s" class="custom-logo" width="115" height="56" alt="%s" style="width:115px;height:56px;max-height:56px;object-fit:contain;display:block;" /></a>',
 			esc_url( home_url( '/' ) ),
