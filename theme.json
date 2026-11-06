@@ -14,17 +14,17 @@
 			"defaultGradients": false,
 			"palette": [
 				{
-					"name": "Coco Cherry Red (Primario)",
+					"name": "Coco Red (Primario)",
 					"slug": "primary",
 					"color": "#CE1322"
 				},
 				{
-					"name": "Coco Cherry Hover",
+					"name": "Coco Red Hover",
 					"slug": "primary-hover",
 					"color": "#B9101E"
 				},
 				{
-					"name": "Coco Cherry Soft (Fondo Suave)",
+					"name": "Coco Soft (Fondo Suave)",
 					"slug": "primary-soft",
 					"color": "#FFF1F2"
 				},

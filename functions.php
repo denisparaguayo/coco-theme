@@ -990,8 +990,8 @@ function coco_theme_register_pattern_categories() {
 		register_block_pattern_category(
 			'coco-cherry',
 			array(
-				'label'       => __( 'Coco Cherry Store', 'coco-theme' ),
-				'description' => __( 'Secciones de alta conversión para Coco Cherry Store con Pago Contra Entrega.', 'coco-theme' ),
+				'label'       => __( 'CocoStore Pro', 'coco-theme' ),
+				'description' => __( 'Secciones de alta conversión para CocoStore Pro con Pago Contra Entrega.', 'coco-theme' ),
 			)
 		);
 	}
@@ -3884,7 +3884,7 @@ add_action( 'admin_notices', function() {
 	$front_id = get_option( 'page_on_front' );
 	if ( $screen && 'page' === $screen->post_type && isset( $_GET['post'] ) && intval( $_GET['post'] ) === intval( $front_id ) ) {
 		$reload_url = add_query_arg( 'coco_reload_home', '1' );
-		echo '<div class="notice notice-info is-dismissible"><p><strong>Coco Cherry Store:</strong> Estás editando la <strong>Portada (Home)</strong> con bloques 100% nativos de WordPress. Hacé clic en cualquier título, texto, botón o imagen para modificarlo y luego pulsá <strong>Guardar / Actualizar</strong>. <a class="button button-secondary button-small" style="margin-left:8px;" href="' . esc_url( $reload_url ) . '" onclick="return confirm(\'¿Restaurar el diseño original predeterminado de la portada?\');">Restaurar diseño original</a></p></div>';
+		echo '<div class="notice notice-info is-dismissible"><p><strong>CocoStore Pro:</strong> Estás editando la <strong>Portada (Home)</strong> con bloques 100% nativos de WordPress. Hacé clic en cualquier título, texto, botón o imagen para modificarlo y luego pulsá <strong>Guardar / Actualizar</strong>. <a class="button button-secondary button-small" style="margin-left:8px;" href="' . esc_url( $reload_url ) . '" onclick="return confirm(\'¿Restaurar el diseño original predeterminado de la portada?\');">Restaurar diseño original</a></p></div>';
 	}
 } );
 
