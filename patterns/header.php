@@ -114,7 +114,7 @@ $site_name      = get_bloginfo( 'name' );
 		<!-- wp:html -->
 		<div class="coco-header-actions-right">
 			<button type="button" class="coco-header-action-btn coco-btn-search-toggle" aria-label="Abrir buscador" onclick="cocoToggleSearch()">
-				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+				<svg style="pointer-events:none;" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
 			</button>
 			<a href="<?php echo esc_url( $header_wa_url ); ?>" class="coco-header-action-btn" aria-label="Atención y Pedidos por WhatsApp" target="_blank" rel="noreferrer noopener" title="Atención y Pedidos por WhatsApp">
 				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
@@ -124,11 +124,13 @@ $site_name      = get_bloginfo( 'name' );
 			</button>
 		</div>
 		<!-- /wp:html -->
+	</div>
+	<!-- /wp:group -->
 
 	<!-- wp:html -->
 	<div id="coco-header-search-bar" class="coco-header-search-drawer" style="display:none;">
 		<div class="coco-header-search-inner">
-			<form role="search" method="get" class="coco-header-search-form" action="/">
+			<form role="search" method="get" class="coco-header-search-form" action="<?php echo esc_url( home_url( '/' ) ); ?>">
 				<svg class="coco-search-input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
 				<input type="search" class="coco-header-search-input" placeholder="Buscar productos..." name="s" autocomplete="off" />
 				<input type="hidden" name="post_type" value="product" />

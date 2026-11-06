@@ -787,6 +787,13 @@ add_shortcode( 'coco_mobile_nav', 'coco_theme_render_mobile_nav' );
  * Conectar la cabecera del editor de bloques con los menús dinámicos de WordPress.
  */
 function coco_theme_render_header_navigation( $block_content, $block ) {
+	// 0. Proteger bloques de WooCommerce, fichas de producto y contenido para que no se alteren sus URLs
+	if ( ! empty( $block['blockName'] ) ) {
+		if ( false !== strpos( $block['blockName'], 'woocommerce' ) || 'core/post-content' === $block['blockName'] ) {
+			return $block_content;
+		}
+	}
+
 	// 1. Reemplazar core/navigation si se usa en Gutenberg
 	if ( 'core/navigation' === $block['blockName'] ) {
 		return coco_theme_render_boutique_nav();
@@ -816,13 +823,20 @@ function coco_theme_render_header_navigation( $block_content, $block ) {
 		$store_address  = coco_theme_get_store_address();
 		$site_title     = get_bloginfo( 'name' );
 
-		$block_content = str_replace( 'https://wa.me/595981531503', esc_url( $wa_general_url ), $block_content );
-		$block_content = str_replace( '595981531503', esc_html( $wa_clean_num ), $block_content );
+		// Reemplazar SOLO enlaces wa.me directos que NO contengan ya un mensaje personalizado (?text=...)
+		$block_content = preg_replace( '#https://wa\.me/595981531503(?![?&a-zA-Z0-9])#', esc_url( $wa_general_url ), $block_content );
 		$block_content = str_replace( '0981 531503', esc_html( $wa_display ), $block_content );
 		$block_content = str_replace( 'Guaraníes 4779, Asunción, Paraguay', esc_html( $store_address ), $block_content );
 		$block_content = str_replace( 'Menú Coco Cherry', 'Menú ' . esc_html( $site_title ), $block_content );
 		$block_content = str_replace( '2026 Coco Cherry Store Paraguay', date( 'Y' ) . ' ' . esc_html( $site_title ) . ' Paraguay', $block_content );
 		$block_content = str_replace( 'Coco Cherry Store Paraguay', esc_html( $site_title ) . ' Paraguay', $block_content );
+	}
+
+	// 5. Garantizar que el formulario de búsqueda apunte siempre a la URL del sitio (home_url)
+	if ( false !== strpos( $block_content, 'coco-header-search-form' ) ) {
+		$home_url_clean = esc_url( home_url( '/' ) );
+		$block_content  = str_replace( 'class="coco-header-search-form" action="/"', 'class="coco-header-search-form" action="' . $home_url_clean . '"', $block_content );
+		$block_content  = str_replace( 'action="/" class="coco-header-search-form"', 'action="' . $home_url_clean . '" class="coco-header-search-form"', $block_content );
 	}
 
 	return $block_content;
@@ -855,14 +869,54 @@ add_action( 'wp_enqueue_scripts', 'coco_theme_enqueue_assets' );
 function coco_theme_print_header_scripts() {
 	?>
 	<script id="coco-header-core-js">
+	var _cocoSearchToggleTime = 0;
 	window.cocoToggleSearch = function(force) {
+		var now = Date.now();
+		if (typeof force !== 'boolean') {
+			if (now - _cocoSearchToggleTime < 350) return;
+			_cocoSearchToggleTime = now;
+		}
+
 		var bar = document.getElementById('coco-header-search-bar');
-		if (!bar) return;
-		var willOpen = (typeof force === 'boolean') ? force : (bar.style.display === 'none' || !bar.style.display);
-		bar.style.display = willOpen ? 'block' : 'none';
+		if (!bar) {
+			var header = document.querySelector('.coco-site-header') || document.querySelector('header');
+			if (header) {
+				bar = document.createElement('div');
+				bar.id = 'coco-header-search-bar';
+				bar.className = 'coco-header-search-drawer';
+				bar.style.display = 'none';
+				bar.innerHTML = '<div class="coco-header-search-inner">' +
+					'<form role="search" method="get" class="coco-header-search-form" action="<?php echo esc_url( home_url( '/' ) ); ?>">' +
+					'<svg class="coco-search-input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>' +
+					'<input type="search" class="coco-header-search-input" placeholder="Buscar productos..." name="s" autocomplete="off" />' +
+					'<input type="hidden" name="post_type" value="product" />' +
+					'<button type="submit" class="coco-header-search-submit">Buscar</button>' +
+					'<button type="button" class="coco-header-search-close" onclick="cocoToggleSearch(false)">✕</button>' +
+					'</form></div>';
+				header.appendChild(bar);
+			} else {
+				return;
+			}
+		}
+
+		var isCurrentlyOpen = (bar.classList.contains('is-open') || (bar.style.display !== 'none' && bar.style.display !== ''));
+		var willOpen = (typeof force === 'boolean') ? force : !isCurrentlyOpen;
+
 		if (willOpen) {
+			bar.classList.add('is-open');
+			bar.style.display = 'block';
 			var inp = bar.querySelector('.coco-header-search-input');
-			if (inp) inp.focus();
+			if (inp) {
+				setTimeout(function() {
+					try {
+						inp.focus();
+						inp.select();
+					} catch (err) {}
+				}, 60);
+			}
+		} else {
+			bar.classList.remove('is-open');
+			bar.style.display = 'none';
 		}
 	};
 
@@ -918,7 +972,7 @@ function coco_theme_print_header_scripts() {
 		}
 	};
 
-	// Delegación global de clics para móvil y buscador
+	// Delegación global de clics para móvil, buscador y cierre al hacer clic fuera
 	document.addEventListener('click', function(e) {
 		var mobileToggle = e.target.closest('.coco-header-mobile-toggle');
 		if (mobileToggle) {
@@ -943,6 +997,35 @@ function coco_theme_print_header_scripts() {
 			e.preventDefault();
 			window.cocoToggleSearch(false);
 			return;
+		}
+
+		// Cerrar buscador si se hace clic fuera del formulario y del botón lupa
+		var bar = document.getElementById('coco-header-search-bar');
+		if (bar && (bar.classList.contains('is-open') || bar.style.display === 'block')) {
+			var insideSearch = e.target.closest('#coco-header-search-bar');
+			var insideToggle = e.target.closest('.coco-btn-search-toggle');
+			if (!insideSearch && !insideToggle) {
+				window.cocoToggleSearch(false);
+			}
+		}
+
+		// Centrar suavemente pestaña de producto al tocarla en pantallas móviles
+		var tabLink = e.target.closest('.woocommerce-tabs ul.tabs li a, .wc-tabs li a');
+		if (tabLink) {
+			var tabLi = tabLink.closest('li');
+			if (tabLi && typeof tabLi.scrollIntoView === 'function') {
+				setTimeout(function() {
+					tabLi.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+				}, 60);
+			}
+		}
+	});
+
+	// Cerrar buscador y drawer móvil al presionar la tecla Escape
+	document.addEventListener('keydown', function(e) {
+		if (e.key === 'Escape' || e.keyCode === 27) {
+			window.cocoToggleSearch(false);
+			window.cocoToggleMobileNav(false);
 		}
 	});
 
