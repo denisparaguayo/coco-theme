@@ -1883,7 +1883,18 @@ add_filter(
  * Puede encenderse o apagarse cuando se desee desde Apariencia > Personalizar > Opciones Coco Cherry.
  */
 function coco_theme_render_floating_whatsapp() {
-	if ( 'yes' !== get_option( 'coco_theme_show_floating_wa', 'no' ) ) {
+	$show_mod = get_theme_mod( 'coco_theme_show_floating_wa', null );
+	$show_opt = get_option( 'coco_theme_show_floating_wa', null );
+
+	$is_active = false;
+	if ( null !== $show_mod ) {
+		$is_active = ( true === $show_mod || 1 === $show_mod || '1' === (string) $show_mod || 'yes' === (string) $show_mod );
+	}
+	if ( ! $is_active && null !== $show_opt ) {
+		$is_active = ( true === $show_opt || 1 === $show_opt || '1' === (string) $show_opt || 'yes' === (string) $show_opt );
+	}
+
+	if ( ! $is_active ) {
 		return;
 	}
 
@@ -2102,6 +2113,26 @@ function coco_theme_customize_register( $wp_customize ) {
 		)
 	);
 
+	// 6. Activar botón flotante sticky de WhatsApp
+	$wp_customize->add_setting(
+		'coco_theme_show_floating_wa',
+		array(
+			'default'           => false,
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'rest_sanitize_boolean',
+			'transport'         => 'refresh',
+		)
+	);
+	$wp_customize->add_control(
+		'coco_theme_show_floating_wa',
+		array(
+			'label'       => __( 'Activar botón flotante sticky de WhatsApp', 'coco-theme' ),
+			'description' => __( 'Muestra el botón flotante en la esquina inferior de la pantalla para atención directa.', 'coco-theme' ),
+			'section'     => 'coco_whatsapp_options',
+			'type'        => 'checkbox',
+		)
+	);
+
 	// Controles para editar fácilmente el Hero Banner de la Tienda (/shop/)
 	$wp_customize->add_setting(
 		'coco_theme_hero_kicker',
@@ -2211,25 +2242,6 @@ function coco_theme_customize_register( $wp_customize ) {
 			'section'     => 'coco_theme_options',
 			'type'        => 'select',
 			'choices'     => $menu_choices,
-		)
-	);
-
-	$wp_customize->add_setting(
-		'coco_theme_show_floating_wa',
-		array(
-			'default'   => 'no',
-			'type'      => 'option',
-			'transport' => 'refresh',
-		)
-	);
-
-	$wp_customize->add_control(
-		'coco_theme_show_floating_wa',
-		array(
-			'label'       => __( 'Activar botón flotante sticky de WhatsApp', 'coco-theme' ),
-			'description' => __( 'Por defecto está apagado para no tapar los productos en móviles. Marque esta casilla si desea encenderlo.', 'coco-theme' ),
-			'section'     => 'coco_theme_options',
-			'type'        => 'checkbox',
 		)
 	);
 
