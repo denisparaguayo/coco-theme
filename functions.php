@@ -3982,6 +3982,18 @@ add_filter( 'woocommerce_has_block_template', function( $has_template, $template
 	return $has_template;
 }, 10, 2 );
 
+/**
+ * Asegurar que los estilos de confirmación de pedido se carguen siempre en la página de agradecimiento.
+ */
+add_action( 'wp_enqueue_scripts', function() {
+	if ( function_exists( 'is_order_received_page' ) && is_order_received_page() ) {
+		if ( defined( 'COCO_COD_URL' ) && defined( 'COCO_COD_VERSION' ) ) {
+			wp_enqueue_style( 'coco-cod-css', COCO_COD_URL . 'assets/css/coco-cod.css', array(), COCO_COD_VERSION );
+		}
+	}
+}, 20 );
+
+
 
 
 
