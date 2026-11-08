@@ -939,8 +939,6 @@ function coco_theme_customizer_dynamic_css() {
 		:root {
 			--coco-logo-width: <?php echo (int) $logo_width; ?>px;
 			--coco-logo-height: <?php echo (int) $logo_height; ?>px;
-			--coco-cod-green: <?php echo esc_attr( $btn_bg ); ?>;
-			--coco-cod-green-dark: <?php echo esc_attr( $btn_hover ); ?>;
 			--coco-btn-cod-bg: <?php echo esc_attr( $btn_bg ); ?>;
 			--coco-btn-cod-text: <?php echo esc_attr( $btn_text ); ?>;
 			--coco-btn-cod-hover: <?php echo esc_attr( $btn_hover ); ?>;

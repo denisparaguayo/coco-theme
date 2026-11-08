@@ -1365,7 +1365,6 @@ add_action( 'woocommerce_after_add_to_cart_form', 'coco_theme_product_cod_guaran
  * botón de favoritos e interactividad fluida al hacer clic.
  */
 function coco_theme_catalog_minimal_loop() {
-	remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_price', 10 );
 	remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_rating', 5 );
 	remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_show_product_loop_sale_flash', 10 );
 	remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
@@ -1375,7 +1374,6 @@ add_action( 'wp', 'coco_theme_catalog_minimal_loop', 20 );
 
 add_action( 'woocommerce_before_template_part', function( $template_name ) {
 	if ( false !== strpos( $template_name, 'related' ) || false !== strpos( $template_name, 'up-sells' ) || false !== strpos( $template_name, 'product' ) ) {
-		remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_price', 10 );
 		remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_rating', 5 );
 		remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_show_product_loop_sale_flash', 10 );
 		remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
@@ -2573,6 +2571,125 @@ function coco_theme_render_mobile_sticky_buy_bar() {
 add_action( 'wp_footer', 'coco_theme_render_mobile_sticky_buy_bar', 35 );
 
 /**
+ * Píldoras táctiles interactivas (Swatches) para variaciones de producto en móvil y desktop.
+ * Convierte los selectores desplegables nativos en botones visuales de 1 toque.
+ */
+function coco_theme_render_variation_swatches_script() {
+	if ( ! function_exists( 'is_product' ) || ! is_product() ) {
+		return;
+	}
+	?>
+	<script id="coco-variation-swatches-js">
+	(function() {
+		function initCocoSwatches() {
+			var form = document.querySelector('form.variations_form');
+			if (!form) return;
+			var selects = form.querySelectorAll('table.variations select');
+			if (!selects || !selects.length) return;
+
+			selects.forEach(function(select) {
+				if (select.dataset.cocoSwatchesInit === '1') return;
+				select.dataset.cocoSwatchesInit = '1';
+
+				select.classList.add('coco-hidden-select');
+
+				var wrapper = document.createElement('div');
+				wrapper.className = 'coco-variation-swatches';
+				wrapper.setAttribute('role', 'radiogroup');
+
+				var row = select.closest('tr');
+				var labelEl = row ? row.querySelector('th.label label') : null;
+				if (labelEl) {
+					wrapper.setAttribute('aria-label', labelEl.textContent.trim());
+				}
+
+				function refreshPills() {
+					wrapper.innerHTML = '';
+					var currentVal = select.value;
+					var options = Array.from(select.options);
+
+					options.forEach(function(opt) {
+						if (!opt.value) return; // Saltear "Elige una opción"
+
+						var btn = document.createElement('button');
+						btn.type = 'button';
+						btn.className = 'coco-swatch-pill';
+						btn.setAttribute('role', 'radio');
+						btn.setAttribute('data-value', opt.value);
+						btn.textContent = opt.textContent.trim();
+
+						if (currentVal && currentVal === opt.value) {
+							btn.classList.add('is-selected');
+							btn.setAttribute('aria-checked', 'true');
+						} else {
+							btn.setAttribute('aria-checked', 'false');
+						}
+
+						btn.addEventListener('click', function(e) {
+							e.preventDefault();
+							var wasSelected = btn.classList.contains('is-selected');
+
+							if (wasSelected) {
+								select.value = '';
+							} else {
+								select.value = opt.value;
+							}
+
+							select.dispatchEvent(new Event('change', { bubbles: true }));
+							if (window.jQuery) {
+								window.jQuery(select).trigger('change');
+							}
+
+							updateActiveStates();
+						});
+
+						wrapper.appendChild(btn);
+					});
+				}
+
+				function updateActiveStates() {
+					var val = select.value;
+					var pills = wrapper.querySelectorAll('.coco-swatch-pill');
+					pills.forEach(function(pill) {
+						if (val && pill.getAttribute('data-value') === val) {
+							pill.classList.add('is-selected');
+							pill.setAttribute('aria-checked', 'true');
+						} else {
+							pill.classList.remove('is-selected');
+							pill.setAttribute('aria-checked', 'false');
+						}
+					});
+				}
+
+				refreshPills();
+				select.parentNode.insertBefore(wrapper, select.nextSibling);
+
+				select.addEventListener('change', updateActiveStates);
+			});
+
+			if (window.jQuery) {
+				window.jQuery(form).on('reset_data', function() {
+					var allPills = form.querySelectorAll('.coco-swatch-pill');
+					allPills.forEach(function(p) {
+						p.classList.remove('is-selected');
+						p.setAttribute('aria-checked', 'false');
+					});
+				});
+			}
+		}
+
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', initCocoSwatches);
+		} else {
+			initCocoSwatches();
+		}
+	})();
+	</script>
+	<?php
+}
+add_action( 'wp_footer', 'coco_theme_render_variation_swatches_script', 25 );
+
+/**
  * Encolar fuentes y estilos principales también dentro del Editor de Bloques (Gutenberg)
  * para que al editar Páginas > Inicio se vea exactamente igual que en la portada real.
  */
@@ -3213,13 +3330,63 @@ add_filter( 'woocommerce_has_block_template', function( $has_template, $template
 }, 10, 2 );
 
 /**
- * Asegurar que los estilos de confirmación de pedido se carguen siempre en la página de agradecimiento.
+ * El tema maneja la presentación de la página de confirmación (order-received).
+ * Override del filtro del plugin Coco COD (prioridad 20) para usar la plantilla del tema.
+ */
+add_filter( 'wc_get_template', function( $template, $template_name, $args, $template_path, $default_path ) {
+	if ( 'checkout/thankyou.php' === $template_name ) {
+		$theme_template = get_stylesheet_directory() . '/woocommerce/checkout/thankyou.php';
+		if ( file_exists( $theme_template ) ) {
+			return $theme_template;
+		}
+	}
+	return $template;
+}, 30, 5 );
+
+/**
+ * Desactiva la plantilla de bloque 'order-confirmation' en temas FSE para que
+ * WooCommerce use la plantilla PHP del tema (igual que hacía el plugin).
+ */
+add_filter( 'has_block_template', function( $has_template, $template_name ) {
+	if ( 'order-confirmation' === $template_name ) {
+		return false;
+	}
+	return $has_template;
+}, 10, 2 );
+
+/**
+ * En la página de confirmación, desactivar wpautop y otros filtros de contenido
+ * para evitar <br> y <p> espurios en la plantilla.
+ */
+add_action( 'template_redirect', function() {
+	if ( function_exists( 'is_order_received_page' ) && is_order_received_page() ) {
+		remove_filter( 'the_content', 'wpautop' );
+		remove_filter( 'the_excerpt', 'wpautop' );
+		remove_filter( 'the_content', 'wptexturize' );
+		remove_filter( 'the_content', 'convert_smilies' );
+		remove_filter( 'the_content', 'convert_chars' );
+		remove_filter( 'the_content', 'prepend_attachment' );
+		// Usar output buffering con callback para limpiar <br> y <p> espurios
+		ob_start( 'coco_ty_clean_output' );
+	}
+}, 1 );
+
+/**
+ * Callback para limpiar <br> y <p> espurios del HTML final.
+ */
+function coco_ty_clean_output( $buffer ) {
+	$buffer = preg_replace( '/<p>\s*<\/p>/', '', $buffer );
+	$buffer = preg_replace( '/<br\s*\/?>\s*/', '', $buffer );
+	return $buffer;
+}
+
+/**
+ * En la página de confirmación, el tema maneja la presentación.
+ * Se desencola el CSS del plugin para evitar duplicados y conflictos.
  */
 add_action( 'wp_enqueue_scripts', function() {
 	if ( function_exists( 'is_order_received_page' ) && is_order_received_page() ) {
-		if ( defined( 'COCO_COD_URL' ) && defined( 'COCO_COD_VERSION' ) ) {
-			wp_enqueue_style( 'coco-cod-css', COCO_COD_URL . 'assets/css/coco-cod.css', array(), COCO_COD_VERSION );
-		}
+		wp_dequeue_style( 'coco-cod-css' );
 	}
 }, 20 );
 
