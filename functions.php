@@ -784,6 +784,49 @@ function coco_theme_render_mobile_nav() {
 add_shortcode( 'coco_mobile_nav', 'coco_theme_render_mobile_nav' );
 
 /**
+ * Genera el track con animación continua de la marquesina superior, dinamizado desde el Personalizador.
+ */
+function coco_theme_get_marquee_track_html() {
+	$default_text = '💵 Pago Contra Entrega en efectivo o QR • 🚚 Envíos a todo Paraguay • 📲 WhatsApp: 0981 531503 • 🛡️ 100% Compra Segura';
+	$raw_text     = get_theme_mod( 'coco_theme_marquee_text', $default_text );
+	if ( empty( trim( $raw_text ) ) ) {
+		$raw_text = $default_text;
+	}
+
+	$wa_url     = function_exists( 'coco_theme_get_whatsapp_url' ) ? coco_theme_get_whatsapp_url( 'general' ) : 'https://wa.me/595981531503';
+	$wa_display = function_exists( 'coco_theme_get_whatsapp_display' ) ? coco_theme_get_whatsapp_display() : '0981 531503';
+
+	// Separar por viñeta (•) o pleca (|)
+	$parts = preg_split( '/\s*[•|]\s*/u', trim( $raw_text ) );
+	$items = array();
+	foreach ( $parts as $part ) {
+		$part = trim( $part );
+		if ( '' !== $part ) {
+			if ( false !== stripos( $part, 'WhatsApp' ) && ! empty( $wa_url ) ) {
+				$part_text = str_replace( '0981 531503', $wa_display, $part );
+				$part_html = '<a href="' . esc_url( $wa_url ) . '" target="_blank" rel="noreferrer noopener">' . esc_html( $part_text ) . '</a>';
+			} else {
+				$part_html = esc_html( $part );
+			}
+			$items[] = '<span>' . $part_html . '</span>';
+		}
+	}
+
+	if ( empty( $items ) ) {
+		return '';
+	}
+
+	// Duplicar elementos para lograr el bucle infinito continuo
+	$items_html = implode( '<span class="coco-marquee-dot">•</span>', $items );
+	$track_html = $items_html . '<span class="coco-marquee-dot">•</span>' . $items_html;
+
+	$speed = intval( get_theme_mod( 'coco_theme_marquee_speed', 26 ) );
+	$style_attr = ( $speed > 0 && 26 !== $speed ) ? ' style="animation-duration:' . esc_attr( $speed ) . 's;"' : '';
+
+	return '<div class="coco-top-marquee-track"' . $style_attr . '>' . $track_html . '</div>';
+}
+
+/**
  * Conectar la cabecera del editor de bloques con los menús dinámicos de WordPress.
  */
 function coco_theme_render_header_navigation( $block_content, $block ) {
@@ -797,6 +840,20 @@ function coco_theme_render_header_navigation( $block_content, $block ) {
 	// 1. Reemplazar core/navigation si se usa en Gutenberg
 	if ( 'core/navigation' === $block['blockName'] ) {
 		return coco_theme_render_boutique_nav();
+	}
+
+	// 1.5 Dinamizar el contenido de la marquesina superior
+	if ( false !== strpos( $block_content, 'coco-top-marquee-container' ) || false !== strpos( $block_content, 'coco-top-bar-inner' ) || false !== strpos( $block_content, 'coco-sticky-marquee-top' ) ) {
+		if ( ! get_theme_mod( 'coco_theme_marquee_enabled', true ) ) {
+			$block_content = preg_replace( '/<div[^>]*id="coco-sticky-marquee-top"[^>]*>.*?<\/div>\s*/s', '', $block_content, 1 );
+		} else {
+			$marquee_track = coco_theme_get_marquee_track_html();
+			if ( false !== strpos( $block_content, 'coco-top-bar-inner' ) ) {
+				$block_content = preg_replace( '/<div class="coco-top-bar-inner">.*?<\/div>/s', '<div class="coco-top-marquee-container">' . $marquee_track . '</div>', $block_content, 1 );
+			} elseif ( false !== strpos( $block_content, 'coco-top-marquee-track' ) ) {
+				$block_content = preg_replace( '/<div class="coco-top-marquee-track"[^>]*>.*?<\/div>/s', $marquee_track, $block_content, 1 );
+			}
+		}
 	}
 
 	// 2. Si el bloque contiene la navegación central de la cabecera, inyectar el menú dinámico

@@ -263,6 +263,75 @@ function coco_theme_customize_register( $wp_customize ) {
 		)
 	);
 
+	// Marquesina superior de avisos (Top Bar)
+	$wp_customize->add_setting(
+		'coco_theme_marquee_enabled',
+		array(
+			'default'           => true,
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'rest_sanitize_boolean',
+			'transport'         => 'refresh',
+		)
+	);
+
+	$wp_customize->add_control(
+		'coco_theme_marquee_enabled',
+		array(
+			'label'       => __( 'Mostrar marquesina animada superior', 'coco-theme' ),
+			'description' => __( 'Muestra la barra superior deslizante con avisos continuos.', 'coco-theme' ),
+			'section'     => 'coco_header',
+			'type'        => 'checkbox',
+			'priority'    => 15,
+		)
+	);
+
+	$wp_customize->add_setting(
+		'coco_theme_marquee_text',
+		array(
+			'default'           => '💵 Pago Contra Entrega en efectivo o QR • 🚚 Envíos a todo Paraguay • 📲 WhatsApp: 0981 531503 • 🛡️ 100% Compra Segura',
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'sanitize_text_field',
+			'transport'         => 'refresh',
+		)
+	);
+
+	$wp_customize->add_control(
+		'coco_theme_marquee_text',
+		array(
+			'label'       => __( 'Texto de la marquesina', 'coco-theme' ),
+			'description' => __( 'Escribí tus avisos separados por un punto (•) o barra (|). Se moverán continuamente de derecha a izquierda.', 'coco-theme' ),
+			'section'     => 'coco_header',
+			'type'        => 'textarea',
+			'priority'    => 16,
+		)
+	);
+
+	$wp_customize->add_setting(
+		'coco_theme_marquee_speed',
+		array(
+			'default'           => 26,
+			'type'              => 'theme_mod',
+			'sanitize_callback' => 'absint',
+			'transport'         => 'refresh',
+		)
+	);
+
+	$wp_customize->add_control(
+		'coco_theme_marquee_speed',
+		array(
+			'label'       => __( 'Velocidad de movimiento (segundos)', 'coco-theme' ),
+			'description' => __( 'Tiempo en segundos que tarda en dar una vuelta completa (por defecto: 26s). Menor número = más rápido.', 'coco-theme' ),
+			'section'     => 'coco_header',
+			'type'        => 'number',
+			'input_attrs' => array(
+				'min'  => 10,
+				'max'  => 60,
+				'step' => 2,
+			),
+			'priority'    => 17,
+		)
+	);
+
 	/* ---------------------------------------------------------------------
 	 * Portada de la tienda
 	 * ------------------------------------------------------------------ */

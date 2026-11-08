@@ -13,12 +13,24 @@ $site_name      = get_bloginfo( 'name' );
 ?>
 <!-- wp:group {"tagName":"div","className":"coco-sticky-top-marquee","backgroundColor":"dark","textColor":"white","layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"center"}} -->
 <div id="coco-sticky-marquee-top" class="wp-block-group coco-sticky-top-marquee has-white-color has-dark-background-color has-text-color has-background">
-	<div class="coco-top-bar-inner">
-		<p class="coco-top-bar-message">
-			<span class="coco-top-bar-highlight">Envíos a todo Paraguay</span>
-			<span class="coco-top-bar-sep">·</span>
-			<span>Abonás en efectivo o QR al recibir en tu puerta</span>
-		</p>
+	<div class="coco-top-marquee-container">
+		<div class="coco-top-marquee-track">
+			<span>💵 Pago Contra Entrega en efectivo o QR</span>
+			<span class="coco-marquee-dot">•</span>
+			<span>🚚 Envíos a todo Paraguay</span>
+			<span class="coco-marquee-dot">•</span>
+			<span>📲 WhatsApp: <a href="<?php echo esc_url( $header_wa_url ); ?>" target="_blank" rel="noreferrer noopener"><?php echo esc_html( $header_wa_disp ); ?></a></span>
+			<span class="coco-marquee-dot">•</span>
+			<span>🛡️ 100% Compra Segura</span>
+			<span class="coco-marquee-dot">•</span>
+			<span>💵 Pago Contra Entrega en efectivo o QR</span>
+			<span class="coco-marquee-dot">•</span>
+			<span>🚚 Envíos a todo Paraguay</span>
+			<span class="coco-marquee-dot">•</span>
+			<span>📲 WhatsApp: <a href="<?php echo esc_url( $header_wa_url ); ?>" target="_blank" rel="noreferrer noopener"><?php echo esc_html( $header_wa_disp ); ?></a></span>
+			<span class="coco-marquee-dot">•</span>
+			<span>🛡️ 100% Compra Segura</span>
+		</div>
 	</div>
 	<button type="button" class="coco-top-marquee-close" aria-label="Cerrar aviso" onclick="cocoDismissTopBar()">✕</button>
 </div>
