@@ -2966,9 +2966,9 @@ table.variations tr:last-child {
 	margin-bottom: 0 !important;
 }
 
-/* Ocultar fila del botón limpiar cuando no esté visible */
-table.variations tr:has(.reset_variations[style*="visibility: hidden"]),
-table.variations tr:has(.reset_variations[style*="display: none"]) {
+/* Ocultar únicamente el enlace limpiar cuando no esté visible (sin ocultar la fila de la variación) */
+.single-product .reset_variations[style*="visibility: hidden"],
+.single-product .reset_variations[style*="display: none"] {
 	display: none !important;
 	margin: 0 !important;
 	padding: 0 !important;
@@ -3047,6 +3047,14 @@ table.variations td.value {
 	color: var(--coco-primary, var(--coco-primary)) !important;
 	box-shadow: 0 0 0 1px var(--coco-primary, var(--coco-primary)), 0 2px 8px rgba(206, 19, 34, 0.16) !important;
 	transform: scale(1.02) !important;
+}
+
+.coco-swatch-pill.is-disabled,
+.coco-swatch-pill:disabled {
+	opacity: 0.4 !important;
+	cursor: not-allowed !important;
+	pointer-events: none !important;
+	text-decoration: line-through !important;
 }
 
 .single-product .reset_variations {

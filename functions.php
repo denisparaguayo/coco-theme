@@ -2584,7 +2584,7 @@ function coco_theme_render_variation_swatches_script() {
 		function initCocoSwatches() {
 			var form = document.querySelector('form.variations_form');
 			if (!form) return;
-			var selects = form.querySelectorAll('table.variations select');
+			var selects = form.querySelectorAll('.variations select, table.variations select');
 			if (!selects || !selects.length) return;
 
 			selects.forEach(function(select) {
@@ -2618,6 +2618,11 @@ function coco_theme_render_variation_swatches_script() {
 						btn.setAttribute('data-value', opt.value);
 						btn.textContent = opt.textContent.trim();
 
+						if (opt.disabled) {
+							btn.disabled = true;
+							btn.classList.add('is-disabled');
+						}
+
 						if (currentVal && currentVal === opt.value) {
 							btn.classList.add('is-selected');
 							btn.setAttribute('aria-checked', 'true');
@@ -2627,6 +2632,7 @@ function coco_theme_render_variation_swatches_script() {
 
 						btn.addEventListener('click', function(e) {
 							e.preventDefault();
+							if (btn.disabled) return;
 							var wasSelected = btn.classList.contains('is-selected');
 
 							if (wasSelected) {
@@ -2651,7 +2657,8 @@ function coco_theme_render_variation_swatches_script() {
 					var val = select.value;
 					var pills = wrapper.querySelectorAll('.coco-swatch-pill');
 					pills.forEach(function(pill) {
-						if (val && pill.getAttribute('data-value') === val) {
+						var pillVal = pill.getAttribute('data-value');
+						if (val && pillVal === val) {
 							pill.classList.add('is-selected');
 							pill.setAttribute('aria-checked', 'true');
 						} else {
@@ -2675,6 +2682,33 @@ function coco_theme_render_variation_swatches_script() {
 						p.setAttribute('aria-checked', 'false');
 					});
 				});
+
+				window.jQuery(form).on('woocommerce_update_variation_values', function() {
+					selects.forEach(function(select) {
+						var wrapper = select.parentNode.querySelector('.coco-variation-swatches');
+						if (!wrapper) return;
+						var currentVal = select.value;
+						var pills = wrapper.querySelectorAll('.coco-swatch-pill');
+						pills.forEach(function(pill) {
+							var pillVal = pill.getAttribute('data-value');
+							var opt = select.querySelector('option[value="' + (window.CSS && CSS.escape ? CSS.escape(pillVal) : pillVal) + '"]');
+							if (opt && opt.disabled) {
+								pill.classList.add('is-disabled');
+								pill.disabled = true;
+							} else {
+								pill.classList.remove('is-disabled');
+								pill.disabled = false;
+							}
+							if (pillVal === currentVal) {
+								pill.classList.add('is-selected');
+								pill.setAttribute('aria-checked', 'true');
+							} else {
+								pill.classList.remove('is-selected');
+								pill.setAttribute('aria-checked', 'false');
+							}
+						});
+					});
+				});
 			}
 		}
 
@@ -2682,6 +2716,9 @@ function coco_theme_render_variation_swatches_script() {
 			document.addEventListener('DOMContentLoaded', initCocoSwatches);
 		} else {
 			initCocoSwatches();
+		}
+		if (window.jQuery) {
+			window.jQuery(document).on('wc_variation_form', initCocoSwatches);
 		}
 	})();
 	</script>
