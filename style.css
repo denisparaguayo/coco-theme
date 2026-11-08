@@ -7,7 +7,7 @@ Description: Tema WordPress Full Site Editing (FSE) ultraligero y de alta conver
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 7.4
-Version: 1.6.2
+Version: 1.6.3
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: coco-theme
@@ -5171,8 +5171,47 @@ p.coco-hero-pill-badge {
 	background: var(--coco-white) !important;
 	border: 1px solid var(--coco-border-light) !important;
 	border-radius: 18px !important;
-	padding: 1.5rem !important;
-	box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08) !important;
+	padding: 1.65rem 1.65rem 1.5rem 1.65rem !important;
+	box-shadow: 0 12px 36px rgba(15, 23, 42, 0.08) !important;
+}
+
+p.coco-hero-featured-tag,
+.coco-hero-featured-tag {
+	display: inline-flex !important;
+	align-items: center !important;
+	background: #FEF2F2 !important;
+	color: #991B1B !important;
+	font-family: 'Plus Jakarta Sans', system-ui, sans-serif !important;
+	font-weight: 700 !important;
+	font-size: 0.72rem !important;
+	letter-spacing: 0.04em !important;
+	padding: 0.32rem 0.85rem !important;
+	border-radius: 999px !important;
+	margin: 0 0 0.55rem 0 !important;
+}
+
+p.coco-serif-sub,
+.coco-serif-sub {
+	font-family: 'Plus Jakarta Sans', system-ui, sans-serif !important;
+	font-size: 0.84rem !important;
+	font-weight: 700 !important;
+	color: var(--coco-caramel, #B87B1D) !important;
+	letter-spacing: 0.06em !important;
+	text-transform: uppercase !important;
+	margin: 0.35rem 0 0.25rem 0 !important;
+	line-height: 1.3 !important;
+}
+
+h3.coco-serif-title,
+.wp-block-heading.coco-serif-title,
+.coco-hero-spotlight-title {
+	font-family: 'Playfair Display', Georgia, serif !important;
+	font-size: 1.65rem !important;
+	font-weight: 700 !important;
+	line-height: 1.22 !important;
+	color: #38251B !important;
+	letter-spacing: -0.01em !important;
+	margin: 0 0 1.25rem 0 !important;
 }
 
 figure.wp-block-image.coco-hero-stage-img-block {
@@ -5186,8 +5225,8 @@ figure.wp-block-image.coco-hero-stage-img-block img {
 	height: auto;
 	display: block;
 	margin: 0 auto;
-	border-radius: 12px !important;
-	box-shadow: none !important;
+	border-radius: 14px !important;
+	box-shadow: 0 6px 20px rgba(56, 37, 27, 0.07) !important;
 }
 
 /* 2. Títulos con líneas doradas flanqueadas (::before y ::after automáticos) */
@@ -5633,8 +5672,16 @@ p.coco-review-author {
 		padding: 0.28rem 0.85rem !important;
 		margin-bottom: 0.45rem !important;
 	}
+	h3.coco-serif-title,
+	.wp-block-heading.coco-serif-title,
 	.coco-hero-spotlight-title {
-		font-size: 1.05rem !important;
+		font-size: 1.35rem !important;
+		margin-bottom: 1rem !important;
+	}
+	p.coco-serif-sub,
+	.coco-serif-sub {
+		font-size: 0.78rem !important;
+		margin-bottom: 0.2rem !important;
 	}
 	figure.wp-block-image.coco-hero-stage-img-block img {
 		max-width: 100% !important;
