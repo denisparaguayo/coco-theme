@@ -140,6 +140,34 @@ body {
 	color: var(--coco-white);
 }
 
+.coco-top-bar-inner {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	padding: 0.45rem 2.5rem 0.45rem 1rem;
+	text-align: center;
+}
+
+.coco-top-bar-message {
+	margin: 0;
+	font-size: 0.82rem;
+	font-weight: 500;
+	letter-spacing: 0.01em;
+	color: var(--coco-white);
+	line-height: 1.4;
+}
+
+.coco-top-bar-highlight {
+	font-weight: 700;
+	color: #4ADE80;
+}
+
+.coco-top-bar-sep {
+	margin: 0 0.5rem;
+	opacity: 0.4;
+}
+
 .coco-top-marquee-text {
 	margin: 0;
 	padding: 0.35rem 1rem;
@@ -987,24 +1015,14 @@ body.admin-bar .coco-mobile-drawer-content {
 	align-items: center;
 	gap: 8px;
 	background: var(--coco-white);
-	border: 1.5px solid var(--coco-gold-light);
+	border: 1px solid var(--coco-border-light);
 	border-radius: 50px;
-	padding: 0.45rem 1.15rem;
-	box-shadow: 0 4px 14px rgba(226, 178, 104, 0.18);
+	padding: 0.4rem 1rem;
+	box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
 	margin-bottom: 1.25rem;
-}
-
-.coco-hero-pill-icon {
-	font-size: 0.95rem;
-	line-height: 1;
-}
-
-.coco-hero-pill-text {
-	font-size: 0.76rem;
-	font-weight: 800;
-	color: var(--coco-navy);
-	letter-spacing: 0.04em;
-	text-transform: uppercase;
+	font-size: 0.8rem;
+	font-weight: 700;
+	color: var(--coco-dark);
 }
 
 .coco-hero-headline {
@@ -1085,54 +1103,117 @@ a.coco-hero-btn-catalog:hover {
 
 .coco-hero-spotlight-box {
 	position: relative;
-	text-align: center;
 	width: 100%;
 	max-width: 380px;
 	margin: 0 auto;
+	background: var(--coco-white);
+	border: 1px solid var(--coco-border-light);
+	border-radius: 18px;
+	padding: 1.5rem;
+	box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+	text-align: left;
+}
+
+.coco-hero-spotlight-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 0.85rem;
 }
 
 .coco-hero-featured-tag {
 	display: inline-block;
-	background-color: var(--coco-gold-badge);
-	color: var(--coco-white);
-	font-weight: 800;
-	font-size: 0.78rem;
-	text-transform: uppercase;
-	letter-spacing: 0.06em;
-	padding: 0.38rem 1.15rem;
+	background: #FEF2F2;
+	color: #991B1B;
+	font-weight: 700;
+	font-size: 0.72rem;
+	letter-spacing: 0.02em;
+	padding: 0.3rem 0.75rem;
 	border-radius: 50px;
-	box-shadow: 0 4px 14px rgba(216, 155, 55, 0.32);
-	margin-bottom: 0.85rem;
 }
 
-.coco-hero-serif-header {
+.coco-hero-spotlight-badge {
+	display: inline-block;
+	background: #F0FDF4;
+	color: #15803D;
+	font-weight: 700;
+	font-size: 0.72rem;
+	padding: 0.3rem 0.75rem;
+	border-radius: 50px;
+}
+
+.coco-hero-spotlight-meta {
+	margin-bottom: 1rem;
+}
+
+.coco-hero-spotlight-cat {
+	display: block;
+	font-size: 0.75rem;
+	color: var(--coco-muted);
+	font-weight: 600;
+	margin-bottom: 0.25rem;
+}
+
+.coco-hero-spotlight-title {
+	font-size: 1.15rem;
+	font-weight: 800;
+	color: var(--coco-dark);
+	line-height: 1.25;
+	margin: 0 0 0.5rem 0;
+}
+
+.coco-hero-spotlight-price-row {
 	display: flex;
-	flex-direction: column;
-	align-items: center;
-	margin-bottom: 1.1rem;
-	font-family: 'Playfair Display', Georgia, serif;
+	align-items: baseline;
+	gap: 0.65rem;
 }
 
-.coco-serif-sub {
-	font-size: 1.35rem;
-	color: var(--coco-gold-soft-dark);
-	font-weight: 500;
-	line-height: 1.2;
-}
-
-.coco-serif-title {
-	font-size: 2.6rem;
-	color: var(--coco-gold-dark);
+.coco-hero-spotlight-price {
+	font-size: 1.25rem;
 	font-weight: 800;
-	line-height: 1.05;
-	letter-spacing: -0.01em;
+	color: var(--coco-primary);
 }
 
-.coco-serif-fps {
-	font-size: 2.3rem;
-	color: var(--coco-gold-dark);
-	font-weight: 800;
-	line-height: 1.05;
+.coco-hero-spotlight-guarantee {
+	font-size: 0.78rem;
+	color: var(--coco-muted);
+}
+
+.coco-hero-stage-img-block {
+	margin: 0 0 1rem 0 !important;
+	overflow: hidden;
+	border-radius: 12px;
+}
+
+.coco-hero-stage-img-block img {
+	width: 100%;
+	height: auto;
+	display: block;
+	border-radius: 12px;
+	transition: transform 0.35s ease;
+}
+
+.coco-hero-spotlight-box:hover .coco-hero-stage-img-block img {
+	transform: scale(1.03);
+}
+
+.coco-hero-spotlight-action {
+	display: block;
+	width: 100%;
+	text-align: center;
+	background: #15803D;
+	color: #FFFFFF !important;
+	text-decoration: none !important;
+	font-size: 0.88rem;
+	font-weight: 700;
+	padding: 0.75rem 1rem;
+	border-radius: 10px;
+	transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.coco-hero-spotlight-action:hover {
+	background: #166534;
+	transform: translateY(-1px);
 }
 
 .coco-hero-stage-link {
@@ -1319,39 +1400,67 @@ a.coco-hero-btn-catalog:hover {
 .coco-trust-strip {
 	display: flex;
 	align-items: center;
-	justify-content: center;
-	max-width: 1100px;
+	justify-content: space-between;
+	max-width: 1140px;
 	margin: 0 auto;
-	gap: 2.5rem;
+	gap: 1.5rem;
 	padding: 1.25rem 2rem;
-	background: var(--coco-cream-light);
-	border: 1px solid var(--coco-cream);
+	background: var(--coco-white);
+	border: 1px solid var(--coco-border-light);
 	border-radius: 14px;
+	box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
 	width: 100%;
 }
 
 .coco-trust-strip-item {
-	display: inline-flex;
+	display: flex;
 	align-items: center;
-	gap: 12px;
+	justify-content: center;
+	flex: 1;
 }
 
-.coco-trust-strip-icon {
+.coco-trust-badge-card {
+	display: flex;
+	align-items: center;
+	gap: 0.85rem;
+	text-align: left;
+}
+
+.coco-trust-badge-icon {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
+	width: 42px;
+	height: 42px;
+	border-radius: 10px;
+	background: #F0FDF4;
+	color: #15803D;
+	flex-shrink: 0;
 }
 
-.coco-trust-strip-text {
-	font-size: 1.02rem;
+.coco-trust-badge-content {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.coco-trust-badge-title {
+	font-size: 0.95rem;
 	font-weight: 700;
-	color: var(--coco-text-dark);
+	color: var(--coco-dark);
+	line-height: 1.2;
+}
+
+.coco-trust-badge-desc {
+	font-size: 0.8rem;
+	color: var(--coco-muted);
+	line-height: 1.3;
 }
 
 .coco-trust-strip-divider {
-	width: 1.5px;
-	height: 34px;
-	background: #E2D7C7;
+	width: 1px;
+	height: 32px;
+	background: var(--coco-border-light);
 }
 
 /* ==========================================================================
@@ -5034,44 +5143,29 @@ p.coco-hero-pill-badge {
 }
 
 .wp-block-group.coco-hero-spotlight-box {
-	text-align: center !important;
-	max-width: 420px !important;
+	text-align: left !important;
+	max-width: 380px !important;
 	margin: 0 auto !important;
-}
-
-p.coco-serif-sub {
-	font-family: 'Playfair Display', Georgia, serif !important;
-	font-size: 1.35rem !important;
-	color: var(--coco-gold-soft-dark) !important;
-	font-weight: 500 !important;
-	margin: 0 0 0.15rem 0 !important;
-	text-align: center !important;
-}
-
-h3.coco-serif-title,
-.wp-block-heading.coco-serif-title {
-	font-family: 'Playfair Display', Georgia, serif !important;
-	font-size: 2.25rem !important;
-	color: var(--coco-gold-dark) !important;
-	font-weight: 800 !important;
-	line-height: 1.1 !important;
-	margin: 0 0 1.1rem 0 !important;
-	text-align: center !important;
+	background: var(--coco-white) !important;
+	border: 1px solid var(--coco-border-light) !important;
+	border-radius: 18px !important;
+	padding: 1.5rem !important;
+	box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08) !important;
 }
 
 figure.wp-block-image.coco-hero-stage-img-block {
-	margin: 0 auto !important;
+	margin: 0 0 1rem 0 !important;
 	text-align: center !important;
 }
 
 figure.wp-block-image.coco-hero-stage-img-block img {
 	width: 100%;
-	max-width: 330px;
+	max-width: 100% !important;
 	height: auto;
 	display: block;
 	margin: 0 auto;
-	border-radius: 20px !important;
-	box-shadow: 0 14px 40px rgba(139, 94, 40, 0.16);
+	border-radius: 12px !important;
+	box-shadow: none !important;
 }
 
 /* 2. Títulos con líneas doradas flanqueadas (::before y ::after automáticos) */
@@ -5214,7 +5308,7 @@ h3.coco-fav-title::after,
 /* 4. Tira de Pilares de Confianza */
 .wp-block-group.coco-trust-strip-wrapper {
 	padding: 1.5rem 1.25rem !important;
-	background: var(--coco-white) !important;
+	background: transparent !important;
 	margin: 0 !important;
 }
 
@@ -5222,14 +5316,15 @@ h3.coco-fav-title::after,
 	display: flex !important;
 	flex-direction: row !important;
 	align-items: center !important;
-	justify-content: space-around !important;
-	max-width: 1100px !important;
+	justify-content: space-between !important;
+	max-width: 1140px !important;
 	margin: 0 auto !important;
-	gap: 2rem !important;
+	gap: 1.5rem !important;
 	padding: 1.25rem 2rem !important;
-	background: var(--coco-cream-light) !important;
-	border: 1px solid var(--coco-cream) !important;
+	background: var(--coco-white) !important;
+	border: 1px solid var(--coco-border-light) !important;
 	border-radius: 14px !important;
+	box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04) !important;
 	width: 100% !important;
 }
 
@@ -5237,15 +5332,8 @@ h3.coco-fav-title::after,
 	display: flex !important;
 	align-items: center !important;
 	justify-content: center !important;
+	flex: 1 !important;
 	margin: 0 !important;
-}
-
-p.coco-trust-strip-text {
-	margin: 0 !important;
-	font-size: 1.02rem !important;
-	font-weight: 700 !important;
-	color: var(--coco-text-dark) !important;
-	text-align: center !important;
 }
 
 /* 5. Explorá Nuestro Catálogo (4 Categorías) */
@@ -5523,17 +5611,12 @@ p.coco-review-author {
 		padding: 0.28rem 0.85rem !important;
 		margin-bottom: 0.45rem !important;
 	}
-	p.coco-serif-sub {
-		font-size: 1.1rem !important;
-	}
-	h3.coco-serif-title,
-	.wp-block-heading.coco-serif-title {
-		font-size: 1.65rem !important;
-		margin-bottom: 0.75rem !important;
+	.coco-hero-spotlight-title {
+		font-size: 1.05rem !important;
 	}
 	figure.wp-block-image.coco-hero-stage-img-block img {
-		max-width: 240px !important;
-		border-radius: 16px !important;
+		max-width: 100% !important;
+		border-radius: 12px !important;
 	}
 
 	/* 2. Títulos con Líneas Doradas en Móvil */
