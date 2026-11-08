@@ -158,7 +158,7 @@ Componente nativo ultraligero integrado en el tema (`functions.php` + `style.css
    - **Línea 3:** Tiempo relativo (`"hace 18 minutos"`, `"hace 2 horas"`) + sello **`✓ Verificada`** + icono informativo `ⓘ`.
 2. **Sistema de Colores (Por Defecto del Tema + Personalizable):**
    - Por defecto hereda las variables globales de `coco-theme` (`--coco-white`, `--coco-border`, `--coco-dark`, `--coco-muted`, `--coco-cod-green`, `--coco-primary`).
-   - Incluye selectores de color (`WP_Customize_Color_Control`) en **Apariencia > Personalizar > Opciones Coco Cherry Store** para personalizar en vivo:
+   - Incluye selectores de color (`WP_Customize_Color_Control`) en **Apariencia > Personalizar > Coco Store > Avisos de compra** para personalizar en vivo:
      - Color de fondo de la tarjeta (`#FFFFFF`)
      - Color de borde (`#E4E7EB`)
      - Color del título del producto (`#1F2933`)
