@@ -2397,7 +2397,7 @@ function coco_theme_render_mobile_sticky_buy_bar() {
 
 	$is_variable      = $product->is_type( 'variable' ) ? '1' : '0';
 	$sticky_mode      = get_theme_mod( 'coco_theme_mobile_sticky_mode', 'scroll' );
-	$sticky_anim      = get_theme_mod( 'coco_theme_mobile_sticky_anim', 'pulse' );
+	$sticky_anim      = get_theme_mod( 'coco_theme_mobile_sticky_anim', 'none' );
 	$custom_text      = trim( get_theme_mod( 'coco_theme_mobile_sticky_text', '' ) );
 	$default_btn_text = ! empty( $custom_text ) ? $custom_text : __( 'Pagar al recibir en casa', 'coco-theme' );
 	$initial_visible  = ( 'always' === $sticky_mode );

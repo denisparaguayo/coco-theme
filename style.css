@@ -1,4 +1,4 @@
-﻿/*
+/*
 Theme Name: CocoStore Pro
 Theme URI: https://github.com/denisparaguayo/coco-theme
 Author: CocoStore Pro (Denis)
@@ -4467,7 +4467,7 @@ table.variations td.value {
 	.wp-block-post-title a {
 		font-size: 0.86rem !important;
 		text-align: center !important;
-		padding: 0.85rem 0.8rem 1.45rem 0.8rem !important;
+		padding: 0.75rem 0.65rem 0.35rem 0.65rem !important;
 		margin: 0 !important;
 	}
 
@@ -4475,7 +4475,16 @@ table.variations td.value {
 	.woocommerce-page ul.products li.product .price,
 	.single-product .related.products ul.products li.product .price,
 	.single-product .upsells.products ul.products li.product .price {
-		display: none !important;
+		display: flex !important;
+		align-items: center !important;
+		justify-content: center !important;
+		flex-wrap: wrap !important;
+		gap: 0.25rem !important;
+		font-size: 0.95rem !important;
+		font-weight: 800 !important;
+		color: var(--coco-primary) !important;
+		padding: 0 0.5rem 0.85rem 0.5rem !important;
+		margin: 0 !important;
 	}
 
 	.coco-catalog-trust-band {
@@ -4928,11 +4937,16 @@ body.coco-cod-modal-open .coco-sticky-buy-bar {
 	transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.coco-sticky-buy-btn:hover,
-.coco-sticky-buy-btn:active {
-	background-color: var(--coco-btn-cod-hover, var(--coco-gold-hover, var(--coco-gold-hover)));
+.coco-sticky-buy-btn:hover {
+	background-color: var(--coco-btn-cod-hover, #15803D);
 	transform: translateY(-1px);
 	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.24);
+}
+
+.coco-sticky-buy-btn:active {
+	background-color: var(--coco-btn-cod-hover, #15803D);
+	transform: scale(0.98);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* ==========================================================================
